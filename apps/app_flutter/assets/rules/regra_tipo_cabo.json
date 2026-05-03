@@ -1,0 +1,12 @@
+{
+  "cobre": {
+    "isolado": ["PVC"],
+    "unipolar": ["XLPE", "EPR"],
+    "multipolar": ["XLPE", "EPR"]
+  },
+  "aluminio": {
+    "isolado": ["PVC"],
+    "unipolar": ["XLPE", "EPR"],
+    "multipolar": ["XLPE", "EPR"]
+  }
+}

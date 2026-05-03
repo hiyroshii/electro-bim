@@ -1,0 +1,1722 @@
+[
+  {
+    "secao": 0.5,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 10.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 9.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 10.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 9.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 12.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 10.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 11.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 10.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 12.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 11.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 14.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 12.0
+      }
+    ]
+  },
+  {
+    "secao": 0.8,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 12.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 11.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 12.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 11.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 15.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 13.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 15.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 13.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 16.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 14.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 18.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 15.0
+      }
+    ]
+  },
+  {
+    "secao": 1.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 15.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 13.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 14.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 13.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 18.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 16.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 17.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 15.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 19.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 17.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 21.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 17.0
+      }
+    ]
+  },
+  {
+    "secao": 1.5,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 19.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 17.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 18.5
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 16.5
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 23.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 20.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 22.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 19.5
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 24.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 22.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 26.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 22.0
+      }
+    ]
+  },
+  {
+    "secao": 2.5,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 26.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 23.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 25.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 22.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 31.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 28.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 30.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 26.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 33.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 30.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 34.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 29.0
+      }
+    ]
+  },
+  {
+    "secao": 4.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 35.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 31.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 33.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 30.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 42.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 37.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 40.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 35.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 45.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 40.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 44.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 37.0
+      }
+    ]
+  },
+  {
+    "secao": 6.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 45.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 40.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 42.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 38.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 54.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 48.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 51.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 44.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 58.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 52.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 56.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 46.0
+      }
+    ]
+  },
+  {
+    "secao": 10.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 61.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 54.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 57.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 51.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 75.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 66.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 69.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 60.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 80.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 71.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 73.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 61.0
+      }
+    ]
+  },
+  {
+    "secao": 16.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 81.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 73.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 76.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 68.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 100.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 88.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 91.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 80.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 107.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 96.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 95.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 79.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 115.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 100.0
+      }
+    ]
+  },
+  {
+    "secao": 25.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 106.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 95.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 99.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 89.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 133.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 117.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 119.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 105.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 138.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 119.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 121.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 101.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 149.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 127.0
+      }
+    ]
+  },
+  {
+    "secao": 35.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 131.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 117.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 121.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 109.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 164.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 144.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 146.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 128.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 171.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 147.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 146.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 122.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 185.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 158.0
+      }
+    ]
+  },
+  {
+    "secao": 50.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 158.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 141.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 145.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 130.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 198.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 175.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 175.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 154.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 209.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 179.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 173.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 144.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 225.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 192.0
+      }
+    ]
+  },
+  {
+    "secao": 70.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 200.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 179.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 183.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 164.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 253.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 222.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 221.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 194.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 269.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 229.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 213.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 178.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 289.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 246.0
+      }
+    ]
+  },
+  {
+    "secao": 95.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 241.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 216.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 220.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 197.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 306.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 269.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 265.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 233.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 328.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 278.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 252.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 211.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 352.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 298.0
+      }
+    ]
+  },
+  {
+    "secao": 120.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 278.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 249.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 253.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 227.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 354.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 312.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 305.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 268.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 382.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 322.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 287.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 240.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 410.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 346.0
+      }
+    ]
+  },
+  {
+    "secao": 150.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 318.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 285.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 290.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 259.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 407.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 358.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 349.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 307.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 441.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 371.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 324.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 271.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 473.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 399.0
+      }
+    ]
+  },
+  {
+    "secao": 185.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 362.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 324.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 329.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 295.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 464.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 408.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 395.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 348.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 506.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 424.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 363.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 304.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 542.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 456.0
+      }
+    ]
+  },
+  {
+    "secao": 240.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 424.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 380.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 386.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 346.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 546.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 481.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 462.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 407.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 599.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 500.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 419.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 351.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 641.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 538.0
+      }
+    ]
+  },
+  {
+    "secao": 300.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 486.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 435.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 442.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 396.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 628.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 553.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 529.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 465.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 693.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 576.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 474.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 396.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 741.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 621.0
+      }
+    ]
+  },
+  {
+    "secao": 400.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 579.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 519.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 527.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 472.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 751.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 661.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 628.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 552.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 835.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 692.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 555.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 464.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 892.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 745.0
+      }
+    ]
+  },
+  {
+    "secao": 500.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 664.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 595.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 604.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 541.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 864.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 760.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 718.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 631.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 966.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 797.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 627.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 525.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 1030.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 859.0
+      }
+    ]
+  },
+  {
+    "secao": 630.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 765.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 685.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 696.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 623.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 998.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 879.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 825.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 725.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 1122.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 923.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 711.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 596.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 1196.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 995.0
+      }
+    ]
+  },
+  {
+    "secao": 800.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 885.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 792.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 805.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 721.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 1158.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 1020.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 952.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 837.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 1311.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 1074.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 811.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 679.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 1396.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 1159.0
+      }
+    ]
+  },
+  {
+    "secao": 1000.0,
+    "metodos": [
+      {
+        "metodo": "A1",
+        "condutores": 2,
+        "corrente": 1014.0
+      },
+      {
+        "metodo": "A1",
+        "condutores": 3,
+        "corrente": 908.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 2,
+        "corrente": 923.0
+      },
+      {
+        "metodo": "A2",
+        "condutores": 3,
+        "corrente": 826.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 2,
+        "corrente": 1332.0
+      },
+      {
+        "metodo": "B1",
+        "condutores": 3,
+        "corrente": 1173.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 2,
+        "corrente": 1088.0
+      },
+      {
+        "metodo": "B2",
+        "condutores": 3,
+        "corrente": 957.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 2,
+        "corrente": 1515.0
+      },
+      {
+        "metodo": "C",
+        "condutores": 3,
+        "corrente": 1237.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 2,
+        "corrente": 916.0
+      },
+      {
+        "metodo": "D",
+        "condutores": 3,
+        "corrente": 767.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 2,
+        "corrente": 1613.0
+      },
+      {
+        "metodo": "E",
+        "condutores": 3,
+        "corrente": 1336.0
+      }
+    ]
+  }
+]

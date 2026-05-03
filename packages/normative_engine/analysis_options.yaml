@@ -1,0 +1,27 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    # Bloqueia imports diretos de src/ de fora do package
+    implementation_imports: error
+    # Evita imports relativos cruzando lib/
+    avoid_relative_lib_imports: error
+
+linter:
+  rules:
+    # Estilo
+    - always_declare_return_types
+    - annotate_overrides
+    - prefer_single_quotes
+    - require_trailing_commas
+    - sort_constructors_first
+
+    # Segurança
+    - avoid_dynamic_calls
+    - avoid_print
+    - cancel_subscriptions
+
+    # Dart moderno
+    - use_super_parameters
+    - prefer_final_locals
+    - unnecessary_late

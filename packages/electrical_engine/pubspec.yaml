@@ -1,0 +1,19 @@
+name: electrical_engine
+description: >
+  Package Dart puro que implementa o dimensionamento de cargas e circuitos
+  elétricos conforme NBR 5410:2004. Depende de normative_engine para todas
+  as regras e tabelas normativas — sem JSON em runtime.
+version: 1.0.0
+repository: https://github.com/electrobim/dimensionamento_engine
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  normative_engine:
+    path: ../normative_engine
+  uuid: ^4.0.0
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^3.0.0

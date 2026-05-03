@@ -1,0 +1,95 @@
+{
+    "documentacao": "Previsao de Cargas, Divisao e Protecao",
+    "secao_normativa": "9.5",
+    "norma": "ABNT NBR 5410",
+    "iluminacao": {
+        "ponto_minimo": "1 fixo no teto por comodo",
+        "excecoes": {
+            "hoteis_moteis": "Permite tomada de 100VA comandada por interruptor",
+            "espacos_reduzidos": "Permite ponto na parede (depositos, varandas, sob escadas)"
+        },
+        "previsao_carga": {
+            "area_ate_6m2": {
+                "potencia_va": 100
+            },
+            "area_acima_6m2": {
+                "base_va": 100,
+                "base_area_m2": 6,
+                "acrescimo_va": 60,
+                "intervalo_acrescimo_m2": 4,
+                "condicao": "aumento de 4m2 inteiros"
+            }
+        }
+    },
+    "tomadas_tug": {
+        "quantidade_minima": {
+            "banheiros": {
+                "criterio": "minimo 1",
+                "local": "proximo ao lavatorio"
+            },
+            "cozinhas_copas_lavanderias": {
+                "perimetro": "1 ponto a cada 3.5m ou fracao",
+                "bancada": "minimo 2 tomadas acima da bancada da pia"
+            },
+            "varandas": {
+                "criterio": "minimo 1",
+                "excecao": "pode ser externa se area < 2m2 ou profundidade < 0.8m"
+            },
+            "salas_dormitorios": {
+                "perimetro": "1 ponto a cada 5m ou fracao"
+            },
+            "demais_comodos": {
+                "area_ate_2_25m2": {
+                    "criterio": "minimo 1",
+                    "pode_ser_externo_ate_m": 0.8
+                },
+                "area_entre_2_25_e_6m2": {
+                    "criterio": "minimo 1"
+                },
+                "area_acima_6m2": {
+                    "perimetro": "1 ponto a cada 5m ou fracao"
+                }
+            }
+        },
+        "potencia_atribuida": {
+            "banheiros_cozinhas_lavanderias": {
+                "regra_padrao": {
+                    "ate_3_pontos_va": 600,
+                    "excedentes_va": 100
+                },
+                "regra_alternativa_total_maior_que_6": {
+                    "ate_2_pontos_va": 600,
+                    "excedentes_va": 100
+                }
+            },
+            "demais_comodos": {
+                "potencia_minima_va": 100
+            }
+        }
+    },
+    "aquecimento_agua": {
+        "restricao": "Conexao direta exigida, proibido uso de tomada"
+    },
+    "divisao_instalacao": {
+        "circuitos_independentes": "Equipamentos com corrente > 10A",
+        "circuitos_exclusivos_locais": [
+            "cozinhas",
+            "copas",
+            "areas de servico",
+            "lavanderias"
+        ],
+        "circuitos_mistos_iluminacao_tomadas": {
+            "permissao": "Apenas em habitacoes, se cumpridas todas as condicoes",
+            "condicoes": [
+                "Corrente de projeto Ib <= 16A",
+                "Nao alimentar toda iluminacao por um so circuito",
+                "Nao alimentar todas as tomadas por um so circuito"
+            ],
+            "exclusao": "Nao se aplica a cozinhas e lavanderias"
+        }
+    },
+    "protecao": {
+        "exigencia": "Seccionamento simultaneo de todas as fases",
+        "tipo_dispositivo": "Multipolar (proibido acoplamento de alavancas de unipolares)"
+    }
+}

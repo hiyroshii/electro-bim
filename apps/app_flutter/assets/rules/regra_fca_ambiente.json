@@ -1,0 +1,22 @@
+[
+  {"circuitos":1,"fator":1.0},
+  {"circuitos":2,"fator":0.8},
+  {"circuitos":3,"fator":0.7},
+  {"circuitos":4,"fator":0.65},
+  {"circuitos":5,"fator":0.6},
+  {"circuitos":6,"fator":0.57},
+  {"circuitos":7,"fator":0.54},
+  {"circuitos":8,"fator":0.52},
+  {"circuitos":9,"fator":0.5},
+  {"circuitos":10,"fator":0.48},
+  {"circuitos":11,"fator":0.47},
+  {"circuitos":12,"fator":0.46},
+  {"circuitos":13,"fator":0.45},
+  {"circuitos":14,"fator":0.44},
+  {"circuitos":15,"fator":0.43},
+  {"circuitos":16,"fator":0.42},
+  {"circuitos":17,"fator":0.41},
+  {"circuitos":18,"fator":0.4},
+  {"circuitos":19,"fator":0.39},
+  {"circuitos":20,"fator":0.38}
+]

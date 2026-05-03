@@ -1,0 +1,19 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    implementation_imports: error
+    avoid_relative_lib_imports: error
+
+linter:
+  rules:
+    - always_declare_return_types
+    - annotate_overrides
+    - prefer_single_quotes
+    - require_trailing_commas
+    - sort_constructors_first
+    - avoid_dynamic_calls
+    - avoid_print
+    - use_super_parameters
+    - prefer_final_locals
+    - unnecessary_late

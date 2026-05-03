@@ -1,0 +1,9 @@
+{
+  "PVC": {
+    "isolado": ["A1","B1","B2","G"]
+  },
+  "XLPE_EPR": {
+    "unipolar": ["A1","B1","B2","D","F"],
+    "multipolar": ["A1","A2","B1","B2","D","E"]
+  }
+}

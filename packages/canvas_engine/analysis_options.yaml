@@ -1,0 +1,11 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    - always_declare_return_types
+    - annotate_overrides
+    - prefer_final_locals
+    - avoid_dynamic_calls
+    - unnecessary_late
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables

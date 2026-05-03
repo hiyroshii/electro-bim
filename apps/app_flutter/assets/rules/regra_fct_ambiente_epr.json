@@ -1,0 +1,17 @@
+[
+  {"temperatura":10,"fator":1.24},
+  {"temperatura":15,"fator":1.18},
+  {"temperatura":20,"fator":1.13},
+  {"temperatura":25,"fator":1.08},
+  {"temperatura":30,"fator":1.0},
+  {"temperatura":35,"fator":0.96},
+  {"temperatura":40,"fator":0.91},
+  {"temperatura":45,"fator":0.87},
+  {"temperatura":50,"fator":0.82},
+  {"temperatura":55,"fator":0.76},
+  {"temperatura":60,"fator":0.71},
+  {"temperatura":65,"fator":0.65},
+  {"temperatura":70,"fator":0.58},
+  {"temperatura":75,"fator":0.5},
+  {"temperatura":80,"fator":0.41}
+]

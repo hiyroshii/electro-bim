@@ -1,0 +1,13 @@
+[
+  {"temperatura":10,"fator":1.22},
+  {"temperatura":15,"fator":1.14},
+  {"temperatura":20,"fator":1.07},
+  {"temperatura":25,"fator":1.03},
+  {"temperatura":30,"fator":1.0},
+  {"temperatura":35,"fator":0.94},
+  {"temperatura":40,"fator":0.87},
+  {"temperatura":45,"fator":0.79},
+  {"temperatura":50,"fator":0.71},
+  {"temperatura":55,"fator":0.61},
+  {"temperatura":60,"fator":0.5}
+]

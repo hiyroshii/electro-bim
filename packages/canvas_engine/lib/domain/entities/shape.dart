@@ -1,5 +1,8 @@
-// REV: 1.3.0
+// REV: 1.4.0
 // CHANGELOG:
+// [1.4.0] - 02 05 2026
+// - ADD: centerGrip — ponto central da entidade para MOVE
+//
 // [1.3.0] - 02 05 2026
 // - ADD: gripPoints — pontos de edição da entidade
 // - ADD: moveGrip() — atualiza posição de um grip
@@ -33,4 +36,7 @@ abstract class Shape {
   /// LineShape: converte automaticamente para PlineShape (implementação externa).
   /// PlineShape: insere diretamente na lista de vértices.
   void insertVertex(int segmentIndex, Vector3 position);
+
+  /// Ponto central da entidade para operação MOVE.
+  Vector3 get centerGrip;
 }

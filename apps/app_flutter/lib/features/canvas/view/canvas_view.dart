@@ -1,5 +1,23 @@
-// REV: 3.4.0
+// REV: 3.7.1
 // CHANGELOG:
+// [3.7.1] - 04 05 2026
+// - FIX: UndoManager único compartilhado entre InputController e SelectToolController
+// - CHG: _undoManager criado no initState e passado ao InputController
+// - CHG: listener de repaint agora vinculado ao _undoManager compartilhado
+//
+// [3.7.0] - 02 05 2026
+// - ADD: nudge contínuo com aceleração progressiva (setas mantidas pressionadas)
+// - ADD: métodos _startNudge, _stopNudge, timer e fator de velocidade
+// - CHG: tratamento de setas movido para o view, removido de keyboard_shortcuts
+// - FIX: compatibilidade com nova versão de SelectToolController (2.1.1)
+//
+// [3.6.0] - 02 05 2026
+// - REF: atalhos de teclado extraídos para keyboard_shortcuts.dart
+// - ADD: isMovingEntity repassado ao CanvasPainter
+// - ADD: nudge com setas (↑↓←→) durante seleção
+// - FIX: constantes de botão do mouse substituídas por valores numéricos
+// - FIX: scrollDelta acessado via cast dinâmico (compatibilidade)
+//
 // [3.4.0] - 02 05 2026
 // - ADD: UndoManager integrado (Ctrl+Z / Ctrl+Y)
 // - ADD: botões Undo/Redo na toolbar
@@ -9,52 +27,38 @@
 //
 // [3.3.3] - 02 05 2026
 // - FIX: cursor de snap fantasma ao sair do modo draw
-//        (CanvasPainter agora recebe mode e só desenha cursor em draw)
 //
 // [3.3.2] - 02 05 2026
-// - FIX: botão direito (right-click) não dispara mais desenho/seleção/pan
-//        agora é ignorado e reservado para futuro menu de contexto
+// - FIX: botão direito não dispara mais desenho/seleção/pan
 //
 // [3.3.1] - 02 05 2026
-// - CHG: cores dos botões da toolbar ajustadas para tema escuro (white70)
-// - FIX: seleção limpa automaticamente ao trocar de ferramenta
+// - CHG: cores dos botões da toolbar para tema escuro
+// - FIX: seleção limpa ao trocar de ferramenta
 //
 // [3.3.0] - 02 05 2026
 // - ADD: CanvasToolbar desacoplado com Pan e Select
-// - ADD: middle-click pan global (sempre disponível, independente da ferramenta)
+// - ADD: middle-click pan global
 // - ADD: onPointerUp delegado ao InputController
-// - ADD: cursor do mouse muda conforme a ferramenta ativa
-// - CHG: FAB removido (funcionalidade migrada para a toolbar)
-// - CHG: indicador de modo usa ToolbarTool.modeDisplay
-// - CHG: tecla 'N' ativa Pan, tecla 'V' ativa Select
+// - ADD: cursor do mouse conforme ferramenta ativa
 //
 // [3.2.0] - 02 05 2026
-// - ADD: modo select com tecla 'V' para alternar entre draw e select
-// - ADD: indicador visual de modo no canto superior direito
-// - ADD: FAB alterna entre draw/select (ícone muda)
-// - ADD: Escape no modo select limpa seleção
-// - ADD: CanvasPainter recebe selectedShape para destaque
-// - CHG: utiliza InputController.setMode() e clearSelection()
-//
-// [3.1.0] - 02 05 2026
-// - FIX: SnapService.createDefault() integrado corretamente
-// - FIX: _ToolBar restaurado no escopo do arquivo
+// - ADD: modo select com tecla 'V'
+// - ADD: indicador visual de modo
+// - ADD: Escape limpa seleção
 //
 // [3.0.0] - 02 05 2026
-// - ADD: InputController integrado
-// - ADD: Scene, Viewport e SnapService no initState
-// - ADD: CustomPaint com CanvasPainter
+// - ADD: InputController, Scene, Viewport, SnapService integrados
 
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
 import '/widgets/canvas_toolbar.dart';
 import '../painter/canvas_painter.dart';
+import 'package:app_flutter/controllers/keyboard_shortcuts.dart';
 
 class CanvasView extends StatefulWidget {
   const CanvasView({super.key});
-
   @override
   State<CanvasView> createState() => _CanvasViewState();
 }
@@ -64,35 +68,41 @@ class _CanvasViewState extends State<CanvasView> {
   late engine.Viewport viewport;
   late engine.InputController input;
   late engine.SnapService snapService;
+  late engine.UndoManager _undoManager; // Instância única compartilhada
 
   ToolbarTool _activeTool = ToolbarTool.line;
 
-  // --- Middle-click pan global (independente da ferramenta ativa) ---
   bool _isMiddlePanning = false;
   Offset _lastMiddlePosition = Offset.zero;
+
+  // Nudge contínuo com aceleração
+  Timer? _nudgeTimer;
+  double _nudgeSpeed = 1.0;
 
   @override
   void initState() {
     super.initState();
-
     scene = engine.Scene();
     viewport = engine.Viewport();
     snapService = engine.SnapService.createDefault();
+
+    // Cria um único UndoManager e compartilha com todos os controllers
+    _undoManager = engine.UndoManager();
 
     input = engine.InputController(
       viewport: viewport,
       scene: scene,
       snapService: snapService,
       tool: engine.DrawLineController(),
+      undoManager: _undoManager,
     );
-
-    // Repaint quando undo/redo muda de estado (botões habilitados/desabilitados)
-    input.undoManager.addListener(_repaint);
+    _undoManager.addListener(_repaint);
   }
 
   @override
   void dispose() {
-    input.undoManager.removeListener(_repaint);
+    _stopNudge();
+    _undoManager.removeListener(_repaint);
     super.dispose();
   }
 
@@ -101,7 +111,6 @@ class _CanvasViewState extends State<CanvasView> {
   void _setTool(ToolbarTool tool) {
     setState(() {
       _activeTool = tool;
-
       switch (tool) {
         case ToolbarTool.line:
           input.setTool(engine.DrawLineController());
@@ -121,101 +130,96 @@ class _CanvasViewState extends State<CanvasView> {
     });
   }
 
-  SystemMouseCursor get _mouseCursor {
-    return switch (_activeTool) {
-      ToolbarTool.pan => SystemMouseCursors.move,
-      ToolbarTool.select => SystemMouseCursors.basic,
-      ToolbarTool.line || ToolbarTool.pline => SystemMouseCursors.precise,
-    };
+  void _startNudge(double dxScreen, double dyScreen) {
+    _nudgeSpeed = 1.0;
+    _nudgeTimer?.cancel();
+    // Aplica o primeiro nudge imediatamente
+    input.selectController.nudge(dxScreen, dyScreen);
+    _repaint();
+
+    _nudgeTimer = Timer.periodic(const Duration(milliseconds: 80), (timer) {
+      input.selectController.nudge(dxScreen * _nudgeSpeed, dyScreen * _nudgeSpeed);
+      _repaint();
+      _nudgeSpeed = (_nudgeSpeed * 1.2).clamp(1.0, 30.0);
+    });
   }
+
+  void _stopNudge() {
+    _nudgeTimer?.cancel();
+    _nudgeTimer = null;
+  }
+
+  SystemMouseCursor get _mouseCursor => switch (_activeTool) {
+    ToolbarTool.pan => SystemMouseCursors.move,
+    ToolbarTool.select => SystemMouseCursors.basic,
+    ToolbarTool.line || ToolbarTool.pline => SystemMouseCursors.precise,
+  };
 
   @override
   Widget build(BuildContext context) {
     return Focus(
       autofocus: true,
       onKeyEvent: (node, event) {
+        // Primeiro, processa atalhos instantâneos (Ctrl+Z, etc.)
+        if (handleKeyEvent(
+          event,
+          input,
+          _repaint,
+          () => _setTool(ToolbarTool.select),
+          () => _setTool(ToolbarTool.pan),
+        )) {
+          return KeyEventResult.handled;
+        }
+
+        // Nudge contínuo (setas)
         if (event is KeyDownEvent) {
-          // Undo / Redo
-          if (event.logicalKey == LogicalKeyboardKey.keyZ &&
-              (HardwareKeyboard.instance.isControlPressed ||
-               HardwareKeyboard.instance.isMetaPressed)) {
-            input.undoManager.undo();
-            _repaint();
-            return KeyEventResult.handled;
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.arrowUp:    _startNudge(0, -1); return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowDown:  _startNudge(0, 1);  return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowLeft:  _startNudge(-1, 0); return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowRight: _startNudge(1, 0);  return KeyEventResult.handled;
+            default: break;
           }
-          if (event.logicalKey == LogicalKeyboardKey.keyY &&
-              (HardwareKeyboard.instance.isControlPressed ||
-               HardwareKeyboard.instance.isMetaPressed)) {
-            input.undoManager.redo();
-            _repaint();
-            return KeyEventResult.handled;
-          }
-
-          // Escape
-          if (event.logicalKey == LogicalKeyboardKey.escape) {
-            if (input.mode == engine.CanvasMode.select ||
-                input.mode == engine.CanvasMode.navigate) {
-              input.clearSelection();
-              _repaint();
+        } else if (event is KeyUpEvent) {
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.arrowUp:
+            case LogicalKeyboardKey.arrowDown:
+            case LogicalKeyboardKey.arrowLeft:
+            case LogicalKeyboardKey.arrowRight:
+              _stopNudge();
               return KeyEventResult.handled;
-            } else {
-              input.finishTool();
-              _repaint();
-              return KeyEventResult.handled;
-            }
-          }
-
-          // Atalhos rápidos
-          if (event.logicalKey == LogicalKeyboardKey.keyV) {
-            _setTool(ToolbarTool.select);
-            return KeyEventResult.handled;
-          }
-          if (event.logicalKey == LogicalKeyboardKey.keyN) {
-            _setTool(ToolbarTool.pan);
-            return KeyEventResult.handled;
+            default: break;
           }
         }
+
         return KeyEventResult.ignored;
       },
       child: Stack(
         children: [
-          // --- Canvas ---
           MouseRegion(
             cursor: _mouseCursor,
             onHover: (event) {
               input.onHover(engine.Vector3(
-                event.localPosition.dx,
-                event.localPosition.dy,
-                0,
+                event.localPosition.dx, event.localPosition.dy, 0,
               ));
               _repaint();
             },
             child: Listener(
               onPointerDown: (event) {
-                // Middle-click: pan global imediato
-                if (event.buttons == kMiddleMouseButton) {
+                if (event.buttons == 4) {
                   _isMiddlePanning = true;
                   _lastMiddlePosition = event.localPosition;
                   return;
                 }
-
-                // Right-click: reservado para futuro menu de contexto
-                if (event.buttons == kSecondaryMouseButton) {
-                  return;
-                }
-
-                // Left-click: delega para a ferramenta ativa
-                if (event.buttons == kPrimaryMouseButton) {
+                if (event.buttons == 2) return;
+                if (event.buttons == 1) {
                   input.onPointerDown(engine.Vector3(
-                    event.localPosition.dx,
-                    event.localPosition.dy,
-                    0,
+                    event.localPosition.dx, event.localPosition.dy, 0,
                   ));
                   _repaint();
                 }
               },
               onPointerMove: (event) {
-                // Middle-click drag: pan direto no viewport
                 if (_isMiddlePanning) {
                   final delta = event.localPosition - _lastMiddlePosition;
                   viewport.pan(engine.Vector3(delta.dx, delta.dy, 0));
@@ -223,19 +227,9 @@ class _CanvasViewState extends State<CanvasView> {
                   _repaint();
                   return;
                 }
-
-                // Hover / left-drag: delega normalmente
                 input.onPointerMove(
-                  engine.Vector3(
-                    event.localPosition.dx,
-                    event.localPosition.dy,
-                    0,
-                  ),
-                  engine.Vector3(
-                    event.delta.dx,
-                    event.delta.dy,
-                    0,
-                  ),
+                  engine.Vector3(event.localPosition.dx, event.localPosition.dy, 0),
+                  engine.Vector3(event.delta.dx, event.delta.dy, 0),
                 );
                 _repaint();
               },
@@ -244,37 +238,24 @@ class _CanvasViewState extends State<CanvasView> {
                   _isMiddlePanning = false;
                   return;
                 }
-
-                // Right-click up: reservado, não faz nada
-                if (event.buttons == kSecondaryMouseButton) {
-                  return;
-                }
-
-                // Left-click up: delega para a ferramenta
+                if (event.buttons == 2) return;
                 input.onPointerUp(engine.Vector3(
-                  event.localPosition.dx,
-                  event.localPosition.dy,
-                  0,
+                  event.localPosition.dx, event.localPosition.dy, 0,
                 ));
                 _repaint();
               },
               onPointerCancel: (event) {
-                if (_isMiddlePanning) {
-                  _isMiddlePanning = false;
-                }
+                if (_isMiddlePanning) _isMiddlePanning = false;
               },
               onPointerSignal: (event) {
-                if (event is PointerScrollEvent) {
+                try {
+                  final delta = (event as dynamic).scrollDelta as Offset;
                   input.onZoom(
-                    event.scrollDelta.dy > 0 ? 0.9 : 1.1,
-                    engine.Vector3(
-                      event.localPosition.dx,
-                      event.localPosition.dy,
-                      0,
-                    ),
+                    delta.dy > 0 ? 0.9 : 1.1,
+                    engine.Vector3(event.localPosition.dx, event.localPosition.dy, 0),
                   );
                   _repaint();
-                }
+                } catch (_) {}
               },
               child: Container(
                 color: const Color(0xFFF5F5F5),
@@ -289,33 +270,34 @@ class _CanvasViewState extends State<CanvasView> {
                     mode: input.mode,
                     hoveredGripIndex: input.selectController.hoveredGripIndex,
                     isDraggingGrip: input.selectController.draggedGripIndex != null,
+                    isMovingEntity: input.selectController.isMovingEntity,
                   ),
                 ),
               ),
             ),
           ),
-
-          // --- Toolbar desacoplada ---
           Positioned(
             top: 12,
             left: 12,
             child: CanvasToolbar(
               activeTool: _activeTool,
               onToolSelected: _setTool,
-              canUndo: input.undoManager.canUndo,
-              canRedo: input.undoManager.canRedo,
+              canUndo: _undoManager.canUndo,
+              canRedo: _undoManager.canRedo,
               onUndo: () {
-                input.undoManager.undo();
+                if (input.mode == engine.CanvasMode.draw && input.tool.isActive) {
+                  input.undoDrawing();
+                } else {
+                  _undoManager.undo();
+                }
                 _repaint();
               },
               onRedo: () {
-                input.undoManager.redo();
+                _undoManager.redo();
                 _repaint();
               },
             ),
           ),
-
-          // --- Indicador de modo ---
           Positioned(
             top: 12,
             right: 12,
@@ -331,10 +313,7 @@ class _CanvasViewState extends State<CanvasView> {
               ),
               child: Text(
                 _activeTool.modeDisplay,
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
               ),
             ),
           ),

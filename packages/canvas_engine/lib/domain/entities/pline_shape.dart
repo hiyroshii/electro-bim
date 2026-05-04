@@ -54,6 +54,21 @@ class PlineShape extends Shape {
   }
 
   @override
+Vector3 get centerGrip {
+  if (vertices.isEmpty) return Vector3.zero;
+  var sum = Vector3.zero;
+  for (final v in vertices) {
+    sum = Vector3(sum.x + v.x, sum.y + v.y, 0);
+  }
+  return Vector3(
+    sum.x / vertices.length,
+    sum.y / vertices.length,
+    0,
+  );
+  }
+
+
+  @override
   void insertVertex(int segmentIndex, Vector3 position) {
     final insertIndex = segmentIndex + 1;
     if (insertIndex >= 0 && insertIndex <= vertices.length) {

@@ -1,5 +1,8 @@
-// REV: 1.2.0
+// REV: 1.2.1
 // CHANGELOG:
+// [1.2.1] - 02 05 2026
+// - ADD: método clear() para resetar o cursor
+//
 // [1.2.0] - 02 05 2026
 // - CHG: Vector2 → Vector3 — preparação para terreno 3D (Ciclo 0)
 //
@@ -21,5 +24,11 @@ class CursorState {
     this.world = world;
     this.snapped = snapped;
     this.snapType = type;
+  }
+
+  void clear() {
+    world = Vector3.zero;
+    snapped = Vector3.zero;
+    snapType = SnapType.none;
   }
 }

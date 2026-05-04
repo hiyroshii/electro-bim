@@ -1,5 +1,11 @@
-// REV: 1.3.0
+// REV: 1.4.0
 // CHANGELOG:
+// [1.4.0] - 02 05 2026
+// - ADD: undoLastPoint() para desfazer último vértice durante o desenho
+// - ADD: getter isActive e pointCount
+// - ADD: cancel() para resetar sem finalizar (Ctrl+Z na polilinha vazia)
+// - FIX: Ctrl+Z durante desenho agora remove vértices sem perder a ferramenta
+//
 // [1.3.0] - 02 05 2026
 // - FIX: scene armazenado como campo para uso em finish()
 // - CHG: acumula vértices em lista interna
@@ -24,13 +30,18 @@ import 'package:canvas_engine/controllers/tools/drawing_tools/drawing_tools_cont
 class DrawPlineController implements DrawingTool {
   final List<Vector3> _vertices = [];
   Vector3? current;
-  Scene? _scene; // ← NOVO: armazena scene do onTap
+  Scene? _scene;
 
   List<Vector3> get vertices => List.unmodifiable(_vertices);
 
   @override
+  bool get isActive => _vertices.isNotEmpty;
+
+  int get pointCount => _vertices.length;
+
+  @override
   void onTap(Vector3 point, Scene scene) {
-    _scene = scene; // ← armazena para finish()
+    _scene = scene;
     _vertices.add(point);
     current = point;
   }
@@ -52,7 +63,23 @@ class DrawPlineController implements DrawingTool {
   void reset() {
     _vertices.clear();
     current = null;
-    _scene = null; // ← limpa referência
+    _scene = null;
+  }
+
+  /// Remove o último vértice inserido. Se sobrar 1 vértice, também o remove.
+  void undoLastPoint() {
+    if (_vertices.isEmpty) return;
+    _vertices.removeLast();
+    if (_vertices.isEmpty) {
+      current = null; // sem vértices, não há preview
+    } else {
+      current = _vertices.last;
+    }
+  }
+
+  /// Cancela completamente a polilinha (reseta estado sem adicionar ao scene).
+  void cancel() {
+    reset();
   }
 
   @override

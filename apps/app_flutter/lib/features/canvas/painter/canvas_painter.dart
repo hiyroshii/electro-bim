@@ -1,10 +1,17 @@
-// REV: 1.7.0
+// REV: 1.9.0
 // CHANGELOG:
+// [1.9.0] - 02 05 2026
+// - REF: extraídos GridPainter, CursorPainter e GripPainter como classes estáticas
+// - CanvasPainter agora apenas orquestra sub‑painters
+//
+// [1.8.0] - 02 05 2026
+// - ADD: desenho de centerGrip (círculo verde) para MOVE
+// - ADD: parâmetro isMovingEntity para highlight durante drag
+//
 // [1.7.0] - 02 05 2026
 // - ADD: desenho de grips (quadrados 8x8) na entidade selecionada
 // - ADD: desenho de ghost grips (quadrados 6x6 tracejados) para Add Vertex
-// - ADD: highlight diferenciado para grip em hover (laranja)
-// - ADD: highlight para grip em drag (verde)
+// - ADD: highlight diferenciado para grip em hover (laranja) e drag (verde)
 // - FIX: cursor de snap só é desenhado no modo draw
 // - ADD: parâmetros hoveredGripIndex, isDraggingGrip
 //
@@ -19,6 +26,9 @@
 import 'package:flutter/material.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
 import '../../../adapters/flutter_render_adapter.dart';
+import 'grid_painter.dart';
+import 'cursor_painter.dart';
+import 'grip_painter.dart';
 
 class CanvasPainter extends CustomPainter {
   final engine.Scene scene;
@@ -29,6 +39,7 @@ class CanvasPainter extends CustomPainter {
   final engine.CanvasMode mode;
   final int? hoveredGripIndex;
   final bool isDraggingGrip;
+  final bool isMovingEntity;
 
   CanvasPainter({
     required this.scene,
@@ -39,6 +50,7 @@ class CanvasPainter extends CustomPainter {
     required this.mode,
     this.hoveredGripIndex,
     this.isDraggingGrip = false,
+    this.isMovingEntity = false,
   });
 
   @override
@@ -46,82 +58,26 @@ class CanvasPainter extends CustomPainter {
     final flutterAdapter = FlutterRenderAdapter(canvas);
     final adapter = engine.ViewportRenderAdapter(flutterAdapter, viewport);
 
-    _drawGrid(canvas, size);
+    GridPainter.paint(canvas, size, viewport);
+
     engine.CanvasEngine(adapter).render(scene);
     tool.drawPreview(adapter);
 
     if (selectedShape != null) {
       _drawSelectionHighlight(canvas, selectedShape!);
-      _drawGrips(canvas, selectedShape!);
-      if (!isDraggingGrip) {
-        _drawGhostGrips(canvas, selectedShape!);
-      }
+      GripPainter.paint(
+        canvas: canvas,
+        viewport: viewport,
+        shape: selectedShape!,
+        hoveredGripIndex: hoveredGripIndex,
+        isDraggingGrip: isDraggingGrip,
+        isMovingEntity: isMovingEntity,
+      );
     }
 
-    _drawCursor(canvas);
+    CursorPainter.paint(canvas, viewport, cursor, mode);
   }
 
-  // -------------------------------------------------------------------------
-  // GRID
-  // -------------------------------------------------------------------------
-  void _drawGrid(Canvas canvas, Size size) {
-    const screenGridSize = 30.0;
-    final worldGridSize = screenGridSize / viewport.scale;
-
-    final topLeft = viewport.screenToWorld(engine.Vector3.zero);
-    final bottomRight = viewport.screenToWorld(
-      engine.Vector3(size.width, size.height, 0),
-    );
-
-    final startX = (topLeft.x / worldGridSize).floor() * worldGridSize;
-    final endX = (bottomRight.x / worldGridSize).ceil() * worldGridSize;
-    final startY = (topLeft.y / worldGridSize).floor() * worldGridSize;
-    final endY = (bottomRight.y / worldGridSize).ceil() * worldGridSize;
-
-    final paint = Paint()
-      ..color = const Color(0xFFE0E0E0)
-      ..strokeWidth = 0.5;
-
-    for (double x = startX; x <= endX; x += worldGridSize) {
-      final s = viewport.worldToScreen(engine.Vector3(x, startY, 0));
-      final e = viewport.worldToScreen(engine.Vector3(x, endY, 0));
-      canvas.drawLine(Offset(s.x, s.y), Offset(e.x, e.y), paint);
-    }
-
-    for (double y = startY; y <= endY; y += worldGridSize) {
-      final s = viewport.worldToScreen(engine.Vector3(startX, y, 0));
-      final e = viewport.worldToScreen(engine.Vector3(endX, y, 0));
-      canvas.drawLine(Offset(s.x, s.y), Offset(e.x, e.y), paint);
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // CURSOR
-  // -------------------------------------------------------------------------
-  void _drawCursor(Canvas canvas) {
-    if (mode != engine.CanvasMode.draw) return;
-
-    final screenPos = viewport.worldToScreen(cursor.snapped);
-
-    final color = switch (cursor.snapType) {
-      engine.SnapType.endpoint => const Color(0xFF2196F3),
-      engine.SnapType.midpoint => const Color(0xFFFFC107),
-      engine.SnapType.nearest => const Color(0xFF4CAF50),
-      engine.SnapType.intersection => const Color(0xFFE91E63),
-      _ => const Color(0xFF9E9E9E),
-    };
-
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    canvas.drawCircle(Offset(screenPos.x, screenPos.y), 5, paint);
-  }
-
-  // -------------------------------------------------------------------------
-  // DESTAQUE DA SELEÇÃO
-  // -------------------------------------------------------------------------
   void _drawSelectionHighlight(Canvas canvas, engine.Shape shape) {
     final paint = Paint()
       ..color = Colors.blue
@@ -130,83 +86,6 @@ class CanvasPainter extends CustomPainter {
 
     final highlightAdapter = _HighlightAdapter(canvas, viewport, paint);
     shape.draw(highlightAdapter);
-  }
-
-  // -------------------------------------------------------------------------
-  // GRIPS
-  // -------------------------------------------------------------------------
-  void _drawGrips(Canvas canvas, engine.Shape shape) {
-    final grips = shape.gripPoints;
-    for (int i = 0; i < grips.length; i++) {
-      final screen = viewport.worldToScreen(grips[i]);
-      final isHovered = hoveredGripIndex == i;
-      final isDragged = isDraggingGrip && isHovered;
-
-      final color = switch ((isDragged, isHovered)) {
-        (true, _) => Colors.green,
-        (false, true) => Colors.orange,
-        _ => Colors.blue,
-      };
-
-      final paint = Paint()..color = color;
-      final borderPaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0;
-
-      const size = 8.0;
-      final rect = Rect.fromCenter(
-        center: Offset(screen.x, screen.y),
-        width: size,
-        height: size,
-      );
-
-      canvas.drawRect(rect, paint);
-      canvas.drawRect(rect, borderPaint);
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // GHOST GRIPS (Add Vertex)
-  // -------------------------------------------------------------------------
-  void _drawGhostGrips(Canvas canvas, engine.Shape shape) {
-    final grips = shape.gripPoints;
-    if (grips.length < 2) return;
-
-    // Ghost grip: indicador visual de "Add Vertex" no midpoint.
-    // FUTURO: ação equivalente disponível via menu de contexto.
-    final paint = Paint()
-      ..color = const Color(0xFF9E9E9E).withOpacity(0.6)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    const size = 6.0;
-
-    for (int i = 0; i < grips.length - 1; i++) {
-      final mid = (grips[i] + grips[i + 1]) * 0.5;
-      final screen = viewport.worldToScreen(mid);
-
-      final rect = Rect.fromCenter(
-        center: Offset(screen.x, screen.y),
-        width: size,
-        height: size,
-      );
-
-      canvas.drawRect(rect, paint);
-
-      // Sinal de "+" no meio
-      final half = size / 2;
-      canvas.drawLine(
-        Offset(screen.x - half, screen.y),
-        Offset(screen.x + half, screen.y),
-        paint,
-      );
-      canvas.drawLine(
-        Offset(screen.x, screen.y - half),
-        Offset(screen.x, screen.y + half),
-        paint,
-      );
-    }
   }
 
   @override

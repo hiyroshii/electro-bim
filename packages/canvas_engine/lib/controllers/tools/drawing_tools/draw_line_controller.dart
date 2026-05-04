@@ -1,17 +1,8 @@
-// REV: 1.3.0
+// REV: 1.3.1
 // CHANGELOG:
-// [1.3.0] - 02 05 2026
-// - CHG: implements DrawingTool (ex-Tool)
-// - CHG: Vector2 → Vector3 — preparação para terreno 3D (Ciclo 0)
-//
-// [1.2.0] - 01 05 2026
-// - ADD: finish() — Escape descarta ponto pendente
-//
-// [1.1.0] - 29 04 2026
-// - ADD: implements Tool, reset(), drawPreview()
-//
-// [1.0.0] - 29 04 2026
-// - ADD: estado start/current, onTap cria linha e encerra, onMove atualiza preview
+// [1.3.1] - 02 05 2026
+// - ADD: getter isActive (retorna start != null)
+// - ADD: método cancel() — reseta a ferramenta sem finalizar a linha
 
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
 import 'package:canvas_engine/engine/scene.dart';
@@ -22,6 +13,9 @@ import 'package:canvas_engine/controllers/tools/drawing_tools/drawing_tools_cont
 class DrawLineController implements DrawingTool {
   Vector3? start;
   Vector3? current;
+
+  @override
+  bool get isActive => start != null;
 
   @override
   void onTap(Vector3 point, Scene scene) {
@@ -49,6 +43,13 @@ class DrawLineController implements DrawingTool {
   void reset() {
     start = null;
     current = null;
+  }
+
+  /// Cancela a linha em andamento (ex.: Ctrl+Z durante o desenho).
+  void cancel() {
+    start = null;
+    current = null;
+    // A ferramenta continua ativa, mas sem ponto inicial
   }
 
   @override

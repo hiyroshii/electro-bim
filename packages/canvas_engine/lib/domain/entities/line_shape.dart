@@ -1,5 +1,8 @@
-// REV: 1.3.0
+// REV: 1.4.0
 // CHANGELOG:
+// [1.4.0] - 02 05 2026
+// - ADD: centerGrip — média de start e end
+//
 // [1.3.0] - 02 05 2026
 // - ADD: gripPoints retorna [start, end]
 // - ADD: moveGrip() atualiza start ou end
@@ -54,6 +57,13 @@ class LineShape extends Shape {
     if (index == 0) start = newPosition;
     if (index == 1) end = newPosition;
   }
+
+  @override
+  Vector3 get centerGrip => Vector3(
+  (start.x + end.x) / 2,
+  (start.y + end.y) / 2,
+  0,
+  );
 
   @override
   void insertVertex(int segmentIndex, Vector3 position) {

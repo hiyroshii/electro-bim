@@ -1,0 +1,60 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "app_flutter",
+            "cwd": "apps\\app_flutter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "app_flutter (profile mode)",
+            "cwd": "apps\\app_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "app_flutter (release mode)",
+            "cwd": "apps\\app_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "canvas_engine",
+            "cwd": "packages\\canvas_engine",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "canvas_engine (profile mode)",
+            "cwd": "packages\\canvas_engine",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "canvas_engine (release mode)",
+            "cwd": "packages\\canvas_engine",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "electrical_engine",
+            "cwd": "packages\\electrical_engine",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "normative_engine",
+            "cwd": "packages\\normative_engine",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

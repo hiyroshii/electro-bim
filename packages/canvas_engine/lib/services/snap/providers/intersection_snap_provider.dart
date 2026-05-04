@@ -1,13 +1,16 @@
-// REV: 1.0.0
+// REV: 1.0.1
 // CHANGELOG:
+// [1.0.1] - 04 05 2026
+// - FIX: ativada coleta de segmentos de PlineShape
+// - interseções entre polilinhas (e entre polilinhas e linhas) voltam a funcionar
+//
 // [1.0.0] - 02 05 2026
 // - ADD: IntersectionSnapProvider — snap em interseções de segmentos
-// - ADD: opera sobre todas as shapes da cena (GlobalSnapProvider)
-// - ADD: usa intersectSegments para cada par de segmentos
 
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
 import 'package:canvas_engine/domain/entities/shape.dart';
 import 'package:canvas_engine/domain/entities/line_shape.dart';
+import 'package:canvas_engine/domain/entities/pline_shape.dart'; // ← adicionado
 import 'package:canvas_engine/services/snap/providers/global_snap_provider.dart';
 import 'package:canvas_engine/services/snap/snap_candidate.dart';
 import 'package:canvas_engine/services/snap/snap_type.dart';
@@ -29,7 +32,9 @@ class IntersectionSnapProvider implements GlobalSnapProvider {
       if (shape is LineShape) {
         segments.add(shape.segment);
       }
-      // futuramente: if (shape is PlineShape) segments.addAll(shape.segments);
+      if (shape is PlineShape) {
+        segments.addAll(shape.segments); // ← ATIVADO
+      }
     }
 
     // calcula interseção entre todos os pares únicos (evita duplicatas)

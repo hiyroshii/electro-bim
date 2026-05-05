@@ -1,33 +1,39 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 04 05 2026
+// - ADD: armazena layerIndex para reinseir no layer correto durante undo
+// - CHG: usa CadDocument em vez de Scene
+//
 // [1.0.1] - 04 05 2026
-// - FIX: uso de scene.remove e scene.insert (evita UnmodifiableListView)
+// - FIX: uso de scene.remove e scene.insert
 //
 // [1.0.0] - 02 05 2026
 // - ADD: RemoveShapeCommand para undo/redo na exclusão de entidades
 
 import 'package:canvas_engine/commands/command.dart';
 import 'package:canvas_engine/domain/entities/shape.dart';
-import 'package:canvas_engine/engine/scene.dart';
+import 'package:canvas_engine/domain/documents/cad_document.dart';
 
 class RemoveShapeCommand implements Command {
-  final Scene scene;
+  final CadDocument document;
   final Shape shape;
-  final int index;
+  final int layerIndex;    // índice do layer onde a shape estava
+  final int shapeIndex;    // índice da shape dentro do layer
 
   RemoveShapeCommand({
-    required this.scene,
+    required this.document,
     required this.shape,
-    required this.index,
+    required this.layerIndex,
+    required this.shapeIndex,
   });
 
   @override
   void execute() {
-    scene.remove(shape);
+    document.remove(shape);
   }
 
   @override
   void undo() {
-    scene.insert(index, shape);
+    document.insert(layerIndex, shapeIndex, shape);
   }
 }

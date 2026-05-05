@@ -1,21 +1,9 @@
-// REV: 1.8.0
+// REV: 1.9.0
 // CHANGELOG:
-// [1.8.0] - 02 05 2026
-// - ADD: export de commands (barrel)
-// - ADD: export de PlineShape
-// - CHG: controllers agora via barrel controllers.dart
-// - CHG: tool.dart renomeado para drawing_tools_contract.dart (via barrel)
-// - ADD: UndoManager no barrel de controllers
+// [1.9.0] - 04 05 2026
+// - ADD: export de layer.dart e cad_document.dart (Ciclo 3)
 //
-// [1.7.0] - 02 05 2026
-// - CHG: Snap providers removidos da API pública
-// - ADD: Snap sub-barrel (services/snap/snap.dart) como entrada única
-//
-// [1.6.0] - 02 05 2026
-// - ADD: export snap_candidate.dart, intersection_snap_provider.dart
-//
-// [1.5.0] - 02 05 2026
-// - CHG: export vector3.dart
+// ... (histórico mantido)
 
 library canvas_engine;
 
@@ -26,6 +14,10 @@ export 'domain/value_objects/vector3.dart';
 export 'domain/entities/shape.dart';
 export 'domain/entities/line_shape.dart';
 export 'domain/entities/pline_shape.dart';
+export 'domain/entities/layer.dart';           // NOVO
+
+// DOMAIN — document
+export 'domain/documents/cad_document.dart';    // NOVO
 
 // DOMAIN — geometry
 export 'domain/geometry/tolerance.dart';

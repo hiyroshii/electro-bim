@@ -1,22 +1,11 @@
-// REV: 3.2.6
+// REV: 3.3.0
 // CHANGELOG:
-// [3.2.6] - 04 05 2026
-// - FIX: coordenadas de tela convertidas para mundo via viewport.screenToWorld
-//        (cursor de snap agora alinhado com o mouse real)
-// - REF: imports unificados via barrel tools/tools.dart
+// [3.3.0] - 04 05 2026
+// - ADD: suporte a CadDocument; usa document.allShapes para snap e document.add/remove
+// - CHG: comandos agora registram layer de origem/índice
+// - CHG: parâmetro scene renomeado para document (mas aceita Scene via CadDocument)
 //
-// [3.2.5] - 04 05 2026
-// - FIX: pan explícito reativado usando PanToolController no modo navigate
-//
-// [3.2.4] - 04 05 2026
-// - FIX: passagem de extraPoints (vértices parciais) para snap durante desenho de polilinha
-// - FIX: undo/redo de criação e remoção agora usam métodos scene.add/remove/insert
-//
-// [3.2.3] - 04 05 2026
-// - FIX: factory construtor garante um único UndoManager compartilhado
-// - FIX: snap aplicado em onPointerDown, onPointerMove e onHover
-//
-// (histórico anterior omitido)
+// ... (histórico anterior mantido)
 
 import 'package:canvas_engine/commands/add_shape_command.dart';
 import 'package:canvas_engine/commands/remove_shape_command.dart';
@@ -24,7 +13,7 @@ import 'package:canvas_engine/controllers/undo_manager.dart';
 import 'package:canvas_engine/controllers/tools/tools.dart';
 import 'package:canvas_engine/domain/entities/shape.dart';
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
-import 'package:canvas_engine/engine/scene.dart';
+import 'package:canvas_engine/domain/documents/cad_document.dart';
 import 'package:canvas_engine/services/snap/snap_service.dart';
 import 'package:canvas_engine/viewport/viewport.dart';
 import 'package:canvas_engine/models/cursor_state.dart';
@@ -32,7 +21,7 @@ import 'package:canvas_engine/models/canvas_mode.dart';
 
 class InputController {
   final Viewport viewport;
-  final Scene scene;
+  final CadDocument document;
   final SnapService snapService;
   final UndoManager undoManager;
 
@@ -51,10 +40,9 @@ class InputController {
 
   Shape? _lastRecordedShape;
 
-  // Construtor privado
   InputController._({
     required this.viewport,
-    required this.scene,
+    required this.document,
     required this.snapService,
     required this.undoManager,
     required DrawingTool tool,
@@ -65,28 +53,27 @@ class InputController {
     this.tool = tool;
   }
 
-  // Factory público que garante UndoManager único
   factory InputController({
     required Viewport viewport,
-    required Scene scene,
+    required CadDocument document,
     required SnapService snapService,
     required DrawingTool tool,
     UndoManager? undoManager,
   }) {
     final effectiveUndo = undoManager ?? UndoManager();
 
-    final selectCtrl = SelectToolController(
-      scene: scene,
+     final selectCtrl = SelectToolController(
+      document: document,   // antes era scene: document
       viewport: viewport,
       snapService: snapService,
-      undoManager: effectiveUndo,
+       undoManager: effectiveUndo,
     );
 
     final panCtrl = PanToolController(viewport: viewport);
 
     return InputController._(
       viewport: viewport,
-      scene: scene,
+      document: document,
       snapService: snapService,
       undoManager: effectiveUndo,
       tool: tool,
@@ -115,7 +102,7 @@ class InputController {
   }
 
   // ---------------------------------------------------------------
-  // Eventos de ponteiro (recebem coordenadas de TELA)
+  // Eventos de ponteiro
   // ---------------------------------------------------------------
 
   List<Vector3>? _getExtraPoints() {
@@ -133,12 +120,12 @@ class InputController {
         final snap = snapService.snap(
           mousePoint: world,
           zoom: viewport.scale,
-          sceneShapes: scene.elements,
+          sceneShapes: document.allShapes, // usa allShapes
           extraPoints: _getExtraPoints(),
         );
         cursor.update(screenPoint, snap.position, snap.type);
         final bool wasActive = tool.isActive;
-        tool.onTap(snap.position, scene);
+        tool.onTap(snap.position, document); // ferramenta adiciona via document.add
         if (wasActive && !tool.isActive) {
           _recordShapeCreation();
         }
@@ -162,7 +149,7 @@ class InputController {
         final snap = snapService.snap(
           mousePoint: world,
           zoom: viewport.scale,
-          sceneShapes: scene.elements,
+          sceneShapes: document.allShapes,
           extraPoints: _getExtraPoints(),
         );
         cursor.update(screenPoint, snap.position, snap.type);
@@ -200,7 +187,7 @@ class InputController {
       final snap = snapService.snap(
         mousePoint: world,
         zoom: viewport.scale,
-        sceneShapes: scene.elements,
+        sceneShapes: document.allShapes,
         extraPoints: _getExtraPoints(),
       );
       cursor.update(screenPoint, snap.position, snap.type);
@@ -242,10 +229,17 @@ class InputController {
     final shape = _selectController.selectedShape;
     if (shape == null) return;
 
-    final index = scene.elements.indexOf(shape);
-    if (index == -1) return;
+    final layer = document.layerOf(shape);
+    if (layer == null) return;
+    final layerIndex = document.layers.toList().indexOf(layer);
+    final shapeIndex = layer.indexOf(shape);
 
-    final command = RemoveShapeCommand(scene: scene, shape: shape, index: index);
+    final command = RemoveShapeCommand(
+      document: document,
+      shape: shape,
+      layerIndex: layerIndex,
+      shapeIndex: shapeIndex,
+    );
     undoManager.execute(command);
     _selectController.clearSelection();
   }
@@ -258,11 +252,17 @@ class InputController {
   // Registro de criação no histórico
   // ---------------------------------------------------------------
   void _recordShapeCreation() {
-    if (scene.elements.isEmpty) return;
-    final newShape = scene.elements.last;
+    // A última shape adicionada está na layer ativa
+    if (document.activeLayer.shapes.isEmpty) return;
+    final newShape = document.activeLayer.shapes.last;
     if (newShape == _lastRecordedShape) return;
 
-    undoManager.execute(AddShapeCommand(scene: scene, shape: newShape));
+    final layerIndex = document.layers.toList().indexOf(document.activeLayer);
+    undoManager.execute(AddShapeCommand(
+      document: document,
+      shape: newShape,
+      layerIndex: layerIndex,
+    ));
     _lastRecordedShape = newShape;
   }
 

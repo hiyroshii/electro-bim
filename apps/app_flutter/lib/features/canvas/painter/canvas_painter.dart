@@ -1,28 +1,9 @@
-// REV: 1.9.0
+// REV: 1.11.0
 // CHANGELOG:
-// [1.9.0] - 02 05 2026
-// - REF: extraídos GridPainter, CursorPainter e GripPainter como classes estáticas
-// - CanvasPainter agora apenas orquestra sub‑painters
-//
-// [1.8.0] - 02 05 2026
-// - ADD: desenho de centerGrip (círculo verde) para MOVE
-// - ADD: parâmetro isMovingEntity para highlight durante drag
-//
-// [1.7.0] - 02 05 2026
-// - ADD: desenho de grips (quadrados 8x8) na entidade selecionada
-// - ADD: desenho de ghost grips (quadrados 6x6 tracejados) para Add Vertex
-// - ADD: highlight diferenciado para grip em hover (laranja) e drag (verde)
-// - FIX: cursor de snap só é desenhado no modo draw
-// - ADD: parâmetros hoveredGripIndex, isDraggingGrip
-//
-// [1.6.0] - 02 05 2026
-// - FIX: cursor de snap fantasma ao sair do modo draw
-// - ADD: parâmetro mode no construtor
-//
-// [1.5.0] - 02 05 2026
-// - ADD: destaque da entidade selecionada (stroke azul, espessura 2.0)
-// - CHG: recebe selectedShape via construtor (nullable)
+// - FIX: _HighlightAdapter agora implementa drawColor (get/set)
+// - ADD: canvasPainter aplica cor do layer (ou da entidade) antes de desenhar
 
+import 'dart:ui' show Color;
 import 'package:flutter/material.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
 import '../../../adapters/flutter_render_adapter.dart';
@@ -31,7 +12,7 @@ import 'cursor_painter.dart';
 import 'grip_painter.dart';
 
 class CanvasPainter extends CustomPainter {
-  final engine.Scene scene;
+  final engine.CadDocument document;
   final engine.Viewport viewport;
   final engine.CursorState cursor;
   final engine.DrawingTool tool;
@@ -42,7 +23,7 @@ class CanvasPainter extends CustomPainter {
   final bool isMovingEntity;
 
   CanvasPainter({
-    required this.scene,
+    required this.document,
     required this.viewport,
     required this.cursor,
     required this.tool,
@@ -60,7 +41,22 @@ class CanvasPainter extends CustomPainter {
 
     GridPainter.paint(canvas, size, viewport);
 
-    engine.CanvasEngine(adapter).render(scene);
+    // Renderiza entidades com suas respectivas cores
+    final layers = document.layers.toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
+    for (final layer in layers) {
+      if (!layer.visible) continue;
+      // Define a cor do layer como padrão para as entidades dessa camada
+      adapter.drawColor = layer.color;
+      for (final shape in layer.shapes) {
+        // Se a entidade tiver cor própria, sobrescreve
+        if (shape.color != null) {
+          adapter.drawColor = shape.color!;
+        }
+        shape.draw(adapter);
+      }
+    }
+
     tool.drawPreview(adapter);
 
     if (selectedShape != null) {
@@ -100,6 +96,10 @@ class _HighlightAdapter implements engine.RenderAdapter {
   _HighlightAdapter(this._canvas, this._viewport, this._paint);
 
   engine.Vector3 _toScreen(engine.Vector3 world) => _viewport.worldToScreen(world);
+
+  // Implementação de drawColor (não utilizada no highlight, mas exigida pela interface)
+  @override
+  Color drawColor = const Color(0xFF000000);
 
   @override
   void drawLine(engine.Vector3 start, engine.Vector3 end) {

@@ -1,5 +1,9 @@
-// REV: 1.0.2
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 04 05 2026
+// - ADD: registro do layer de origem (CadDocument/layer) para undo/redo preciso
+// - CHG: usa CadDocument em vez de Scene
+//
 // [1.0.2] - 04 05 2026
 // - FIX: uso de scene.add e scene.remove (evita UnmodifiableListView)
 //
@@ -11,23 +15,33 @@
 
 import 'package:canvas_engine/commands/command.dart';
 import 'package:canvas_engine/domain/entities/shape.dart';
-import 'package:canvas_engine/engine/scene.dart';
+import 'package:canvas_engine/domain/documents/cad_document.dart';
 
 class AddShapeCommand implements Command {
-  final Scene scene;
+  final CadDocument document;
   final Shape shape;
+  final int layerIndex; // índice do layer onde a shape foi criada
 
-  AddShapeCommand({required this.scene, required this.shape});
+  AddShapeCommand({
+    required this.document,
+    required this.shape,
+    required this.layerIndex,
+  });
 
   @override
   void execute() {
-    if (!scene.elements.contains(shape)) {
-      scene.add(shape);
+    if (!document.contains(shape)) {
+      // reinsere no layer original
+      if (layerIndex >= 0 && layerIndex < document.layers.length) {
+        document.layers[layerIndex].add(shape);
+      } else {
+        document.add(shape); // fallback: layer ativa
+      }
     }
   }
 
   @override
   void undo() {
-    scene.remove(shape);
+    document.remove(shape);
   }
 }

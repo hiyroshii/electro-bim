@@ -17,7 +17,6 @@ export 'domain/geometry/geometry.dart';
 
 // ENGINE
 export 'engine/canvas_engine.dart';
-export 'engine/scene.dart';
 
 // VIEWPORT
 export 'viewport/viewport.dart';

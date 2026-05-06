@@ -1,14 +1,11 @@
-// REV: 1.5.0
+// REV: 1.5.1
 // CHANGELOG:
-// - ADD: propriedade opcional color (int?) para suporte a cores individuais ou herança do layer
+// - ADD: isClosed e ghostGripPoints para suporte a ghost grips em formas fechadas
 
 import 'dart:ui' show Color;
-import 'package:canvas_engine/render/render_adapter.dart';
-import 'package:canvas_engine/domain/value_objects/vector3.dart';
-import 'package:canvas_engine/domain/geometry/tolerance.dart';
+import 'package:canvas_engine/canvas_engine.dart';
 
 abstract class Shape {
-  /// Cor opcional da entidade. Se nulo, a cor do layer será usada.
   Color? get color => null;
 
   void draw(RenderAdapter adapter);
@@ -18,4 +15,10 @@ abstract class Shape {
   void moveGrip(int index, Vector3 newPosition);
   void insertVertex(int segmentIndex, Vector3 position);
   Vector3 get centerGrip;
+
+  /// Indica se a forma é fechada (círculo, retângulo, polilinha fechada).
+  bool get isClosed => false;
+
+  /// Pontos usados para gerar ghost grips (padrão: mesmos de gripPoints).
+  List<Vector3> get ghostGripPoints => gripPoints;
 }

@@ -256,11 +256,16 @@ class SelectToolController {
 
   GhostGrip? _hitTestGhostGrip(Vector3 worldPoint) {
     if (_selectedShape == null) return null;
-    final grips = _selectedShape!.gripPoints;
+    final grips = _selectedShape!.ghostGripPoints;  // usa ghostGripPoints
     if (grips.length < 2) return null;
     final ghostSizeWorld = 6.0 / viewport.scale;
-    for (int i = 0; i < grips.length - 1; i++) {
-      final mid = (grips[i] + grips[i + 1]) * 0.5;
+
+   // Para formas fechadas, inclui o segmento entre o último e o primeiro ponto
+    final int count = _selectedShape!.isClosed ? grips.length : grips.length - 1;
+
+    for (int i = 0; i < count; i++) {
+      final j = (i + 1) % grips.length; // próximo índice, circular se fechado
+      final mid = (grips[i] + grips[j]) * 0.5;
       if ((mid - worldPoint).length < ghostSizeWorld) {
         return GhostGrip(mid, i);
       }

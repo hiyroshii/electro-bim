@@ -9,7 +9,7 @@
 // - Tudo aqui é API pública do Snap System
 // - Providers NÃO são expostos aqui
 
-library snap;
+library;
 
 export 'snap_service.dart';
 export 'snap_candidate.dart';

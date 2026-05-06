@@ -1,27 +1,19 @@
-// REV: 2.9.0
+// REV: 3.0.0
 // CHANGELOG:
-// [2.9.0] - 02 05 2026
-// - ADD: parâmetro extraPoints para snap em vértices parciais (ferramenta em construção)
-// - FIX: Pline em desenho agora snapa nos vértices já colocados
-//
-// [2.8.0] - 02 05 2026
-// - ADD: PlineSnapProvider registrado em createDefault()
-//
-// [2.7.0] - 02 05 2026
-// - ADD: createDefault() factory para uso direto no engine/UI
+// - ADD: RectangleSnapProvider e CircleSnapProvider registrados em createDefault()
 
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
 import 'package:canvas_engine/domain/entities/shape.dart';
 
-import 'package:canvas_engine/services/snap/snap_result.dart';
-import 'package:canvas_engine/services/snap/snap_type.dart';
-import 'package:canvas_engine/services/snap/snap_candidate.dart';
+import 'package:canvas_engine/services/snap/snap.dart';
 
 import 'package:canvas_engine/services/snap/providers/snap_provider.dart';
 import 'package:canvas_engine/services/snap/providers/global_snap_provider.dart';
 
 import 'package:canvas_engine/services/snap/providers/line_snap_provider.dart';
 import 'package:canvas_engine/services/snap/providers/pline_snap_provider.dart';
+import 'package:canvas_engine/services/snap/providers/rectangle_snap_provider.dart';
+import 'package:canvas_engine/services/snap/providers/circle_snap_provider.dart';
 import 'package:canvas_engine/services/snap/providers/intersection_snap_provider.dart';
 
 class SnapService {
@@ -39,6 +31,8 @@ class SnapService {
       shapeProviders: [
         LineSnapProvider(),
         PlineSnapProvider(),
+        RectangleSnapProvider(),
+        CircleSnapProvider(),
       ],
       globalProviders: [
         IntersectionSnapProvider(),
@@ -49,18 +43,14 @@ class SnapService {
   static const double _tolerancePx = 10.0;
 
   int _priority(SnapType type) {
-    switch (type) {
-      case SnapType.endpoint:
-        return 0;
-      case SnapType.midpoint:
-        return 1;
-      case SnapType.intersection:
-        return 2;
-      case SnapType.nearest:
-        return 3;
-      default:
-        return 99;
-    }
+   switch (type) {
+    case SnapType.endpoint:    return 0;
+    case SnapType.center:      return 1; // entre endpoint e midpoint
+    case SnapType.midpoint:    return 2;
+    case SnapType.intersection:return 3;
+    case SnapType.nearest:     return 4;
+    default:                   return 99;
+   }
   }
 
   SnapResult snap({

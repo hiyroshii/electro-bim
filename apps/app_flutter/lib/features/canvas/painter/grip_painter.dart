@@ -1,11 +1,6 @@
-// REV: 1.0.0
+// REV: 1.0.1
 // CHANGELOG:
-// [1.0.0] - 02 05 2026
-// - ADD: GripPainter.paint() unificando _drawCenterGrip, _drawVertexGrips e _drawGhostGrips
-// - Extraído de CanvasPainter (REV 1.8.0)
-// - Center grip: círculo verde (lightGreen durante move)
-// - Vertex grips: quadrados 8x8 azuis (laranja hover, verde drag)
-// - Ghost grips: quadrados 6x6 tracejados com "+" para Add Vertex
+// - FIX: ghost grips usam ghostGripPoints e isClosed, evitando interior de formas fechadas
 
 import 'package:flutter/material.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
@@ -98,7 +93,7 @@ class GripPainter {
     engine.Viewport viewport,
     engine.Shape shape,
   ) {
-    final grips = shape.gripPoints;
+    final grips = shape.ghostGripPoints;
     if (grips.length < 2) return;
 
     final paint = Paint()
@@ -108,8 +103,12 @@ class GripPainter {
 
     const size = 6.0;
 
-    for (int i = 0; i < grips.length - 1; i++) {
-      final mid = (grips[i] + grips[i + 1]) * 0.5;
+    // Para formas fechadas, inclui o segmento entre o último e o primeiro ponto
+    final int count = shape.isClosed ? grips.length : grips.length - 1;
+
+    for (int i = 0; i < count; i++) {
+      final j = (i + 1) % grips.length; // próximo índice, circular se fechado
+      final mid = (grips[i] + grips[j]) * 0.5;
       final screen = viewport.worldToScreen(mid);
 
       final rect = Rect.fromCenter(

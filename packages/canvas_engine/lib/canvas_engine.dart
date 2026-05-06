@@ -1,7 +1,7 @@
 // REV: 1.10.1
 // CHANGELOG:
 // - REF: exports unificados através dos novos sub-barrels entities e geometry
-library canvas_engine;
+library;
 
 // DOMAIN — value objects
 export 'domain/value_objects/vector3.dart';

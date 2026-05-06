@@ -14,6 +14,6 @@ void main() {
     );
 
     expect(result.type, SnapType.none);
-    expect(result.point, const Vector3(0, 0));
+    expect(result.position, const Vector3(0, 0));
   });
 }

@@ -19,11 +19,12 @@ class CursorPainter {
     final screenPos = viewport.worldToScreen(cursor.snapped);
 
     final color = switch (cursor.snapType) {
-      engine.SnapType.endpoint => const Color(0xFF2196F3),
-      engine.SnapType.midpoint => const Color(0xFFFFC107),
-      engine.SnapType.nearest => const Color(0xFF4CAF50),
+      engine.SnapType.endpoint   => const Color(0xFF2196F3),
+      engine.SnapType.midpoint   => const Color(0xFFFFC107),
+      engine.SnapType.nearest    => const Color(0xFF4CAF50),
       engine.SnapType.intersection => const Color(0xFFE91E63),
-      _ => const Color(0xFF9E9E9E),
+      engine.SnapType.center     => const Color.fromARGB(255, 119, 0, 255),
+      _                          => const Color(0xFF9E9E9E),
     };
 
     final paint = Paint()

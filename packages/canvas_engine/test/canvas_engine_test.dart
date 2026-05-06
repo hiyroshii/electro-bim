@@ -8,6 +8,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:canvas_engine/domain/documents/cad_document.dart';
+import 'package:canvas_engine/domain/entities/layer.dart';
 import 'package:canvas_engine/domain/entities/line_shape.dart';
 import 'package:canvas_engine/domain/entities/circle_shape.dart';
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
@@ -85,18 +86,15 @@ void main() {
       expect(document.allVisibleShapes, isEmpty);
     });
 
-    test('múltiplas layers — allShapes agrega shapes visíveis e desbloqueadas', () {
+    test('múltiplas layers — allShapes agrega shapes de layers distintas', () {
       final shapeA = LineShape(const Vector3(0, 0), const Vector3(10, 0));
       final shapeB = LineShape(const Vector3(20, 0), const Vector3(30, 0));
 
       document.add(shapeA);
 
-      final layerB = document.layers.first; // reutiliza layer default
-      final newLayer = document.layers.first; // para este teste usamos addLayer
-      document.addLayer(
-        newLayer..locked, // apenas verifica que addLayer funciona via outro caminho
-      );
-      // Adiciona shapeB na layer ativa
+      final layerB = Layer(name: '1');
+      document.addLayer(layerB);
+      document.setActiveLayer(layerB);
       document.add(shapeB);
 
       expect(document.allShapes, containsAll([shapeA, shapeB]));

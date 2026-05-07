@@ -10,11 +10,11 @@
 // - ADD: interface Tool com onTap, onMove, reset, drawPreview
 
 import 'package:canvas_engine/domain/value_objects/vector3.dart';
-import 'package:canvas_engine/engine/scene.dart';
+import 'package:canvas_engine/domain/documents/cad_document.dart';
 import 'package:canvas_engine/render/render_adapter.dart';
 
 abstract class Tool {
-  void onTap(Vector3 point, Scene scene);
+  void onTap(Vector3 point, CadDocument document);
   void onMove(Vector3 point);
   void finish();
   void reset();

@@ -1,19 +1,7 @@
-// REV: 1.0.3
+// REV: 1.1.0
 // CHANGELOG:
-// [1.0.3] - 04 05 2026
-// - ADD: undo durante desenho de polilinha/linha (Ctrl+Z quando ferramenta ativa)
-// - ADD: Delete para excluir entidade selecionada
-// - CHG: Ctrl+Z no modo draw cancela último segmento ou reseta linha
-//
-// [1.0.2] - 02 05 2026
-// - ADD: atalho Delete (LogicalKeyboardKey.delete) para excluir entidade selecionada
-//
-// [1.0.1] - 02 05 2026
-// - REM: setas removidas (tratadas diretamente no CanvasView para nudge contínuo)
-//
-// [1.0.0] - 02 05 2026
-// - ADD: função handleKeyEvent centralizando atalhos de teclado
-// - undo/redo (Ctrl+Z / Ctrl+Y), Escape, V (select), N (pan)
+// - ADD: atalhos R (Rectangle) e C (Circle)
+// - CHG: assinatura da função expandida com setToolRectangle e setToolCircle
 
 import 'package:flutter/services.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
@@ -24,6 +12,8 @@ bool handleKeyEvent(
   void Function() repaint,
   void Function() setToolSelect,
   void Function() setToolPan,
+  void Function() setToolRectangle,
+  void Function() setToolCircle,
 ) {
   if (event is! KeyDownEvent) return false;
 
@@ -34,9 +24,9 @@ bool handleKeyEvent(
   // Undo / Redo
   if (key == LogicalKeyboardKey.keyZ && ctrl) {
     if (input.mode == engine.CanvasMode.draw && input.tool.isActive) {
-      input.undoDrawing();           // desfaz último ponto/cancela linha
+      input.undoDrawing();
     } else {
-      input.undoManager.undo();      // undo normal
+      input.undoManager.undo();
     }
     repaint();
     return true;
@@ -66,6 +56,14 @@ bool handleKeyEvent(
   }
   if (key == LogicalKeyboardKey.keyN) {
     setToolPan();
+    return true;
+  }
+  if (key == LogicalKeyboardKey.keyR) {
+    setToolRectangle();
+    return true;
+  }
+  if (key == LogicalKeyboardKey.keyC) {
+    setToolCircle();
     return true;
   }
 

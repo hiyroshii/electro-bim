@@ -26,6 +26,9 @@ enum SnapType {
   /// Snap ancorado no cruzamento de duas ou mais entidades.
   intersection,
 
+  /// Snap ancorado no centro de uma entidade.
+  center,
+
   /// Snap ancorado na grade de referência.
   grid,
 }

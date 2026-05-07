@@ -1,5 +1,10 @@
-// REV: 1.3.1
+// REV: 1.5.0
 // CHANGELOG:
+// [1.5.0] - 06 05 2026
+// - FIX: projection reescrito para API real (Projection.pointToSegment)
+// - FIX: const adicionado em construtores de Segment
+// [1.4.0] - 06 05 2026
+// - FIX: migração Vector2 → Vector3 (vector2.dart removido do pacote)
 // [1.3.1] - 02 05 2026
 // - FIX: remoção total de dependência indireta de SnapService
 // - CHG: testes 100% isolados de geometria pura (CAD-core)
@@ -7,7 +12,7 @@
 
 import 'package:test/test.dart';
 
-import 'package:canvas_engine/domain/value_objects/vector2.dart';
+import 'package:canvas_engine/domain/value_objects/vector3.dart';
 import 'package:canvas_engine/domain/geometry/tolerance.dart';
 import 'package:canvas_engine/domain/geometry/primitives/segment.dart';
 import 'package:canvas_engine/domain/geometry/primitives/aabb.dart';
@@ -17,45 +22,45 @@ import 'package:canvas_engine/domain/geometry/operations/projection.dart';
 
 void main() {
   // =========================
-  // VECTOR2
+  // VECTOR3
   // =========================
-  group('Vector2', () {
+  group('Vector3', () {
     test('aritmética básica', () {
-      const a = Vector2(1, 2);
-      const b = Vector2(3, 4);
+      const a = Vector3(1, 2);
+      const b = Vector3(3, 4);
 
-      expect(a + b, equals(const Vector2(4, 6)));
-      expect(b - a, equals(const Vector2(2, 2)));
-      expect(a * 2, equals(const Vector2(2, 4)));
-      expect(b / 2, equals(const Vector2(1.5, 2)));
+      expect(a + b, equals(const Vector3(4, 6)));
+      expect(b - a, equals(const Vector3(2, 2)));
+      expect(a * 2, equals(const Vector3(2, 4)));
+      expect(b / 2, equals(const Vector3(1.5, 2)));
     });
 
     test('dot product', () {
-      const a = Vector2(1, 0);
-      const b = Vector2(0, 1);
+      const a = Vector3(1, 0);
+      const b = Vector3(0, 1);
 
       expect(a.dot(b), equals(0.0));
       expect(a.dot(a), equals(1.0));
     });
 
     test('cross product', () {
-      const a = Vector2(1, 0);
-      const b = Vector2(0, 1);
+      const a = Vector3(1, 0);
+      const b = Vector3(0, 1);
 
       expect(a.cross(b), equals(1.0));
       expect(b.cross(a), equals(-1.0));
     });
 
     test('length e normalize', () {
-      expect(const Vector2(3, 4).length, closeTo(5.0, 1e-10));
+      expect(const Vector3(3, 4).length, closeTo(5.0, 1e-10));
 
-      final n = const Vector2(3, 0).normalize();
+      final n = const Vector3(3, 0).normalize();
       expect(n.x, closeTo(1.0, 1e-10));
     });
 
     test('equalsApprox', () {
-      const a = Vector2(1.0, 2.0);
-      const b = Vector2(1.0 + 1e-7, 2.0);
+      const a = Vector3(1.0, 2.0);
+      const b = Vector3(1.0 + 1e-7, 2.0);
 
       expect(a.equalsApprox(b), isTrue);
     });
@@ -66,18 +71,18 @@ void main() {
   // =========================
   group('Segment', () {
     test('midpoint', () {
-      final s = Segment(const Vector2(0, 0), const Vector2(4, 0));
-      expect(s.midpoint, equals(const Vector2(2, 0)));
+      const s = Segment(Vector3(0, 0), Vector3(4, 0));
+      expect(s.midpoint, equals(const Vector3(2, 0)));
     });
 
     test('degenerate segment', () {
-      final s = Segment(const Vector2(1, 1), const Vector2(1, 1));
+      const s = Segment(Vector3(1, 1), Vector3(1, 1));
       expect(s.isDegenerate, isTrue);
     });
 
     test('non-directional equality', () {
-      final a = Segment(const Vector2(0, 0), const Vector2(1, 1));
-      final b = Segment(const Vector2(1, 1), const Vector2(0, 0));
+      const a = Segment(Vector3(0, 0), Vector3(1, 1));
+      const b = Segment(Vector3(1, 1), Vector3(0, 0));
 
       expect(a, equals(b));
     });
@@ -90,8 +95,8 @@ void main() {
     test('contains', () {
       const box = AABB(0, 0, 10, 10);
 
-      expect(box.contains(const Vector2(5, 5)), isTrue);
-      expect(box.contains(const Vector2(11, 5)), isFalse);
+      expect(box.contains(const Vector3(5, 5)), isTrue);
+      expect(box.contains(const Vector3(11, 5)), isFalse);
     });
 
     test('intersects', () {
@@ -108,25 +113,25 @@ void main() {
   group('distance', () {
     test('point to point', () {
       expect(
-        distancePointToPoint(const Vector2(0, 0), const Vector2(3, 4)),
+        distancePointToPoint(const Vector3(0, 0), const Vector3(3, 4)),
         closeTo(5.0, 1e-10),
       );
     });
 
     test('point to segment', () {
-      final s = Segment(const Vector2(0, 0), const Vector2(4, 0));
+      const s = Segment(Vector3(0, 0), Vector3(4, 0));
 
       expect(
-        distancePointToSegment(const Vector2(2, 3), s),
+        distancePointToSegment(const Vector3(2, 3), s),
         closeTo(3.0, 1e-10),
       );
     });
 
     test('degenerate segment safe', () {
-      final s = Segment(const Vector2(2, 2), const Vector2(2, 2));
+      const s = Segment(Vector3(2, 2), Vector3(2, 2));
 
       expect(
-        () => distancePointToSegment(const Vector2(5, 5), s),
+        () => distancePointToSegment(const Vector3(5, 5), s),
         returnsNormally,
       );
     });
@@ -137,8 +142,8 @@ void main() {
   // =========================
   group('intersection', () {
     test('crossing segments', () {
-      final a = Segment(const Vector2(0, 0), const Vector2(4, 4));
-      final b = Segment(const Vector2(0, 4), const Vector2(4, 0));
+      const a = Segment(Vector3(0, 0), Vector3(4, 4));
+      const b = Segment(Vector3(0, 4), Vector3(4, 0));
 
       final r = intersectSegments(a, b);
 
@@ -147,22 +152,22 @@ void main() {
     });
 
     test('parallel segments', () {
-      final a = Segment(const Vector2(0, 0), const Vector2(4, 0));
-      final b = Segment(const Vector2(0, 1), const Vector2(4, 1));
+      const a = Segment(Vector3(0, 0), Vector3(4, 0));
+      const b = Segment(Vector3(0, 1), Vector3(4, 1));
 
       expect(intersectSegments(a, b).type, IntersectionType.parallel);
     });
 
     test('collinear segments', () {
-      final a = Segment(const Vector2(0, 0), const Vector2(4, 0));
-      final b = Segment(const Vector2(2, 0), const Vector2(6, 0));
+      const a = Segment(Vector3(0, 0), Vector3(4, 0));
+      const b = Segment(Vector3(2, 0), Vector3(6, 0));
 
       expect(intersectSegments(a, b).type, IntersectionType.collinear);
     });
 
     test('no intersection', () {
-      final a = Segment(const Vector2(0, 0), const Vector2(1, 0));
-      final b = Segment(const Vector2(3, 1), const Vector2(3, -1));
+      const a = Segment(Vector3(0, 0), Vector3(1, 0));
+      const b = Segment(Vector3(3, 1), Vector3(3, -1));
 
       expect(intersectSegments(a, b).type, IntersectionType.none);
     });
@@ -172,29 +177,44 @@ void main() {
   // PROJECTION
   // =========================
   group('projection', () {
-    test('segment projection', () {
-      final s = Segment(const Vector2(0, 0), const Vector2(4, 0));
+    test('ponto projetado dentro do segmento', () {
+      final r = Projection.pointToSegment(
+        const Vector3(2, 3),
+        const Vector3(0, 0),
+        const Vector3(4, 0),
+      );
 
-      final r = projectPointOntoSegment(const Vector2(2, 3), s);
-
-      expect(r.point, equals(const Vector2(2, 0)));
-      expect(r.isWithinSegment, isTrue);
+      expect(r, equals(const Vector3(2, 0)));
     });
 
-    test('clamp behavior', () {
-      final s = Segment(const Vector2(0, 0), const Vector2(4, 0));
+    test('clamp — ponto além do fim do segmento', () {
+      final r = Projection.pointToSegment(
+        const Vector3(10, 3),
+        const Vector3(0, 0),
+        const Vector3(4, 0),
+      );
 
-      final r = projectPointOntoSegment(const Vector2(10, 3), s);
-
-      expect(r.point, equals(const Vector2(4, 0)));
+      expect(r, equals(const Vector3(4, 0)));
     });
 
-    test('line projection', () {
-      final s = Segment(const Vector2(0, 0), const Vector2(4, 0));
+    test('clamp — ponto antes do início do segmento', () {
+      final r = Projection.pointToSegment(
+        const Vector3(-2, 3),
+        const Vector3(0, 0),
+        const Vector3(4, 0),
+      );
 
-      final r = projectPointOntoLine(const Vector2(10, 5), s);
+      expect(r, equals(const Vector3(0, 0)));
+    });
 
-      expect(r.isWithinSegment, isFalse);
+    test('segmento degenerado retorna ponto de origem', () {
+      final r = Projection.pointToSegment(
+        const Vector3(5, 5),
+        const Vector3(2, 2),
+        const Vector3(2, 2),
+      );
+
+      expect(r, equals(const Vector3(2, 2)));
     });
   });
 

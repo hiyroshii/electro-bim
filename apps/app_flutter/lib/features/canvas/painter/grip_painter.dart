@@ -1,6 +1,12 @@
-// REV: 1.0.1
+// REV: 1.0.2
 // CHANGELOG:
-// - FIX: ghost grips usam ghostGripPoints e isClosed, evitando interior de formas fechadas
+// [1.0.2] - 01 05 2026
+// - ADD: gripColor — cor base dos grips de vértice (default Colors.blue)
+//        permite diferenciar grips de shapes primárias vs secundárias
+//        chamadores existentes sem o parâmetro continuam funcionando
+//
+// [1.0.1] - anterior
+// - FIX: ghost grips usam ghostGripPoints e isClosed
 
 import 'package:flutter/material.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
@@ -13,9 +19,17 @@ class GripPainter {
     int? hoveredGripIndex,
     bool isDraggingGrip = false,
     bool isMovingEntity = false,
+    Color gripColor = Colors.blue, // ← novo, default mantém comportamento atual
   }) {
     _drawCenterGrip(canvas, viewport, shape, isMovingEntity);
-    _drawVertexGrips(canvas, viewport, shape, hoveredGripIndex, isDraggingGrip);
+    _drawVertexGrips(
+      canvas,
+      viewport,
+      shape,
+      hoveredGripIndex,
+      isDraggingGrip,
+      gripColor,
+    );
     if (!isDraggingGrip) {
       _drawGhostGrips(canvas, viewport, shape);
     }
@@ -57,6 +71,7 @@ class GripPainter {
     engine.Shape shape,
     int? hoveredGripIndex,
     bool isDraggingGrip,
+    Color gripColor, // ← recebido do paint()
   ) {
     final grips = shape.gripPoints;
     for (int i = 0; i < grips.length; i++) {
@@ -65,9 +80,9 @@ class GripPainter {
       final isDragged = isDraggingGrip && isHovered;
 
       final color = switch ((isDragged, isHovered)) {
-        (true, _) => Colors.green,
-        (false, true) => Colors.orange,
-        _ => Colors.blue,
+        (true, _) => Colors.green,   // arrastando: verde
+        (false, true) => Colors.orange, // hover: laranja
+        _ => gripColor,              // padrão: cor do chamador
       };
 
       final paint = Paint()..color = color;
@@ -97,17 +112,16 @@ class GripPainter {
     if (grips.length < 2) return;
 
     final paint = Paint()
-      ..color = const Color(0xFF9E9E9E).withOpacity(0.6)
+      ..color = const Color(0xFF9E9E9E).withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
     const size = 6.0;
 
-    // Para formas fechadas, inclui o segmento entre o último e o primeiro ponto
     final int count = shape.isClosed ? grips.length : grips.length - 1;
 
     for (int i = 0; i < count; i++) {
-      final j = (i + 1) % grips.length; // próximo índice, circular se fechado
+      final j = (i + 1) % grips.length;
       final mid = (grips[i] + grips[j]) * 0.5;
       final screen = viewport.worldToScreen(mid);
 

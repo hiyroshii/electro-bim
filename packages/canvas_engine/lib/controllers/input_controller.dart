@@ -1,7 +1,12 @@
-// REV: 4.0.1
+// REV: 4.2.0
 // CHANGELOG:
-// - FIX: adicionado getter selectController para compatibilidade com CanvasView
-// - FIX: parâmetro tool marcado como required
+// [4.2.0] - 01 05 2026
+// - ADD: parâmetro shift em onPointerDown — propagado ao SelectToolController
+//        permite ativar lasso (Shift + drag no vazio)
+//
+// [4.1.0] - anterior
+// - ADD: parâmetro ctrl em onPointerDown para seleção múltipla
+// - CHG: deleteSelected usa select.deleteSelectedShapes()
 
 import 'package:canvas_engine/canvas_engine.dart';
 import 'package:canvas_engine/controllers/drawing_controller.dart';
@@ -21,8 +26,8 @@ class InputController {
   final PanToolController pan;
 
   Shape? get selectedShape => select.selectedShape;
+  List<Shape> get selectedShapes => select.selectedShapes;
 
-  // Getter de compatibilidade com código legado (CanvasView)
   SelectToolController get selectController => select;
 
   InputController._({
@@ -78,36 +83,36 @@ class InputController {
 
   DrawingTool get tool => drawing.tool;
 
-  void setTool(DrawingTool newTool) {
-    drawing.setTool(newTool);
-  }
+  void setTool(DrawingTool newTool) => drawing.setTool(newTool);
 
   void setMode(CanvasMode newMode) {
     if (newMode == _mode) return;
-    if (_mode == CanvasMode.draw) {
-      drawing.finishTool();
-    }
-    if (_mode == CanvasMode.navigate) {
-      pan.reset();
-    }
+    if (_mode == CanvasMode.draw) drawing.finishTool();
+    if (_mode == CanvasMode.navigate) pan.reset();
     _mode = newMode;
-    if (newMode != CanvasMode.select) {
-      select.clearSelection();
-    }
+    if (newMode != CanvasMode.select) select.clearSelection();
   }
 
+  // ---------------------------------------------------------------
   // Roteamento de eventos
-  void onPointerDown(Vector3 screenPoint) {
+  // ---------------------------------------------------------------
+
+  void onPointerDown(
+    Vector3 screenPoint, {
+    bool ctrl = false,
+    bool shift = false,   // ← novo: lasso no select
+  }) {
     switch (_mode) {
       case CanvasMode.draw:
         drawing.onPointerDown(screenPoint);
-        break;
       case CanvasMode.select:
-        select.onPointerDown(viewport.screenToWorld(screenPoint));
-        break;
+        select.onPointerDown(
+          viewport.screenToWorld(screenPoint),
+          ctrl: ctrl,
+          shift: shift,
+        );
       case CanvasMode.navigate:
         pan.onPointerDown(screenPoint);
-        break;
     }
   }
 
@@ -115,13 +120,10 @@ class InputController {
     switch (_mode) {
       case CanvasMode.draw:
         drawing.onPointerMove(screenPoint);
-        break;
       case CanvasMode.select:
         select.onPointerMove(viewport.screenToWorld(screenPoint));
-        break;
       case CanvasMode.navigate:
         pan.onPointerMove(screenDelta);
-        break;
     }
   }
 
@@ -131,43 +133,24 @@ class InputController {
         break;
       case CanvasMode.select:
         select.onPointerUp(viewport.screenToWorld(screenPoint));
-        break;
       case CanvasMode.navigate:
         pan.onPointerUp(screenPoint);
-        break;
     }
   }
 
   void onHover(Vector3 screenPoint) {
-    if (_mode == CanvasMode.draw) {
-      drawing.onHover(screenPoint);
-    }
+    if (_mode == CanvasMode.draw) drawing.onHover(screenPoint);
   }
 
-  void onZoom(double factor, Vector3 screenFocal) {
-    viewport.zoom(factor, screenFocal);
-  }
+  void onZoom(double factor, Vector3 screenFocal) =>
+      viewport.zoom(factor, screenFocal);
+
+  // ---------------------------------------------------------------
+  // Ações globais
+  // ---------------------------------------------------------------
 
   void finishTool() => drawing.finishTool();
   void undoDrawing() => drawing.undoDrawing();
-
-  void deleteSelected() {
-    final shape = select.selectedShape;
-    if (shape == null) return;
-
-    final layer = document.layerOf(shape);
-    if (layer == null) return;
-    final layerIndex = document.layers.toList().indexOf(layer);
-    final shapeIndex = layer.indexOf(shape);
-
-    undoManager.execute(RemoveShapeCommand(
-      document: document,
-      shape: shape,
-      layerIndex: layerIndex,
-      shapeIndex: shapeIndex,
-    ));
-    select.clearSelection();
-  }
-
+  void deleteSelected() => select.deleteSelectedShapes();
   void clearSelection() => select.clearSelection();
 }

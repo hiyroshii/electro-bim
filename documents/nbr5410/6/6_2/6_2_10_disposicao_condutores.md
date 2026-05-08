@@ -24,9 +24,11 @@ Admite-se mais de um circuito em eletrodutos / condutos fechados se:
 
 Fases, neutro e PE do mesmo circuito devem percorrer o trajeto **sempre juntos** (proximidade imediata), garantindo equilíbrio das impedâncias.
 
-## 6.2.10.4 — Vedação à Indução em Condutos Metálicos
+## 6.2.10.4 — Condutos Metálicos
 
-Em **condutos metálicos**, condutores vivos de um mesmo circuito não podem ser separados em dutos diferentes. A separação cria laços magnéticos que geram correntes parasitas no conduto, causando aquecimento.
+Em **condutos metálicos**, todos os condutores vivos de um mesmo circuito devem estar contidos em um mesmo conduto.
+
+> **Nota:** A separação de condutores de um mesmo circuito em condutos metálicos diferentes cria laços de indução que podem gerar correntes parasitas e aquecimento no conduto.
 
 ---
 *Referência: ABNT NBR 5410:2004 — Seção 6.2.10*

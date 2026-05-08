@@ -9,7 +9,6 @@
 // - CHG: deleteSelected usa select.deleteSelectedShapes()
 
 import 'package:canvas_engine/canvas_engine.dart';
-import 'package:canvas_engine/controllers/drawing_controller.dart';
 
 class InputController {
   final Viewport viewport;

@@ -1,5 +1,7 @@
-// REV: 3.3.0
+// REV: 3.3.1
 // CHANGELOG:
+// [3.3.1] - 07 05 2026
+// - FIX: curly_braces_in_flow_control_structures (adicionadas chaves em todas as estruturas de controle)
 // [3.3.0] - 01 05 2026
 // - ADD: seleção por lasso (Shift + drag no vazio)
 //        selectByLasso() com ray casting (_pointInPolygon)
@@ -83,7 +85,9 @@ class SelectToolController {
   // ---------------------------------------------------------------
 
   void addToSelection(Shape shape) {
-    if (!_selectedShapes.contains(shape)) _selectedShapes.add(shape);
+    if (!_selectedShapes.contains(shape)) {
+      _selectedShapes.add(shape);
+    }
     hoveredGripShape = null;
     hoveredGripIndex = null;
     draggedGripShape = null;
@@ -140,7 +144,9 @@ class SelectToolController {
     final List<Shape> newSelection = [];
     for (final shape in document.allShapes) {
       final bounds = _getShapeBounds(shape);
-      if (bounds == null) continue;
+      if (bounds == null) {
+        continue;
+      }
       if (crossing) {
         if (_rectIntersects(minX, minY, maxX, maxY, bounds)) {
           newSelection.add(shape);
@@ -153,11 +159,15 @@ class SelectToolController {
     }
 
     if (add) {
-      for (final shape in newSelection) addToSelection(shape);
+      for (final shape in newSelection) {
+        addToSelection(shape);
+      }
     } else {
       _selectedShapes.clear();
       _selectedShapes.addAll(newSelection);
-      if (_selectedShapes.isEmpty) _clearInteractionState();
+      if (_selectedShapes.isEmpty) {
+        _clearInteractionState();
+      }
     }
   }
 
@@ -168,22 +178,30 @@ class SelectToolController {
   /// Seleciona shapes cujos gripPoints estão todos dentro do polígono.
   /// Modo window: shape inteira precisa estar dentro do lasso.
   void selectByLasso(List<Vector3> polygon, {bool add = false}) {
-    if (polygon.length < 3) return;
+    if (polygon.length < 3) {
+      return;
+    }
 
     final List<Shape> newSelection = [];
     for (final shape in document.allShapes) {
-      if (shape.gripPoints.isEmpty) continue;
+      if (shape.gripPoints.isEmpty) {
+        continue;
+      }
       if (shape.gripPoints.every((p) => _pointInPolygon(p, polygon))) {
         newSelection.add(shape);
       }
     }
 
     if (add) {
-      for (final shape in newSelection) addToSelection(shape);
+      for (final shape in newSelection) {
+        addToSelection(shape);
+      }
     } else {
       _selectedShapes.clear();
       _selectedShapes.addAll(newSelection);
-      if (_selectedShapes.isEmpty) _clearInteractionState();
+      if (_selectedShapes.isEmpty) {
+        _clearInteractionState();
+      }
     }
   }
 
@@ -192,7 +210,9 @@ class SelectToolController {
   // ---------------------------------------------------------------
 
   void onPointerDown(Vector3 worldPoint, {bool ctrl = false, bool shift = false}) {
-    if (isSelectingWindow || isSelectingLasso) return;
+    if (isSelectingWindow || isSelectingLasso) {
+      return;
+    }
 
     // ── PRIORIDADE 1: grips das shapes selecionadas ──────────────
     // Testados ANTES de qualquer shape — impede que o clique num grip
@@ -249,7 +269,9 @@ class SelectToolController {
       }
     } else {
       // ── PRIORIDADE 3: vazio → janela ou lasso ────────────────────
-      if (ctrl) return;
+      if (ctrl) {
+        return;
+      }
       clearSelection();
 
       if (shift) {
@@ -299,7 +321,9 @@ class SelectToolController {
       _moveDelta = snap.position - _moveClickStart!;
       for (final shape in _selectedShapes) {
         final startGrips = _moveStartGripsMap![shape];
-        if (startGrips == null) continue;
+        if (startGrips == null) {
+          continue;
+        }
         for (int i = 0; i < startGrips.length; i++) {
           shape.moveGrip(i, Vector3(
             startGrips[i].x + _moveDelta!.x,
@@ -406,7 +430,9 @@ class SelectToolController {
 
   void nudge(double dxScreen, double dyScreen) {
     final shape = selectedShape;
-    if (shape == null) return;
+    if (shape == null) {
+      return;
+    }
     undoManager.execute(MoveEntityCommand(
       shape: shape,
       delta: Vector3(dxScreen / viewport.scale, dyScreen / viewport.scale, 0),
@@ -420,7 +446,9 @@ class SelectToolController {
   void deleteSelectedShapes() {
     for (final shape in List<Shape>.from(_selectedShapes)) {
       final layer = document.layerOf(shape);
-      if (layer == null) continue;
+      if (layer == null) {
+        continue;
+      }
       final layerIndex = document.layers.toList().indexOf(layer);
       final shapeIndex = layer.indexOf(shape);
       undoManager.execute(RemoveShapeCommand(
@@ -451,7 +479,9 @@ class SelectToolController {
   /// Busca grip em TODAS as shapes selecionadas.
   /// Primária tem prioridade (testada primeiro).
   (Shape, int)? _hitTestGripAcrossSelection(Vector3 worldPoint) {
-    if (_selectedShapes.isEmpty) return null;
+    if (_selectedShapes.isEmpty) {
+      return null;
+    }
     final gripSizeWorld = 8.0 / viewport.scale;
 
     // Primária primeiro
@@ -474,15 +504,21 @@ class SelectToolController {
   }
 
   bool _hitTestCenterGrip(Vector3 worldPoint) {
-    if (selectedShape == null) return false;
+    if (selectedShape == null) {
+      return false;
+    }
     return (selectedShape!.centerGrip - worldPoint).length <
         10.0 / viewport.scale;
   }
 
   GhostGrip? _hitTestGhostGrip(Vector3 worldPoint) {
-    if (selectedShape == null) return null;
+    if (selectedShape == null) {
+      return null;
+    }
     final grips = selectedShape!.ghostGripPoints;
-    if (grips.length < 2) return null;
+    if (grips.length < 2) {
+      return null;
+    }
     final ghostSizeWorld = 6.0 / viewport.scale;
     final int count =
         selectedShape!.isClosed ? grips.length : grips.length - 1;
@@ -502,7 +538,9 @@ class SelectToolController {
 
   /// Ray casting — retorna true se [point] está dentro do [polygon].
   bool _pointInPolygon(Vector3 point, List<Vector3> polygon) {
-    if (polygon.length < 3) return false;
+    if (polygon.length < 3) {
+      return false;
+    }
     bool inside = false;
     int j = polygon.length - 1;
     for (int i = 0; i < polygon.length; i++) {
@@ -560,14 +598,24 @@ class SelectToolController {
   }
 
   Map<String, double>? _getShapeBounds(Shape shape) {
-    if (shape.gripPoints.isEmpty) return null;
+    if (shape.gripPoints.isEmpty) {
+      return null;
+    }
     double minX = double.infinity, minY = double.infinity;
     double maxX = double.negativeInfinity, maxY = double.negativeInfinity;
     for (final p in shape.gripPoints) {
-      if (p.x < minX) minX = p.x;
-      if (p.x > maxX) maxX = p.x;
-      if (p.y < minY) minY = p.y;
-      if (p.y > maxY) maxY = p.y;
+      if (p.x < minX) {
+        minX = p.x;
+      }
+      if (p.x > maxX) {
+        maxX = p.x;
+      }
+      if (p.y < minY) {
+        minY = p.y;
+      }
+      if (p.y > maxY) {
+        maxY = p.y;
+      }
     }
     return {'minX': minX, 'minY': minY, 'maxX': maxX, 'maxY': maxY};
   }

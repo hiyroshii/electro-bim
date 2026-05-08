@@ -178,7 +178,7 @@ class _LayerTileState extends State<_LayerTile> {
       onTap: widget.onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        color: widget.isActive ? Colors.blue.shade800.withOpacity(0.5) : Colors.transparent,
+        color: widget.isActive ? Colors.blue.shade800.withValues(alpha: 0.5) : Colors.transparent,
         child: Row(
           children: [
             // Indicador de cor

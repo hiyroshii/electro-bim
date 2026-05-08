@@ -3,7 +3,6 @@
 // - FIX: adicionado getter drawColor para satisfazer a interface RenderAdapter
 // - CHG: usa campo privado _drawColor para armazenar o valor
 
-import 'dart:ui' show Color;
 import 'package:flutter/material.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
 

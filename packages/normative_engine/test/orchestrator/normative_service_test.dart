@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: teste de resolverDadosNormativos — tabelaXi populada por material.
 // [1.0.0] - 2026-04
 // - ADD: testes de integração do NormativeService (fluxo completo).
 
@@ -62,6 +64,27 @@ void main() {
       expect(dados.fatores.fca, equals(1.0));
       expect(dados.queda.limitePercent, equals(4.0));
       expect(dados.secaoMinimaNormativa, equals(2.5));
+    });
+
+    test('tabelaXi cobre — populada com seções padrão', () {
+      final service = _criarService();
+      final e = entradaPadrao(material: Material.cobre);
+      final dados = service.resolverDadosNormativos(e, _paramsUnico);
+
+      expect(dados.tabelaXi, isNotEmpty);
+      expect(dados.tabelaXi.containsKey(2.5), isTrue);
+      expect(dados.tabelaXi.containsKey(25.0), isTrue);
+      expect(dados.tabelaXi[2.5], closeTo(0.000110, 0.000001));
+    });
+
+    test('tabelaXi alumínio — inicia em 16mm²', () {
+      final service = _criarService(contexto: ContextoInstalacao.industrial);
+      final e = entradaPadrao(material: Material.aluminio);
+      final dados = service.resolverDadosNormativos(e, _paramsUnico);
+
+      expect(dados.tabelaXi, isNotEmpty);
+      expect(dados.tabelaXi.containsKey(16.0), isTrue);
+      expect(dados.tabelaXi.containsKey(2.5), isFalse);
     });
 
     test('TUG cobre — seção mínima 2.5mm²', () {

@@ -1,9 +1,39 @@
 # Changelog — normative_engine
-<!-- REV: 1 -->
+<!-- REV: 2 -->
 <!-- CHANGELOG:
+[Rev 2] - 08 05 2026
+- ADD: entrada do ciclo 4.0 — temperatura inadmissível e tabela Xi.
 [Rev 1] - 01 05 2026
 - ADD: criação do changelog do normative_engine.
 -->
+
+---
+
+## [1.1.0] — 08 05 2026
+
+### Ciclo 4.0 — Temperatura inadmissível + Tabela Xi
+
+#### normative_engine
+
+- ADD `spec_combinacoes`: verificação de temperatura admissível por isolação (TEMP_001).
+  Emite `Violacao.temperaturaInadmissivel()` quando `fctAr`/`fctSolo[isolacao][temperatura] == null`.
+  Cobre: temperaturas inadmissíveis (PVC ≥ 65°C) e faixas fora da Tabela 40.
+  Rastreabilidade: NBR 5410:2004 — Tabela 40.
+- ADD `tabela_xi_reatancia.dart`: reatâncias Xi (Ω/m a 50 Hz) por seção e material.
+  Cobre e alumínio para todas as seções normativas (0,5–1000 mm² Cu; 16–1000 mm² Al).
+  Rastreabilidade: NBR 5410:2004 — 6.2.7.4; IEC 60364-5-52 Tab. B.52.16.
+- ADD `dados_normativos.dart`: campo `tabelaXi: Map<double, double>` — seção → Xi (Ω/m).
+  Populado por material, filtrado pelo `ProcedureService`.
+- CHG `procedure_service.dart`: popula `tabelaXi` no `DadosNormativos`.
+- ADD: 9 novos testes em `spec_combinacoes_test.dart` (temperatura admissível — TEMP_001).
+- ADD: 2 novos testes em `normative_service_test.dart` (`tabelaXi` por material).
+
+#### electrical_engine
+
+- CHG `contexto_selecao.dart`: `reatanciaXi: double` → `tabelaXi: Map<double, double>`.
+- CHG `selecionador_condutor.dart`: Xi por seção via `ctx.tabelaXi[linha.secao]` na iteração.
+- CHG `dimensionamento_circuito_service.dart`: `tabelaXi` de `DadosNormativos` → `ContextoSelecao`.
+- CHG `dimensionamento_circuito_test.dart`: `_ctx()` — `reatanciaXi` removido, `tabelaXi` adicionado.
 
 ---
 

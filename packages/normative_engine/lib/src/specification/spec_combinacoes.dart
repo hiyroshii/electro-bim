@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: verificação de temperatura admissível por isolação (TEMP_001) — NBR 5410 Tab. 40.
 // [1.0.0] - 2026-04
 // - ADD: verificação de combinações válidas iso × arq × método × arranjo × tensao.
 
@@ -11,6 +13,7 @@ import '../enums/arranjo_condutores.dart';
 import '../enums/tensao.dart';
 import '../models/violacao.dart';
 import '../models/entrada_normativa.dart';
+import '../tables/tabela_40_fct_temperatura.dart';
 
 /// Verifica combinações válidas de Isolacao × Arquitetura × MetodoInstalacao
 /// × ArranjoCondutores × Tensao × NumeroFases.
@@ -103,7 +106,21 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
     // 4. ArranjoCondutores × MetodoInstalacao
     _verificarArranjo(entrada, violacoes);
 
+    // 5. Temperatura admissível para a isolação
+    _verificarTemperatura(entrada, violacoes);
+
     return violacoes;
+  }
+
+  void _verificarTemperatura(EntradaNormativa e, List<Violacao> violacoes) {
+    final mapa = e.metodo.isSolo ? fctSolo : fctAr;
+    final fator = mapa[e.isolacao]?[e.temperatura];
+    if (fator == null) {
+      violacoes.add(Violacao.temperaturaInadmissivel(
+        temperatura: e.temperatura,
+        isolacao: e.isolacao.name.toUpperCase(),
+      ));
+    }
   }
 
   void _verificarArranjo(EntradaNormativa e, List<Violacao> violacoes) {

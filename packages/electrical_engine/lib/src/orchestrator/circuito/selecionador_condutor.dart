@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - CHG: Xi resolvido por seção via ctx.tabelaXi — substitui reatanciaXi fixo.
 // [1.0.1] - 2026-04
 // - ADD: implementação completa do algoritmo de seleção.
 // [1.0.0] - 2026-04
@@ -46,12 +48,13 @@ final class SelecionadorCondutor {
 
       // 2. Calcular resistência e queda de tensão
       final resistencia = ctx.resistividade / linha.secao;
+      final xi = ctx.tabelaXi[linha.secao] ?? 0.0;
       final quedaPercentual = CalcQuedaTensao.calcularPercentual(
         distancia: ctx.distancia,
         corrente: ctx.ib,
         tensao: ctx.tensao,
         resistencia: resistencia,
-        reatancia: ctx.reatanciaXi,
+        reatancia: xi,
         isTrifasico: isTrifasico,
         cosPhi: ctx.fatorPotencia,
       );

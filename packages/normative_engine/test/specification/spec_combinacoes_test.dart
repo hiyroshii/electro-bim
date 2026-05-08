@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: testes de temperatura admissível por isolação (TEMP_001).
 // [1.0.0] - 2026-04
 // - ADD: testes de combinações válidas iso × arq × método × arranjo × tensão.
 
@@ -278,6 +280,77 @@ void main() {
       expect(violacoes.length, greaterThanOrEqualTo(3));
     });
   });
+
+  // ── Temperatura admissível ────────────────────────────────────────────────
+
+  group('Temperatura admissível —', () {
+    test('PVC em 30°C (referência) — sem violação', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 30);
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em 60°C — limite válido', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 60);
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em 65°C — inadmissível — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 65);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('PVC em 80°C — inadmissível — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 80);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('XLPE em 80°C — válido (máximo da tabela)', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.xlpe,
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        temperatura: 80,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('EPR em 75°C — válido', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.epr,
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        temperatura: 75,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em temperatura fora da tabela (22°C) — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 22);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('Método D usa tabela de solo — PVC 60°C válido', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.d,
+        temperatura: 60,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('Método D usa tabela de solo — PVC 65°C inadmissível — TEMP_001', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.d,
+        temperatura: 65,
+      );
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -299,3 +372,6 @@ bool _arranjoViolado(SpecCombinacoes spec, EntradaNormativa e) =>
 
 bool _tensaoFasesViolada(SpecCombinacoes spec, EntradaNormativa e) =>
     spec.verificar(e).any((v) => v.codigo == 'COMB_006');
+
+bool _tempViolada(SpecCombinacoes spec, EntradaNormativa e) =>
+    spec.verificar(e).any((v) => v.codigo == 'TEMP_001');

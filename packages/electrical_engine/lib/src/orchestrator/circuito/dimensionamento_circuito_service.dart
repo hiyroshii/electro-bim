@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - CHG: ContextoSelecao passa tabelaXi de DadosNormativos — remove reatanciaXi fixo.
 // [1.0.1] - 2026-04
 // - ADD: implementação completa de processar() — fluxo normativa → cálculo → seleção → relatório.
 // [1.0.0] - 2026-04
@@ -103,11 +105,11 @@ final class DimensionamentoCircuitoService {
       limiteQueda: dados.queda.limitePercent,
       fatores: dados.fatores,
       tabelaIz: dados.tabelaIz,
+      tabelaXi: dados.tabelaXi,
       tensao: entrada.tensao.valor.toDouble(),
       distancia: entrada.distancia,
       fatorPotencia: entrada.fatorPotencia,
       fatorHarmonico: dados.queda.fatorHarmonico,
-      // reatanciaXi: 0.0 por padrão — tabela de impedâncias é futuro
     );
 
     // ── 5. Seleção do condutor ───────────────────────────────────────────────

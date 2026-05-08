@@ -1,5 +1,7 @@
-// REV: 1.0.2
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - CHG: reatanciaXi:double substituído por tabelaXi:Map<double,double> — Xi por seção.
 // [1.0.2] - 2026-05
 // - FIX: construtor movido antes dos campos.
 // [1.0.1] - 2026-04
@@ -29,10 +31,10 @@ final class ContextoSelecao {
     required this.limiteQueda,
     required this.fatores,
     required this.tabelaIz,
+    required this.tabelaXi,
     required this.tensao,
     required this.distancia,
     required this.fatorPotencia,
-    this.reatanciaXi = 0.0,
     this.fatorHarmonico = 1.0,
     this.arranjo,
   });
@@ -50,12 +52,14 @@ final class ContextoSelecao {
   final double limiteQueda;
   final FatoresCorrecao fatores;
   final List<LinhaAmpacidade> tabelaIz;
+
+  /// Reatância Xi por seção (mm² → Ω/m). Lookup por seção na iteração.
+  /// Rastreabilidade: NBR 5410:2004 — 6.2.7.4; IEC 60364-5-52 Tab. B.52.16.
+  final Map<double, double> tabelaXi;
+
   final double tensao;
   final double distancia;
   final double fatorPotencia;
-
-  /// Reatância do condutor (Ω/m). Zero quando não disponível.
-  final double reatanciaXi;
 
   /// Fator 0,86 quando 4 condutores carregados (harm > 15%), 1,0 caso contrário.
   /// Rastreabilidade: NBR 5410:2004 — 6.2.5.6.1.

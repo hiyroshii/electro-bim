@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: calcularSecaoNeutro() — cálculo real do neutro conforme 6.2.6.2.
 // [1.0.1] - 2026-04
 // - CHG: resolverDadosNormativos recebe ParamsAgrupamento por chamada.
 // [1.0.0] - 2026-04
@@ -58,4 +60,13 @@ abstract interface class NormativeEngine {
   /// Retorna lista vazia se o resultado for plenamente conforme.
   /// Nunca lança exceção.
   List<Violacao> auditar(EntradaNormativa entrada, ResultadoNormativo resultado);
+
+  /// Calcula a seção mínima do condutor neutro após a seleção do condutor de fase.
+  ///
+  /// Aplica as regras de 6.2.6.2 conforme fase e harmônicas.
+  /// Deve ser chamado com [secaoFase] já determinada pelo [SelecionadorCondutor].
+  /// Nunca lança exceção.
+  ///
+  /// Rastreabilidade: NBR 5410:2004 — 6.2.6.2.
+  double calcularSecaoNeutro(double secaoFase, EntradaNormativa entrada);
 }

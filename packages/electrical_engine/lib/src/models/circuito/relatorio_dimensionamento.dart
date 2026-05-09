@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: secaoNeutro:double — substitui proxy secaoFase (ciclo 4.1).
 // [1.0.1] - 2026-05
 // - FIX: construtor movido para antes dos campos (sort_constructors_first).
 // - FIX: import não usado de entrada_dimensionamento.dart removido.
@@ -10,7 +12,7 @@ import 'package:normative_engine/normative_engine.dart';
 
 import 'resultado_selecao.dart';
 
-/// Resultado completo do dimensionamento de um circuito.
+/// Resultado completo do dimensionamento de um circuito elétrico.
 ///
 /// Parâmetros de projeto obrigatórios (NBR 5410:2004 — 6.1.8.1/f):
 /// Ib, In, Iz, ΔV%, FCT, FCA, temperatura, método de instalação.
@@ -29,6 +31,7 @@ final class RelatorioDimensionamento {
     required this.inDisjuntor,
     required this.fatores,
     required this.selecao,
+    required this.secaoNeutro,
     required this.limiteQuedaAplicado,
     required this.status,
   });
@@ -53,6 +56,10 @@ final class RelatorioDimensionamento {
   // ── Resultado da seleção ─────────────────────────────────────────────────
   final ResultadoSelecao selecao;
 
+  // ── Seção do neutro ──────────────────────────────────────────────────────
+  /// Seção mínima do condutor neutro (mm²) conforme 6.2.6.2.
+  final double secaoNeutro;
+
   // ── Limite de queda aplicado ─────────────────────────────────────────────
   final double limiteQuedaAplicado;
 
@@ -61,7 +68,7 @@ final class RelatorioDimensionamento {
   /// Converte para [ResultadoNormativo] para auditoria pelo [NormativeEngine].
   ResultadoNormativo toResultadoNormativo() => ResultadoNormativo(
         secaoFase: selecao.secaoFinal,
-        secaoNeutro: selecao.secaoFinal, // TODO(ciclo-4): calcular neutro
+        secaoNeutro: secaoNeutro,
         quedaPercent: selecao.quedaFinal,
       );
 

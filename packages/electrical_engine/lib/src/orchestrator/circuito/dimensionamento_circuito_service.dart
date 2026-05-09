@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: calcularSecaoNeutro() via NormativeEngine após seleção do condutor (ciclo 4.1).
 // [1.1.0] - 2026-05
 // - CHG: ContextoSelecao passa tabelaXi de DadosNormativos — remove reatanciaXi fixo.
 // [1.0.1] - 2026-04
@@ -86,6 +88,7 @@ final class DimensionamentoCircuitoService {
         inDisjuntor: 0,
         dados: dados,
         selecao: ResultadoSelecao.reprovadoAmpacidade(),
+        secaoNeutro: 0.0,
         status: StatusDimensionamento.reprovadoDisjuntor,
       );
     }
@@ -115,12 +118,19 @@ final class DimensionamentoCircuitoService {
     // ── 5. Seleção do condutor ───────────────────────────────────────────────
     final selecao = _selecionador.selecionar(ctx);
 
+    // ── 6. Seção do neutro ───────────────────────────────────────────────────
+    final secaoNeutro = _normative.calcularSecaoNeutro(
+      selecao.secaoFinal,
+      entradaNormativa,
+    );
+
     return _montarRelatorio(
       entrada: entrada,
       ib: ib,
       inDisjuntor: inDisjuntor,
       dados: dados,
       selecao: selecao,
+      secaoNeutro: secaoNeutro,
       status: selecao.status,
     );
   }
@@ -133,6 +143,7 @@ final class DimensionamentoCircuitoService {
     required double inDisjuntor,
     required DadosNormativos dados,
     required ResultadoSelecao selecao,
+    required double secaoNeutro,
     required StatusDimensionamento status,
   }) =>
       RelatorioDimensionamento(
@@ -146,6 +157,7 @@ final class DimensionamentoCircuitoService {
         inDisjuntor: inDisjuntor,
         fatores: dados.fatores,
         selecao: selecao,
+        secaoNeutro: secaoNeutro,
         limiteQuedaAplicado: dados.queda.limitePercent,
         status: status,
       );

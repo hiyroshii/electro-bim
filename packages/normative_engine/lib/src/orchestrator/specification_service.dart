@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: SpecDispositivoMultipolar em verificarConformidade().
 // [1.0.0] - 2026-04
 // - ADD: sub-orquestrador de conformidade normativa.
 
@@ -8,6 +10,7 @@ import '../models/entrada_normativa.dart';
 import '../models/resultado_normativo.dart';
 import '../specification/spec_combinacoes.dart';
 import '../specification/spec_aluminio.dart';
+import '../specification/spec_dispositivo_multipolar.dart';
 import '../specification/spec_secao_minima.dart';
 import '../specification/spec_neutro.dart';
 import '../specification/spec_queda_tensao.dart';
@@ -39,6 +42,8 @@ final class SpecificationService {
     violacoes.addAll(SpecAluminio(
       contexto: contextoInstalacao,
     ).verificar(entrada));
+
+    violacoes.addAll(const SpecDispositivoMultipolar().verificar(entrada));
 
     return violacoes;
   }

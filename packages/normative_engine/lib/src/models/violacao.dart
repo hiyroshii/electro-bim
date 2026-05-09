@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: Violacao.dispositivoDeveSerMultipolar (DISP_001) — 9.5.4.
 // [1.0.1] - 2026-05
 // - FIX: construtor movido antes dos campos.
 // [1.0.0] - 2026-04
@@ -96,6 +98,16 @@ final class Violacao {
         descricao: 'Temperatura ${temperatura}°C não é admissível para '
             'isolação $isolacao. Verifique Tabela 40.',
         referencia: 'NBR 5410:2004 — Tabela 40',
+      );
+
+  factory Violacao.dispositivoDeveSerMultipolar({
+    required String numeroFases,
+  }) =>
+      Violacao(
+        codigo: 'DISP_001',
+        descricao: 'Circuito $numeroFases exige dispositivo de proteção '
+            'multipolar (corte simultâneo de todos os polos ativos).',
+        referencia: 'NBR 5410:2004 — 9.5.4',
       );
 
   factory Violacao.secaoAbaixoMinimo({

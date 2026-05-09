@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: testes de calcularSecaoNeutro e DISP_001 em verificarConformidade.
 // [1.1.0] - 2026-05
 // - ADD: teste de resolverDadosNormativos — tabelaXi populada por material.
 // [1.0.0] - 2026-04
@@ -214,6 +216,76 @@ void main() {
         quedaPercent: 3.0,
       );
       expect(service.auditar(e, resultado), isEmpty);
+    });
+  });
+
+  // ── calcularSecaoNeutro ───────────────────────────────────────────────────
+
+  group('calcularSecaoNeutro —', () {
+    test('Monofásico → neutro = fase', () {
+      final service = _criarService();
+      final e = entradaPadrao(numeroFases: NumeroFases.monofasico);
+      expect(service.calcularSecaoNeutro(2.5, e), equals(2.5));
+    });
+
+    test('Trifásico harm ≤ 15% fase ≤ 25mm² → neutro = fase', () {
+      final service = _criarService();
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+        tensao: Tensao.v220,
+        harmonicasAcima15pct: false,
+      );
+      expect(service.calcularSecaoNeutro(16.0, e), equals(16.0));
+    });
+
+    test('Trifásico harm ≤ 15% fase 35mm² → neutro = 25mm² (Tab. 48)', () {
+      final service = _criarService();
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+        tensao: Tensao.v220,
+        harmonicasAcima15pct: false,
+      );
+      expect(service.calcularSecaoNeutro(35.0, e), equals(25.0));
+    });
+
+    test('Trifásico harm > 15% fase 35mm² → neutro = 35mm² (sem redução)', () {
+      final service = _criarService();
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+        tensao: Tensao.v220,
+        harmonicasAcima15pct: true,
+      );
+      expect(service.calcularSecaoNeutro(35.0, e), equals(35.0));
+    });
+  });
+
+  // ── verificarConformidade — DISP_001 ─────────────────────────────────────
+
+  group('verificarConformidade — DISP_001 —', () {
+    test('Trifásico + dispositivoMultipolar=true → sem DISP_001', () {
+      final service = _criarService();
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+        tensao: Tensao.v220,
+        arquitetura: Arquitetura.multipolar,
+        metodo: MetodoInstalacao.b1,
+        dispositivoMultipolar: true,
+      );
+      final violacoes = service.verificarConformidade(e);
+      expect(violacoes.any((v) => v.codigo == 'DISP_001'), isFalse);
+    });
+
+    test('Trifásico + dispositivoMultipolar=false → DISP_001', () {
+      final service = _criarService();
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+        tensao: Tensao.v220,
+        arquitetura: Arquitetura.multipolar,
+        metodo: MetodoInstalacao.b1,
+        dispositivoMultipolar: false,
+      );
+      final violacoes = service.verificarConformidade(e);
+      expect(violacoes.any((v) => v.codigo == 'DISP_001'), isTrue);
     });
   });
 }

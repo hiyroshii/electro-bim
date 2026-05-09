@@ -1,5 +1,7 @@
-// REV: 1.0.2
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: dispositivoMultipolar:bool (default true) — suporte à spec_dispositivo_multipolar.
 // [1.0.2] - 2026-05
 // - FIX: construtor movido antes dos campos.
 // [1.0.1] - 2026-04
@@ -30,6 +32,7 @@ final class EntradaNormativa {
     required this.temperatura,
     required this.harmonicasAcima15pct,
     this.arranjo,
+    this.dispositivoMultipolar = true,
   });
 
   final TagCircuito tagCircuito;
@@ -42,4 +45,8 @@ final class EntradaNormativa {
   final Material material;
   final int temperatura;
   final bool harmonicasAcima15pct;
+
+  /// Indica se o dispositivo de proteção é multipolar (corte simultâneo).
+  /// Rastreabilidade: NBR 5410:2004 — 9.5.4.
+  final bool dispositivoMultipolar;
 }

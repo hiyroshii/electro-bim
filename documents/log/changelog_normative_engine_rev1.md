@@ -1,11 +1,51 @@
 # Changelog — normative_engine
-<!-- REV: 2 -->
+<!-- REV: 3 -->
 <!-- CHANGELOG:
+[Rev 3] - 09 05 2026
+- ADD: entrada do ciclo 4.1 — proc_secao_neutro, spec_dispositivo_multipolar, EscopoProjeto, calc_potencia_tue.
 [Rev 2] - 08 05 2026
 - ADD: entrada do ciclo 4.0 — temperatura inadmissível e tabela Xi.
 [Rev 1] - 01 05 2026
 - ADD: criação do changelog do normative_engine.
 -->
+
+---
+
+## [1.2.0] — 09 05 2026
+
+### Ciclo 4.1 — Fase 1 → v0.4.0 (itens restantes)
+
+#### normative_engine
+
+- ADD `proc_secao_neutro.dart`: cálculo da seção mínima do condutor neutro (mm²).
+  Regras: monofásico → neutro = fase; harm>15% → neutro = fase;
+  trifásico harm≤15% fase>25mm² → Tabela 48; demais → neutro = fase.
+  Rastreabilidade: NBR 5410:2004 — 6.2.6.2.
+- ADD `calcularSecaoNeutro()` em `NormativeEngine` (interface + barrel + `NormativeService`).
+  Substitui o proxy `secaoFase` usado em `RelatorioDimensionamento.toResultadoNormativo()`.
+- ADD `spec_dispositivo_multipolar.dart`: circuitos bifásicos/trifásicos exigem dispositivo multipolar.
+  Emite `Violacao.dispositivoDeveSerMultipolar()` (DISP_001) quando `!dispositivoMultipolar`.
+  Rastreabilidade: NBR 5410:2004 — 9.5.4.
+- ADD `Violacao.dispositivoDeveSerMultipolar()` — código DISP_001.
+- CHG `entrada_normativa.dart`: campo `dispositivoMultipolar: bool = true` (default não-breaking).
+- CHG `specification_service.dart`: `SpecDispositivoMultipolar` em `verificarConformidade()`.
+- ADD `escopo_projeto.dart`: enum `EscopoProjeto { residencial }` — preparação Fase 6+.
+  Rastreabilidade: NBR 5410:2004 — Seção 9.
+- ADD: 8 novos testes em `proc_secao_neutro_test.dart`.
+- ADD: 9 novos testes em `spec_dispositivo_multipolar_test.dart`.
+- ADD: 6 novos testes em `normative_service_test.dart` (calcularSecaoNeutro + DISP_001).
+
+#### electrical_engine
+
+- ADD `calc_potencia_tue.dart`: conversão de potência de plaqueta (W) para aparente (VA).
+  Separação explícita: TUG = estimativa (100 VA × pontos); TUE = plaqueta / FP.
+  Rastreabilidade: NBR 5410:2004 — 9.1.2.3.
+- CHG `relatorio_dimensionamento.dart`: campo `secaoNeutro: double` — substitui proxy `secaoFase`.
+  `toResultadoNormativo()` usa o valor calculado.
+- CHG `dimensionamento_circuito_service.dart`: calcula `secaoNeutro` via `NormativeEngine.calcularSecaoNeutro()` após seleção do condutor de fase.
+- CHG `entrada_dimensionamento.dart`: campo `dispositivoMultipolar: bool = true` repassado para `EntradaNormativa`.
+- ADD: 4 novos testes em `calculos_test.dart` (CalcPotenciaTue).
+- ADD: 4 novos testes em `dimensionamento_circuito_service_test.dart` (secaoNeutro + DISP_001).
 
 ---
 

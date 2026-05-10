@@ -13,6 +13,7 @@
 - Tipos de condutores permitidos: isolados, unipolares ou multipolares (emendas somente no interior de caixas).
 
 ### Taxa de Ocupação
+> **Prática recomendada:** Embora a NBR 5410 não estabeleça um número máximo explícito de curvas entre caixas, a boa prática de instalação limita a deflexão total a **270° (3 curvas de 90°)** para garantir a passagem dos condutores sem esforço excessivo.
 
 | Quantidade de Condutores | Taxa Máxima de Ocupação da Seção Interna |
 | :---: | :---: |
@@ -27,9 +28,10 @@
 | Trecho reto (interno) sem caixa de passagem | 15 m |
 | Trecho reto (externo) sem caixa de passagem | 30 m |
 | Por curva de 90°: reduzir o limite em | 3 m |
-| Deflexão máxima entre duas caixas | 3 curvas de 90° (= 270°) |
 
 - Curvas com ângulo > 90° são **proibidas**.
+
+> **Prática recomendada:** Embora a NBR 5410 não estabeleça um número máximo explícito de curvas entre caixas, a boa prática de instalação limita a deflexão total a **270° (3 curvas de 90°)** para garantir a passagem dos condutores sem esforço excessivo.
 
 ### Caixas
 Obrigatórias em:

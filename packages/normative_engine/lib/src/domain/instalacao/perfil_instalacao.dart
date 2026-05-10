@@ -3,7 +3,7 @@
 // [1.0.0] - 2026-05
 // - ADD: VO PerfilInstalacao — agrega EscopoProjeto + influências externas.
 
-import '../../enums/escopo_projeto.dart';
+import 'escopo_projeto.dart';
 import '../influencias/codigo_influencia.dart';
 
 export '../influencias/codigo_influencia.dart';

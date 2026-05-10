@@ -9,11 +9,11 @@
 // - ADD: verificação de combinações válidas iso × arq × método × arranjo × tensao.
 
 import '../../contracts/i_specification.dart';
-import '../../enums/isolacao.dart';
-import '../../enums/arquitetura.dart';
-import '../../enums/metodo_instalacao.dart';
-import '../../enums/arranjo_condutores.dart';
-import '../../enums/tensao.dart';
+import '../../domain/condutor/isolacao.dart';
+import '../../domain/condutor/arquitetura.dart';
+import '../../domain/condutor/metodo_instalacao.dart';
+import '../../domain/condutor/arranjo_condutores.dart';
+import '../../domain/instalacao/tensao.dart';
 import '../../models/violacao.dart';
 import '../../models/entrada_normativa.dart';
 import '../../tables/tabela_40_fct_temperatura.dart';

@@ -11,15 +11,15 @@
 // [1.0.0] - 2026-04
 // - ADD: criação de EntradaNormativa.
 
-import '../enums/isolacao.dart';
-import '../enums/arquitetura.dart';
-import '../enums/metodo_instalacao.dart';
-import '../enums/arranjo_condutores.dart';
-import '../enums/faixa_tensao.dart';
-import '../enums/material.dart';
-import '../enums/tag_circuito.dart';
-import '../enums/tensao.dart';
-import '../enums/numero_fases.dart';
+import '../domain/condutor/isolacao.dart';
+import '../domain/condutor/arquitetura.dart';
+import '../domain/condutor/metodo_instalacao.dart';
+import '../domain/condutor/arranjo_condutores.dart';
+import '../domain/instalacao/faixa_tensao.dart';
+import '../domain/condutor/material.dart';
+import '../domain/instalacao/tag_circuito.dart';
+import '../domain/instalacao/tensao.dart';
+import '../domain/instalacao/numero_fases.dart';
 
 /// Entrada normalizada do [NormativeEngine].
 /// Criada pelo [dimensionamento_engine] antes de chamar o engine.

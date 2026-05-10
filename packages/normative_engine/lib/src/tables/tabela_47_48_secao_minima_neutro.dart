@@ -6,8 +6,8 @@
 // - ADD: seção mínima dos condutores de fase (Tabela 47).
 // - ADD: seção reduzida do condutor neutro (Tabela 48).
 
-import '../enums/material.dart';
-import '../enums/tag_circuito.dart';
+import '../domain/condutor/material.dart';
+import '../domain/instalacao/tag_circuito.dart';
 
 /// Tabela 47 — Seção mínima dos condutores de fase.
 ///

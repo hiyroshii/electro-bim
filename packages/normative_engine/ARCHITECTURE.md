@@ -137,29 +137,29 @@ resolverPerfil(escopo, competencia?, material?)
 
 ---
 
-## 6. Estrutura de pastas (estado atual — v0.5.0)
+## 6. Estrutura de pastas (estado atual — Fase 3.1)
 
 ```
 lib/src/
 ├── contracts/
 │   ├── i_specification.dart    ← + aplicavelA(PerfilInstalacao)
 │   ├── i_procedure.dart
-│   ├── i_classification.dart   ← NOVO
-│   ├── i_verification.dart     ← NOVO (skeleton)
+│   ├── i_classification.dart
+│   ├── i_verification.dart     ← skeleton
 │   └── normative_engine.dart
 │
 ├── domain/
+│   ├── condutor/               ← Isolacao, Arquitetura, Material,
+│   │                              MetodoInstalacao, ArranjoCondutores
 │   ├── instalacao/             ← EscopoProjeto, TagCircuito, OrigemAlimentacao,
-│   │                              Tensao, PerfilInstalacao (VO)  ← NOVO
-│   └── influencias/            ← CodigoInfluencia  ← NOVO
+│   │                              Tensao, NumeroFases, FaixaTensao, PerfilInstalacao
+│   └── influencias/            ← CodigoInfluencia
 │
 ├── models/                     ← EntradaNormativa, DadosNormativos,
 │                                  ResultadoNormativo, Violacao
-├── enums/                      ← Isolacao, Arquitetura, MetodoInstalacao,
-│                                  Material, NumeroFases, FaixaTensao, ArranjoCondutores
 ├── tables/                     ← tabelas NBR indexadas por (chave) → valor
 │
-├── classification/             ← NOVO
+├── classification/
 │   ├── influencias_externas/   ← ClassCompetenciaBa, ClassFugaEmergenciaBd
 │   └── instalacao/             ← ClassPerfilPadraoPorEscopo
 │
@@ -175,10 +175,10 @@ lib/src/
 │
 └── orchestrator/
     ├── normative_service.dart
-    ├── classification_service.dart   ← NOVO
+    ├── classification_service.dart
     ├── specification_service.dart
     ├── procedure_service.dart
-    └── verification_service.dart     ← NOVO (skeleton)
+    └── verification_service.dart     ← skeleton
 ```
 
 ---

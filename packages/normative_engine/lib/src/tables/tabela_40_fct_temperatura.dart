@@ -5,7 +5,7 @@
 // [1.0.0] - 2026-04
 // - ADD: fatores de correção de temperatura FCT (Tabela 40).
 
-import '../enums/isolacao.dart';
+import '../domain/condutor/isolacao.dart';
 
 /// Tabela 40 — Fatores de correção de temperatura (FCT).
 ///

@@ -5,7 +5,7 @@
 // [1.0.0] - 2026-04
 // - ADD: ampacidade PVC métodos A1–D, cobre e alumínio (Tabela 36).
 
-import '../enums/metodo_instalacao.dart';
+import '../domain/condutor/metodo_instalacao.dart';
 
 /// Tabela 36 — Capacidade de condução de corrente (A).
 /// Isolação PVC — Métodos A1, A2, B1, B2, C, D.

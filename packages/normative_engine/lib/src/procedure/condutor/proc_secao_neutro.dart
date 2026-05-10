@@ -4,7 +4,7 @@
 // - ADD: cálculo da seção mínima do condutor neutro conforme 6.2.6.2.
 
 import '../../contracts/i_procedure.dart';
-import '../../enums/numero_fases.dart';
+import '../../domain/instalacao/numero_fases.dart';
 import '../../tables/tabela_47_48_secao_minima_neutro.dart';
 
 /// Calcula a seção mínima do condutor neutro para um condutor de fase dado.

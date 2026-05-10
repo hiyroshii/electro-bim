@@ -5,8 +5,8 @@
 // [1.0.0] - 2026-04
 // - ADD: ampacidade EPR/XLPE métodos E/F/G, cobre e alumínio (Tabela 39).
 
-import '../enums/metodo_instalacao.dart';
-import '../enums/arranjo_condutores.dart';
+import '../domain/condutor/metodo_instalacao.dart';
+import '../domain/condutor/arranjo_condutores.dart';
 
 /// Tabela 39 — Capacidade de condução de corrente (A).
 /// Isolação EPR ou XLPE — Métodos E, F, G.

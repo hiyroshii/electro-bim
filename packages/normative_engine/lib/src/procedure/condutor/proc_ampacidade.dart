@@ -4,7 +4,7 @@
 // - ADD: resolução de FCT, FCA e tabela base Iz (6.2.5.3, 6.2.5.5).
 
 import '../../contracts/i_procedure.dart';
-import '../../enums/material.dart';
+import '../../domain/condutor/material.dart';
 import '../../models/entrada_normativa.dart';
 import '../../models/fatores_correcao.dart';
 import '../../models/linha_ampacidade.dart';

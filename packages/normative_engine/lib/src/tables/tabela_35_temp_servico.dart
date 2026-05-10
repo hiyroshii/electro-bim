@@ -3,7 +3,7 @@
 // [1.0.0] - 2026-04
 // - ADD: temperaturas máximas de serviço por isolação (Tabela 35).
 
-import '../enums/isolacao.dart';
+import '../domain/condutor/isolacao.dart';
 
 /// Tabela 35 — Temperaturas máximas admissíveis nos condutores.
 ///

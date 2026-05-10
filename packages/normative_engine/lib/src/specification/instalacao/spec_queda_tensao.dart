@@ -11,12 +11,12 @@
 // - ADD: verificação de limites de queda de tensão (6.2.7).
 
 import '../../contracts/i_specification.dart';
-import '../../enums/tag_circuito.dart';
-import '../../enums/origem_alimentacao.dart';
+import '../../domain/instalacao/tag_circuito.dart';
+import '../../domain/instalacao/origem_alimentacao.dart';
 import '../../models/violacao.dart';
 import '../../models/entrada_normativa.dart';
 
-export '../../enums/origem_alimentacao.dart';
+export '../../domain/instalacao/origem_alimentacao.dart';
 
 /// Verifica se a queda de tensão calculada respeita o limite normativo.
 ///

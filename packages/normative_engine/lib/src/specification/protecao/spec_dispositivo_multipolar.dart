@@ -4,7 +4,7 @@
 // - ADD: verificação de dispositivo multipolar para circuitos multifásicos.
 
 import '../../contracts/i_specification.dart';
-import '../../enums/numero_fases.dart';
+import '../../domain/instalacao/numero_fases.dart';
 import '../../models/entrada_normativa.dart';
 import '../../models/violacao.dart';
 

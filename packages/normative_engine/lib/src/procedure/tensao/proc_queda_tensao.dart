@@ -8,8 +8,8 @@
 // - ADD: resolução de parâmetros normativos de queda de tensão (6.2.5.6, 6.2.7).
 
 import '../../contracts/i_procedure.dart';
-import '../../enums/tag_circuito.dart';
-import '../../enums/numero_fases.dart';
+import '../../domain/instalacao/tag_circuito.dart';
+import '../../domain/instalacao/numero_fases.dart';
 import '../../models/entrada_normativa.dart';
 import '../../models/parametros_queda.dart';
 import '../../specification/instalacao/spec_queda_tensao.dart';

@@ -21,18 +21,20 @@ export 'src/contracts/i_verification.dart';
 export 'src/domain/instalacao/perfil_instalacao.dart';
 export 'src/domain/influencias/codigo_influencia.dart';
 
-// Enums
-export 'src/enums/isolacao.dart';
-export 'src/enums/arquitetura.dart';
-export 'src/enums/metodo_instalacao.dart';
-export 'src/enums/arranjo_condutores.dart';
-export 'src/enums/faixa_tensao.dart';
-export 'src/enums/material.dart';
-export 'src/enums/tag_circuito.dart';
-export 'src/enums/tensao.dart';
-export 'src/enums/numero_fases.dart';
-export 'src/enums/origem_alimentacao.dart';
-export 'src/enums/escopo_projeto.dart';
+// Enums — condutor
+export 'src/domain/condutor/isolacao.dart';
+export 'src/domain/condutor/arquitetura.dart';
+export 'src/domain/condutor/metodo_instalacao.dart';
+export 'src/domain/condutor/arranjo_condutores.dart';
+export 'src/domain/condutor/material.dart';
+
+// Enums — instalacao
+export 'src/domain/instalacao/faixa_tensao.dart';
+export 'src/domain/instalacao/tag_circuito.dart';
+export 'src/domain/instalacao/tensao.dart';
+export 'src/domain/instalacao/numero_fases.dart';
+export 'src/domain/instalacao/origem_alimentacao.dart';
+export 'src/domain/instalacao/escopo_projeto.dart';
 
 // Models
 export 'src/models/entrada_normativa.dart';

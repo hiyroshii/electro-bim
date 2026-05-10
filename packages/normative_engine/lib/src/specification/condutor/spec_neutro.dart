@@ -4,7 +4,7 @@
 // - ADD: verificação de regras do condutor neutro (6.2.6.2).
 
 import '../../contracts/i_specification.dart';
-import '../../enums/numero_fases.dart';
+import '../../domain/instalacao/numero_fases.dart';
 import '../../models/violacao.dart';
 import '../../models/entrada_normativa.dart';
 import '../../tables/tabela_47_48_secao_minima_neutro.dart';

@@ -5,6 +5,17 @@ Versões semânticas conforme [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [Unreleased] — Fase 3
+
+### Changed
+- `enums/` eliminado — todos os tipos movidos para `domain/`:
+  - `domain/condutor/`: `Isolacao`, `Arquitetura`, `Material`, `MetodoInstalacao`, `ArranjoCondutores`
+  - `domain/instalacao/`: `EscopoProjeto`, `TagCircuito`, `OrigemAlimentacao`, `Tensao`, `NumeroFases`, `FaixaTensao`
+- Imports atualizados em 22 arquivos (models, specs, procedures, tables, orchestrators, barrel)
+- `ContextoInstalacao` removido definitivamente (já substituído por `PerfilInstalacao` na Fase 2)
+
+---
+
 ## [0.5.0] — 2026-05 — Fase 2: Reestruturação dos 4 contratos
 
 ### Added

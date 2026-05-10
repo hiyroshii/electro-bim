@@ -3,7 +3,7 @@
 // [1.0.0] - 2026-05
 // - ADD: sub-orquestrador de classificação normativa (Fase 2).
 
-import '../enums/escopo_projeto.dart';
+import '../domain/instalacao/escopo_projeto.dart';
 import '../domain/instalacao/perfil_instalacao.dart';
 import '../classification/instalacao/class_perfil_padrao_por_escopo.dart';
 import '../classification/influencias_externas/class_competencia_ba.dart';

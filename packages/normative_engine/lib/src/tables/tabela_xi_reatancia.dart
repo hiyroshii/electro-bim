@@ -3,7 +3,7 @@
 // [1.0.0] - 2026-05
 // - ADD: tabela de reatâncias Xi por seção e material (Ω/m a 50 Hz).
 
-import '../enums/material.dart';
+import '../domain/condutor/material.dart';
 
 /// Tabela Xi — Reatância indutiva de condutores (Ω/m) a 50 Hz.
 ///

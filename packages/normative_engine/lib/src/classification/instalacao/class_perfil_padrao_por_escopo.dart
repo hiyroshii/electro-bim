@@ -3,7 +3,7 @@
 // [1.0.0] - 2026-05
 // - ADD: ClassPerfilPadraoPorEscopo — C-1 (Fase 2).
 
-import '../../enums/escopo_projeto.dart';
+import '../../domain/instalacao/escopo_projeto.dart';
 import '../../domain/instalacao/perfil_instalacao.dart';
 
 /// Retorna o [PerfilInstalacao] padrão para um dado [EscopoProjeto].

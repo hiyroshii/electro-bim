@@ -8,8 +8,8 @@
 // - ADD: verificação de restrições de uso do alumínio (6.2.3.8).
 
 import '../../contracts/i_specification.dart';
-import '../../enums/material.dart';
-import '../../enums/escopo_projeto.dart';
+import '../../domain/condutor/material.dart';
+import '../../domain/instalacao/escopo_projeto.dart';
 import '../../models/violacao.dart';
 import '../../models/entrada_normativa.dart';
 

@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: verificação de secaoNeutro e DISP_001 no serviço de dimensionamento.
 // [1.0.0] - 2026-04
 // - ADD: testes de integração do DimensionamentoCircuitoService.
 
@@ -255,6 +257,74 @@ void main() {
         );
         expect(violacoes, isEmpty);
       }
+    });
+  });
+
+  // ── secaoNeutro no relatório ──────────────────────────────────────────────
+
+  group('secaoNeutro —', () {
+    test('Monofásico TUG — secaoNeutro = secaoFase', () {
+      final r = _servico().processar(_entradaTug());
+      expect(r.secaoNeutro, equals(r.secaoFinal));
+    });
+
+    test('Trifásico TUG — secaoNeutro >= 2,5mm²', () {
+      final entrada = EntradaDimensionamento(
+        idCircuito: 'C-TRI-001',
+        tagCircuito: TagCircuito.tug,
+        potenciaVA: 3000,
+        fatorPotencia: 0.92,
+        tensao: Tensao.v220,
+        numeroFases: NumeroFases.trifasico,
+        isolacao: Isolacao.pvc,
+        arquitetura: Arquitetura.multipolar,
+        metodo: MetodoInstalacao.b1,
+        material: Material.cobre,
+        temperatura: 30,
+        distancia: 20.0,
+        origemAlimentacao: OrigemAlimentacao.pontoEntrega,
+        contextoInstalacao: ContextoInstalacao.industrial,
+        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+      );
+      final r = _servico().processar(entrada);
+      if (r.status == StatusDimensionamento.aprovado) {
+        expect(r.secaoNeutro, greaterThanOrEqualTo(2.5));
+      }
+    });
+
+    test('toResultadoNormativo usa secaoNeutro calculado', () {
+      final r = _servico().processar(_entradaTug());
+      final resultado = r.toResultadoNormativo();
+      expect(resultado.secaoNeutro, equals(r.secaoNeutro));
+    });
+  });
+
+  // ── dispositivoMultipolar ─────────────────────────────────────────────────
+
+  group('dispositivoMultipolar —', () {
+    test('Trifásico + dispositivoMultipolar=false → EntradaInvalidaException', () {
+      final entrada = EntradaDimensionamento(
+        idCircuito: 'C-DISP-001',
+        tagCircuito: TagCircuito.tug,
+        potenciaVA: 3000,
+        fatorPotencia: 0.92,
+        tensao: Tensao.v220,
+        numeroFases: NumeroFases.trifasico,
+        isolacao: Isolacao.pvc,
+        arquitetura: Arquitetura.multipolar,
+        metodo: MetodoInstalacao.b1,
+        material: Material.cobre,
+        temperatura: 30,
+        distancia: 20.0,
+        origemAlimentacao: OrigemAlimentacao.pontoEntrega,
+        contextoInstalacao: ContextoInstalacao.industrial,
+        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+        dispositivoMultipolar: false,
+      );
+      expect(
+        () => _servico().processar(entrada),
+        throwsA(isA<EntradaInvalidaException>()),
+      );
     });
   });
 }

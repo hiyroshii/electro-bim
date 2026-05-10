@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: calcularSecaoNeutro() — delega para ProcSecaoNeutro.
 // [1.0.1] - 2026-04
 // - CHG: paramsAgrupamento movido para parâmetro de resolverDadosNormativos().
 // [1.0.0] - 2026-04
@@ -13,6 +15,7 @@ import '../models/resultado_normativo.dart';
 import '../specification/spec_aluminio.dart';
 import '../specification/spec_queda_tensao.dart';
 import '../procedure/proc_ampacidade.dart';
+import '../procedure/proc_secao_neutro.dart';
 import 'specification_service.dart';
 import 'procedure_service.dart';
 
@@ -62,4 +65,10 @@ final class NormativeService implements NormativeEngine {
     ResultadoNormativo resultado,
   ) =>
       _specification.auditar(entrada, resultado);
+
+  @override
+  double calcularSecaoNeutro(double secaoFase, EntradaNormativa entrada) =>
+      const ProcSecaoNeutro().resolver(
+        (secaoFase, entrada.numeroFases, entrada.harmonicasAcima15pct),
+      );
 }

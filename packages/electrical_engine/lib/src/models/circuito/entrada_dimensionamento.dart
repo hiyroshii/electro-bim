@@ -1,5 +1,9 @@
-// REV: 1.0.1
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: faixaTensao, outrasCircuitosNoConduto, compartilhaCaboMultipolar — repassa para EntradaNormativa.
+// [1.1.0] - 2026-05
+// - ADD: dispositivoMultipolar:bool (default true) — repassa para EntradaNormativa.
 // [1.0.1] - 2026-05
 // - FIX: construtores movidos antes dos campos em EntradaDimensionamento e EntradaInvalidaException.
 // [1.0.0] - 2026-04
@@ -27,6 +31,10 @@ final class EntradaDimensionamento {
     required this.paramsAgrupamento,
     this.arranjo,
     this.harmonicasAcima15pct = false,
+    this.dispositivoMultipolar = true,
+    this.faixaTensao = FaixaTensao.faixaII,
+    this.outrasCircuitosNoConduto = const [],
+    this.compartilhaCaboMultipolar = false,
   });
 
   final String idCircuito;
@@ -43,6 +51,10 @@ final class EntradaDimensionamento {
   final int temperatura;
   final double distancia;
   final bool harmonicasAcima15pct;
+  final bool dispositivoMultipolar;
+  final FaixaTensao faixaTensao;
+  final List<FaixaTensao> outrasCircuitosNoConduto;
+  final bool compartilhaCaboMultipolar;
   final OrigemAlimentacao origemAlimentacao;
   final ContextoInstalacao contextoInstalacao;
   final ParamsAgrupamento paramsAgrupamento;
@@ -59,6 +71,10 @@ final class EntradaDimensionamento {
         material: material,
         temperatura: temperatura,
         harmonicasAcima15pct: harmonicasAcima15pct,
+        dispositivoMultipolar: dispositivoMultipolar,
+        faixaTensao: faixaTensao,
+        outrasCircuitosNoConduto: outrasCircuitosNoConduto,
+        compartilhaCaboMultipolar: compartilhaCaboMultipolar,
       );
 
   /// 3 para trifásico, 2 para mono/bifásico.

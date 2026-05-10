@@ -1,5 +1,7 @@
-// REV: 1.0.1
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: resolve tabelaXi por material e popula DadosNormativos.tabelaXi.
 // [1.0.1] - 2026-04
 // - CHG: paramsAgrupamento movido para parâmetro de resolver() — era por instância.
 // [1.0.0] - 2026-04
@@ -12,6 +14,7 @@ import '../specification/spec_queda_tensao.dart';
 import '../procedure/proc_ampacidade.dart';
 import '../procedure/proc_queda_tensao.dart';
 import '../tables/tabela_47_48_secao_minima_neutro.dart';
+import '../tables/tabela_xi_reatancia.dart';
 
 /// Sub-orquestrador de procedimento normativo.
 ///
@@ -42,9 +45,16 @@ final class ProcedureService {
     final secaoMinima =
         tabelaSecaoMinima[(entrada.tagCircuito, entrada.material)] ?? 0.0;
 
+    final xiPorSecao = Map<double, double>.fromEntries(
+      tabelaXi.entries
+          .where((e) => e.key.$2 == entrada.material)
+          .map((e) => MapEntry(e.key.$1, e.value)),
+    );
+
     return DadosNormativos(
       fatores: resultadoAmpacidade.fatores,
       tabelaIz: resultadoAmpacidade.tabelaIz,
+      tabelaXi: xiPorSecao,
       queda: parametrosQueda,
       secaoMinimaNormativa: secaoMinima,
     );

@@ -1,9 +1,112 @@
 # Changelog — normative_engine
-<!-- REV: 1 -->
+<!-- REV: 4 -->
 <!-- CHANGELOG:
+[Rev 4] - 10 05 2026
+- ADD: entrada do ciclo 4.2 — COMB_007 (6.2.9.5) + COMB_008 (6.2.10.1) + deduplicação do barrel.
+[Rev 3] - 09 05 2026
+- ADD: entrada do ciclo 4.1 — proc_secao_neutro, spec_dispositivo_multipolar, EscopoProjeto, calc_potencia_tue.
+[Rev 2] - 08 05 2026
+- ADD: entrada do ciclo 4.0 — temperatura inadmissível e tabela Xi.
 [Rev 1] - 01 05 2026
 - ADD: criação do changelog do normative_engine.
 -->
+
+---
+
+## [1.3.0] — 10 05 2026
+
+### Ciclo 4.2 — spec_combinacoes: COMB_007 + COMB_008
+
+#### normative_engine
+
+- ADD `faixa_tensao.dart`: enum `FaixaTensao { faixaI, faixaII }`.
+  faixaI = SELV/PELV/FELV (≤ 50 V CA / ≤ 120 V CC); faixaII = convencional (127 V, 220 V, 380 V).
+  Rastreabilidade: NBR 5410:2004 — 6.2.9.5.
+- CHG `entrada_normativa.dart`: +3 campos com defaults não-breaking:
+  `faixaTensao: FaixaTensao = faixaII`, `outrasCircuitosNoConduto: List<FaixaTensao> = const []`,
+  `compartilhaCaboMultipolar: bool = false`.
+- ADD `Violacao.faixasTensaoMistasNoConduto()` — código COMB_007.
+  Referência: NBR 5410:2004 — 6.2.9.5.
+- ADD `Violacao.multipolarComMultiplosCircuitos()` — código COMB_008.
+  Referência: NBR 5410:2004 — 6.2.10.1.
+- CHG `spec_combinacoes.dart`: +2 checks em `verificar()`:
+  `_verificarFaixaTensaoConduto()` (COMB_007) e `_verificarMultipolarUnicoCircuito()` (COMB_008).
+- REF `lib/normative_engine.dart` (barrel): reescrito como arquivo de re-exports puros.
+  Definição de `NormativeEngine` permanece exclusivamente em `lib/src/contracts/normative_engine.dart`.
+  `ParamsAgrupamento` exportado seletivamente via `show`.
+- ADD: 11 novos testes em `spec_combinacoes_test.dart` (COMB_007 × 6 + COMB_008 × 5).
+
+#### electrical_engine
+
+- CHG `entrada_dimensionamento.dart`: +3 campos com defaults não-breaking
+  (`faixaTensao`, `outrasCircuitosNoConduto`, `compartilhaCaboMultipolar`);
+  repassados em `toEntradaNormativa()`.
+
+---
+
+## [1.2.0] — 09 05 2026
+
+### Ciclo 4.1 — Fase 1 → v0.4.0 (itens restantes)
+
+#### normative_engine
+
+- ADD `proc_secao_neutro.dart`: cálculo da seção mínima do condutor neutro (mm²).
+  Regras: monofásico → neutro = fase; harm>15% → neutro = fase;
+  trifásico harm≤15% fase>25mm² → Tabela 48; demais → neutro = fase.
+  Rastreabilidade: NBR 5410:2004 — 6.2.6.2.
+- ADD `calcularSecaoNeutro()` em `NormativeEngine` (interface + barrel + `NormativeService`).
+  Substitui o proxy `secaoFase` usado em `RelatorioDimensionamento.toResultadoNormativo()`.
+- ADD `spec_dispositivo_multipolar.dart`: circuitos bifásicos/trifásicos exigem dispositivo multipolar.
+  Emite `Violacao.dispositivoDeveSerMultipolar()` (DISP_001) quando `!dispositivoMultipolar`.
+  Rastreabilidade: NBR 5410:2004 — 9.5.4.
+- ADD `Violacao.dispositivoDeveSerMultipolar()` — código DISP_001.
+- CHG `entrada_normativa.dart`: campo `dispositivoMultipolar: bool = true` (default não-breaking).
+- CHG `specification_service.dart`: `SpecDispositivoMultipolar` em `verificarConformidade()`.
+- ADD `escopo_projeto.dart`: enum `EscopoProjeto { residencial }` — preparação Fase 6+.
+  Rastreabilidade: NBR 5410:2004 — Seção 9.
+- ADD: 8 novos testes em `proc_secao_neutro_test.dart`.
+- ADD: 9 novos testes em `spec_dispositivo_multipolar_test.dart`.
+- ADD: 6 novos testes em `normative_service_test.dart` (calcularSecaoNeutro + DISP_001).
+
+#### electrical_engine
+
+- ADD `calc_potencia_tue.dart`: conversão de potência de plaqueta (W) para aparente (VA).
+  Separação explícita: TUG = estimativa (100 VA × pontos); TUE = plaqueta / FP.
+  Rastreabilidade: NBR 5410:2004 — 9.1.2.3.
+- CHG `relatorio_dimensionamento.dart`: campo `secaoNeutro: double` — substitui proxy `secaoFase`.
+  `toResultadoNormativo()` usa o valor calculado.
+- CHG `dimensionamento_circuito_service.dart`: calcula `secaoNeutro` via `NormativeEngine.calcularSecaoNeutro()` após seleção do condutor de fase.
+- CHG `entrada_dimensionamento.dart`: campo `dispositivoMultipolar: bool = true` repassado para `EntradaNormativa`.
+- ADD: 4 novos testes em `calculos_test.dart` (CalcPotenciaTue).
+- ADD: 4 novos testes em `dimensionamento_circuito_service_test.dart` (secaoNeutro + DISP_001).
+
+---
+
+## [1.1.0] — 08 05 2026
+
+### Ciclo 4.0 — Temperatura inadmissível + Tabela Xi
+
+#### normative_engine
+
+- ADD `spec_combinacoes`: verificação de temperatura admissível por isolação (TEMP_001).
+  Emite `Violacao.temperaturaInadmissivel()` quando `fctAr`/`fctSolo[isolacao][temperatura] == null`.
+  Cobre: temperaturas inadmissíveis (PVC ≥ 65°C) e faixas fora da Tabela 40.
+  Rastreabilidade: NBR 5410:2004 — Tabela 40.
+- ADD `tabela_xi_reatancia.dart`: reatâncias Xi (Ω/m a 50 Hz) por seção e material.
+  Cobre e alumínio para todas as seções normativas (0,5–1000 mm² Cu; 16–1000 mm² Al).
+  Rastreabilidade: NBR 5410:2004 — 6.2.7.4; IEC 60364-5-52 Tab. B.52.16.
+- ADD `dados_normativos.dart`: campo `tabelaXi: Map<double, double>` — seção → Xi (Ω/m).
+  Populado por material, filtrado pelo `ProcedureService`.
+- CHG `procedure_service.dart`: popula `tabelaXi` no `DadosNormativos`.
+- ADD: 9 novos testes em `spec_combinacoes_test.dart` (temperatura admissível — TEMP_001).
+- ADD: 2 novos testes em `normative_service_test.dart` (`tabelaXi` por material).
+
+#### electrical_engine
+
+- CHG `contexto_selecao.dart`: `reatanciaXi: double` → `tabelaXi: Map<double, double>`.
+- CHG `selecionador_condutor.dart`: Xi por seção via `ctx.tabelaXi[linha.secao]` na iteração.
+- CHG `dimensionamento_circuito_service.dart`: `tabelaXi` de `DadosNormativos` → `ContextoSelecao`.
+- CHG `dimensionamento_circuito_test.dart`: `_ctx()` — `reatanciaXi` removido, `tabelaXi` adicionado.
 
 ---
 

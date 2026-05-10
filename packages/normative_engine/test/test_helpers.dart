@@ -1,5 +1,9 @@
-// REV: 1.0.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: parâmetros faixaTensao, outrasCircuitosNoConduto, compartilhaCaboMultipolar.
+// [1.1.0] - 2026-05
+// - ADD: parâmetro dispositivoMultipolar em entradaPadrao().
 // [1.0.0] - 2026-04
 // - ADD: helpers compartilhados entre os testes do normative_engine.
 
@@ -18,6 +22,10 @@ EntradaNormativa entradaPadrao({
   Material material = Material.cobre,
   int temperatura = 30,
   bool harmonicasAcima15pct = false,
+  bool dispositivoMultipolar = true,
+  FaixaTensao faixaTensao = FaixaTensao.faixaII,
+  List<FaixaTensao> outrasCircuitosNoConduto = const [],
+  bool compartilhaCaboMultipolar = false,
 }) =>
     EntradaNormativa(
       tagCircuito: tagCircuito,
@@ -30,4 +38,8 @@ EntradaNormativa entradaPadrao({
       material: material,
       temperatura: temperatura,
       harmonicasAcima15pct: harmonicasAcima15pct,
+      dispositivoMultipolar: dispositivoMultipolar,
+      faixaTensao: faixaTensao,
+      outrasCircuitosNoConduto: outrasCircuitosNoConduto,
+      compartilhaCaboMultipolar: compartilhaCaboMultipolar,
     );

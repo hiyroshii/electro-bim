@@ -1,5 +1,9 @@
-// REV: 1.0.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: testes de COMB_007 (faixas de tensão no conduto) e COMB_008 (multipolar exclusivo).
+// [1.1.0] - 2026-05
+// - ADD: testes de temperatura admissível por isolação (TEMP_001).
 // [1.0.0] - 2026-04
 // - ADD: testes de combinações válidas iso × arq × método × arranjo × tensão.
 
@@ -278,6 +282,175 @@ void main() {
       expect(violacoes.length, greaterThanOrEqualTo(3));
     });
   });
+
+  // ── Temperatura admissível ────────────────────────────────────────────────
+
+  group('Temperatura admissível —', () {
+    test('PVC em 30°C (referência) — sem violação', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 30);
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em 60°C — limite válido', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 60);
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em 65°C — inadmissível — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 65);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('PVC em 80°C — inadmissível — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 80);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('XLPE em 80°C — válido (máximo da tabela)', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.xlpe,
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        temperatura: 80,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('EPR em 75°C — válido', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.epr,
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        temperatura: 75,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('PVC em temperatura fora da tabela (22°C) — TEMP_001', () {
+      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 22);
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+
+    test('Método D usa tabela de solo — PVC 60°C válido', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.d,
+        temperatura: 60,
+      );
+      expect(_tempViolada(spec, e), isFalse);
+    });
+
+    test('Método D usa tabela de solo — PVC 65°C inadmissível — TEMP_001', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.d,
+        temperatura: 65,
+      );
+      final violacoes = spec.verificar(e);
+      expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+  });
+
+  // ── COMB_007 — faixas de tensão no mesmo conduto ─────────────────────────
+
+  group('COMB_007 — faixas de tensão no conduto —', () {
+    test('Sem outrasCircuitosNoConduto (default) → sem violação', () {
+      final e = entradaPadrao();
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('outrasCircuitos: [faixaII], circuito faixaII → sem violação', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaII],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('outrasCircuitos: [faixaI], circuito faixaII → COMB_007', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isTrue);
+    });
+
+    test('outrasCircuitos: [faixaII], circuito faixaI → COMB_007', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaI,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaII],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isTrue);
+    });
+
+    test('Dois circuitos mesma faixaI → sem violação', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaI,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('COMB_007 — referência normativa correta', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      final v = spec.verificar(e).firstWhere((v) => v.codigo == 'COMB_007');
+      expect(v.referencia, contains('6.2.9.5'));
+    });
+  });
+
+  // ── COMB_008 — multipolar exclusivo por circuito ──────────────────────────
+
+  group('COMB_008 — multipolar exclusivo —', () {
+    test('Multipolar + compartilhaCabo: false (default) → sem violação', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: false,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('Multipolar + compartilhaCabo: true → COMB_008', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isTrue);
+    });
+
+    test('Unipolar + compartilhaCabo: true → sem violação', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('Isolado + compartilhaCabo: true → sem violação', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.pvc,
+        arquitetura: Arquitetura.isolado,
+        metodo: MetodoInstalacao.b1,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('COMB_008 — referência normativa correta', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: true,
+      );
+      final v = spec.verificar(e).firstWhere((v) => v.codigo == 'COMB_008');
+      expect(v.referencia, contains('6.2.10.1'));
+    });
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -299,3 +472,6 @@ bool _arranjoViolado(SpecCombinacoes spec, EntradaNormativa e) =>
 
 bool _tensaoFasesViolada(SpecCombinacoes spec, EntradaNormativa e) =>
     spec.verificar(e).any((v) => v.codigo == 'COMB_006');
+
+bool _tempViolada(SpecCombinacoes spec, EntradaNormativa e) =>
+    spec.verificar(e).any((v) => v.codigo == 'TEMP_001');

@@ -1,11 +1,16 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - ADD: testes de CalcPotenciaTue.
 // [1.0.0] - 2026-04
 // - ADD: testes dos três cálculos matemáticos.
 
 import 'dart:math';
 import 'package:test/test.dart';
 import 'package:normative_engine/normative_engine.dart';
+
+// ignore: implementation_imports
+import 'package:electrical_engine/src/calculos/calc_potencia_tue.dart';
 
 // ignore: implementation_imports
 import 'package:electrical_engine/src/calculos/calc_corrente_projeto.dart';
@@ -192,6 +197,40 @@ void main() {
         resistencia: r, reatancia: xi, isTrifasico: false, cosPhi: 1.0,
       );
       expect(dv40, closeTo(dv20 * 2, 0.001));
+    });
+  });
+
+  // ── CalcPotenciaTue ───────────────────────────────────────────────────────
+
+  group('CalcPotenciaTue —', () {
+    test('FP=1.0 → VA = W (sem conversão)', () {
+      expect(
+        CalcPotenciaTue.calcular(potenciaW: 1000, fatorPotencia: 1.0),
+        closeTo(1000.0, 0.001),
+      );
+    });
+
+    test('FP=0.8 → VA = W / 0.8 = 1250 VA', () {
+      expect(
+        CalcPotenciaTue.calcular(potenciaW: 1000, fatorPotencia: 0.8),
+        closeTo(1250.0, 0.001),
+      );
+    });
+
+    test('FP=0.92 (típico TUE) → proporcional', () {
+      const p = 2200.0;
+      const fp = 0.92;
+      expect(
+        CalcPotenciaTue.calcular(potenciaW: p, fatorPotencia: fp),
+        closeTo(p / fp, 0.01),
+      );
+    });
+
+    test('TUE 1500W FP=0.85 → ~1765 VA', () {
+      expect(
+        CalcPotenciaTue.calcular(potenciaW: 1500, fatorPotencia: 0.85),
+        closeTo(1764.7, 0.1),
+      );
     });
   });
 }

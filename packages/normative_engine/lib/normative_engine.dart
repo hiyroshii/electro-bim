@@ -1,61 +1,45 @@
-// REV: 1.0.1
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - REF: reescrito como barrel puro de re-exports — definição de NormativeEngine
+//   permanece exclusivamente em src/contracts/normative_engine.dart.
+// - ADD: export de FaixaTensao.
+// [1.1.0] - 2026-05
+// - ADD: calcularSecaoNeutro() — cálculo real do neutro conforme 6.2.6.2.
 // [1.0.1] - 2026-04
 // - CHG: resolverDadosNormativos recebe ParamsAgrupamento por chamada.
 // [1.0.0] - 2026-04
 // - ADD: contrato abstrato NormativeEngine.
 
-import '../models/violacao.dart';
-import '../models/dados_normativos.dart';
-import '../models/entrada_normativa.dart';
-import '../models/resultado_normativo.dart';
-import '../procedure/proc_ampacidade.dart';
+// Barrel público do normative_engine. Somente re-exports — sem lógica.
 
-/// Contrato público do normative_engine.
-///
-/// Ponto único de acesso para o [dimensionamento_engine].
-/// Implementado por [NormativeService].
-///
-/// Fluxo de uso:
-///   1. UI envia entrada ao [ServicoDimensionamento].
-///   2. Serviço chama [verificarConformidade] — valida combinações e material.
-///   3. Serviço chama [resolverDadosNormativos] — obtém tabelas e fatores.
-///   4. Serviço executa os cálculos e monta o [RelatorioDimensionamento].
-///   5. UI envia relatório de volta — engine chama [auditar].
-///   6. Engine audita o resultado e devolve [List<Violacao>] à UI.
-///
-/// O consumidor nunca importa specification/, procedure/ ou tables/
-/// diretamente — apenas este contrato e os models/enums do barrel.
-///
-/// Rastreabilidade: ARCHITECTURE.md — Seções 5 e 6.
-abstract interface class NormativeEngine {
-  /// Verifica conformidade da entrada antes do cálculo.
-  ///
-  /// Verifica combinações (iso × arq × método × arranjo × tensão)
-  /// e restrições de material (alumínio).
-  /// Retorna lista vazia se a entrada for plenamente conforme.
-  /// Nunca lança exceção.
-  ///
-  /// O [ServicoDimensionamento] deve abortar se a lista não estiver vazia.
-  List<Violacao> verificarConformidade(EntradaNormativa entrada);
+// Contratos
+export 'src/contracts/normative_engine.dart';
+export 'src/contracts/i_specification.dart';
+export 'src/contracts/i_procedure.dart';
 
-  /// Resolve todos os dados normativos necessários para o cálculo.
-  ///
-  /// [paramsAgrupamento] é por chamada — varia por circuito.
-  /// Pré-condição: [verificarConformidade] retornou lista vazia.
-  /// Retorna tabelas, fatores FCT/FCA, limites de queda e seção mínima.
-  ///
-  /// Rastreabilidade: ARCHITECTURE.md — Seção 5.2.
-  DadosNormativos resolverDadosNormativos(
-    EntradaNormativa entrada,
-    ParamsAgrupamento paramsAgrupamento,
-  );
+// Enums
+export 'src/enums/isolacao.dart';
+export 'src/enums/arquitetura.dart';
+export 'src/enums/metodo_instalacao.dart';
+export 'src/enums/arranjo_condutores.dart';
+export 'src/enums/faixa_tensao.dart';
+export 'src/enums/material.dart';
+export 'src/enums/tag_circuito.dart';
+export 'src/enums/tensao.dart';
+export 'src/enums/numero_fases.dart';
+export 'src/enums/contexto_instalacao.dart';
+export 'src/enums/origem_alimentacao.dart';
+export 'src/enums/escopo_projeto.dart';
 
-  /// Audita o resultado do dimensionamento após o cálculo.
-  ///
-  /// Recebe o relatório já calculado pelo [ServicoDimensionamento]
-  /// e verifica seção mínima, neutro e queda de tensão.
-  /// Retorna lista vazia se o resultado for plenamente conforme.
-  /// Nunca lança exceção.
-  List<Violacao> auditar(EntradaNormativa entrada, ResultadoNormativo resultado);
-}
+// Models
+export 'src/models/entrada_normativa.dart';
+export 'src/models/resultado_normativo.dart';
+export 'src/models/dados_normativos.dart';
+export 'src/models/violacao.dart';
+export 'src/models/fatores_correcao.dart';
+export 'src/models/linha_ampacidade.dart';
+export 'src/models/parametros_queda.dart';
+
+// ParamsAgrupamento — definido em proc_ampacidade, exposto seletivamente
+export 'src/procedure/proc_ampacidade.dart' show ParamsAgrupamento;

@@ -1,5 +1,10 @@
-// REV: 1.0.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: verificação de faixas de tensão no mesmo conduto (COMB_007) — 6.2.9.5.
+// - ADD: verificação de multipolar exclusivo por circuito (COMB_008) — 6.2.10.1.
+// [1.1.0] - 2026-05
+// - ADD: verificação de temperatura admissível por isolação (TEMP_001) — NBR 5410 Tab. 40.
 // [1.0.0] - 2026-04
 // - ADD: verificação de combinações válidas iso × arq × método × arranjo × tensao.
 
@@ -11,6 +16,9 @@ import '../enums/arranjo_condutores.dart';
 import '../enums/tensao.dart';
 import '../models/violacao.dart';
 import '../models/entrada_normativa.dart';
+import '../tables/tabela_40_fct_temperatura.dart';
+import '../enums/faixa_tensao.dart';
+
 
 /// Verifica combinações válidas de Isolacao × Arquitetura × MetodoInstalacao
 /// × ArranjoCondutores × Tensao × NumeroFases.
@@ -103,7 +111,47 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
     // 4. ArranjoCondutores × MetodoInstalacao
     _verificarArranjo(entrada, violacoes);
 
+    // 5. Temperatura admissível para a isolação
+    _verificarTemperatura(entrada, violacoes);
+
+    // 6. Faixas de tensão distintas no mesmo conduto
+    _verificarFaixaTensaoConduto(entrada, violacoes);
+
+    // 7. Cabo multipolar exclusivo por circuito
+    _verificarMultipolarUnicoCircuito(entrada, violacoes);
+
     return violacoes;
+  }
+
+  void _verificarTemperatura(EntradaNormativa e, List<Violacao> violacoes) {
+    final mapa = e.metodo.isSolo ? fctSolo : fctAr;
+    final fator = mapa[e.isolacao]?[e.temperatura];
+    if (fator == null) {
+      violacoes.add(Violacao.temperaturaInadmissivel(
+        temperatura: e.temperatura,
+        isolacao: e.isolacao.name.toUpperCase(),
+      ));
+    }
+  }
+
+  // Rastreabilidade: NBR 5410:2004 — 6.2.9.5.
+  void _verificarFaixaTensaoConduto(EntradaNormativa e, List<Violacao> violacoes) {
+    for (final outra in e.outrasCircuitosNoConduto) {
+      if (outra != e.faixaTensao) {
+        violacoes.add(Violacao.faixasTensaoMistasNoConduto(
+          faixaCircuito: e.faixaTensao.name,
+          faixaOutro: outra.name,
+        ));
+        return;
+      }
+    }
+  }
+
+  // Rastreabilidade: NBR 5410:2004 — 6.2.10.1.
+  void _verificarMultipolarUnicoCircuito(EntradaNormativa e, List<Violacao> violacoes) {
+    if (e.arquitetura == Arquitetura.multipolar && e.compartilhaCaboMultipolar) {
+      violacoes.add(Violacao.multipolarComMultiplosCircuitos());
+    }
   }
 
   void _verificarArranjo(EntradaNormativa e, List<Violacao> violacoes) {

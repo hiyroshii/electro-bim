@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.1.0
 // CHANGELOG:
+// [1.1.0] - 2026-05
+// - CHG: _ctx() — reatanciaXi removido, tabelaXi adicionado.
 // [1.0.0] - 2026-04
 // - ADD: testes de PoliticaDisjuntor e SelecionadorCondutor.
 
@@ -42,7 +44,7 @@ ContextoSelecao _ctx({
   double tensao = 220.0,
   double fatorPotencia = 1.0,
   double fatorHarmonico = 1.0,
-  double reatanciaXi = 0.0,
+  Map<double, double>? tabelaXi,
   List<LinhaAmpacidade>? tabela,
 }) =>
     ContextoSelecao(
@@ -58,11 +60,11 @@ ContextoSelecao _ctx({
       limiteQueda: limiteQueda,
       fatores: const FatoresCorrecao(fct: 1.0, fca: 1.0),
       tabelaIz: tabela ?? _tabelaB1,
+      tabelaXi: tabelaXi ?? const {},
       tensao: tensao,
       distancia: distancia,
       fatorPotencia: fatorPotencia,
       fatorHarmonico: fatorHarmonico,
-      reatanciaXi: reatanciaXi,
     );
 
 void main() {
@@ -254,7 +256,7 @@ void main() {
           condutoresAtivos: 2,
           ib: 5.0, inDisjuntor: 10.0, secaoMinima: 2.5,
           limiteQueda: 4.0, fatores: const FatoresCorrecao(fct: 1.0, fca: 1.0),
-          tabelaIz: _tabelaB1, tensao: 220.0,
+          tabelaIz: _tabelaB1, tabelaXi: const {}, tensao: 220.0,
           distancia: 20.0, fatorPotencia: 1.0,
         );
         expect(ctx.resistividade, closeTo(0.02538, 0.00001));
@@ -270,7 +272,7 @@ void main() {
           condutoresAtivos: 2,
           ib: 5.0, inDisjuntor: 10.0, secaoMinima: 16.0,
           limiteQueda: 4.0, fatores: const FatoresCorrecao(fct: 1.0, fca: 1.0),
-          tabelaIz: _tabelaB1, tensao: 220.0,
+          tabelaIz: _tabelaB1, tabelaXi: const {}, tensao: 220.0,
           distancia: 20.0, fatorPotencia: 1.0,
         );
         expect(ctx.resistividade, closeTo(0.03775, 0.00001));

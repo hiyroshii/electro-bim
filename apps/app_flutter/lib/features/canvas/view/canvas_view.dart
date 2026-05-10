@@ -1,326 +1,235 @@
-// REV: 3.9.0
+// REV: 2.3.0
 // CHANGELOG:
-// - ADD: suporte a ferramentas Rectangle e Circle
-// - CHG: atalhos de teclado R e C adicionados via keyboard_shortcuts
+// [2.3.0] - 01 05 2026
+// - ADD: integração com handleKeyEvent (keyboard_shortcuts.dart)
+// - ADD: CanvasToolbar com canUndo/canRedo e callbacks de undo/redo
+// - ADD: _onToolSelected — mapeia ToolbarTool → InputController (mode + tool)
+// - ADD: shift em onPointerDown → lasso no SelectToolController
+// - ADD: lassoPoints e windowRect passados ao CanvasPainter
+// - ADD: estado de seleção (hoveredGrip, draggedGrip, isMoving) no painter
+// - CHG: _computeWindowRect — converte world → screen para o painter
+// - DEL: toolbar e keyboard handling inline (extraídos para arquivos dedicados)
+//
+// [2.2.0] - 01 05 2026
+// - ADD: shift detection, lassoPoints
+//
+// [2.1.0] - 01 05 2026
+// - ADD: MouseRegion hover, Listener, Focus + Escape, toolbar Line/Pline
 
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:canvas_engine/canvas_engine.dart' as engine;
-import '/widgets/canvas_toolbar.dart';
 import '../painter/canvas_painter.dart';
-import '/widgets/layer_panel.dart';
 import 'package:app_flutter/controllers/keyboard_shortcuts.dart';
+import '/widgets/canvas_toolbar.dart';
 
 class CanvasView extends StatefulWidget {
   const CanvasView({super.key});
+
   @override
   State<CanvasView> createState() => _CanvasViewState();
 }
 
 class _CanvasViewState extends State<CanvasView> {
-  late engine.CadDocument document;
-  late engine.Viewport viewport;
   late engine.InputController input;
-  late engine.SnapService snapService;
-  late engine.UndoManager _undoManager;
-
   ToolbarTool _activeTool = ToolbarTool.line;
-
-  bool _isMiddlePanning = false;
-  Offset _lastMiddlePosition = Offset.zero;
-
-  Timer? _nudgeTimer;
-  double _nudgeSpeed = 1.0;
 
   @override
   void initState() {
     super.initState();
-    document = engine.CadDocument();
-    viewport = engine.Viewport();
-    snapService = engine.SnapService.createDefault();
-    _undoManager = engine.UndoManager();
-
     input = engine.InputController(
-      viewport: viewport,
-      document: document,
-      snapService: snapService,
+      viewport: engine.Viewport(),
+      document: engine.CadDocument(),
+      snapService: engine.SnapService.createDefault(),
       tool: engine.DrawLineController(),
-      undoManager: _undoManager,
     );
-    _undoManager.addListener(_repaint);
-  }
-
-  @override
-  void dispose() {
-    _stopNudge();
-    _undoManager.removeListener(_repaint);
-    super.dispose();
   }
 
   void _repaint() => setState(() {});
 
-  void _setTool(ToolbarTool tool) {
+  // ---------------------------------------------------------------
+  // Troca de ferramenta — sincroniza toolbar e InputController
+  // ---------------------------------------------------------------
+
+  void _onToolSelected(ToolbarTool tool) {
     setState(() {
       _activeTool = tool;
       switch (tool) {
-        case ToolbarTool.line:
-          input.setTool(engine.DrawLineController());
-          input.setMode(engine.CanvasMode.draw);
-          break;
-        case ToolbarTool.pline:
-          input.setTool(engine.DrawPlineController());
-          input.setMode(engine.CanvasMode.draw);
-          break;
-        case ToolbarTool.rectangle:
-          input.setTool(engine.DrawRectangleController());
-          input.setMode(engine.CanvasMode.draw);
-          break;
-        case ToolbarTool.circle:
-          input.setTool(engine.DrawCircleController());
-          input.setMode(engine.CanvasMode.draw);
-          break;
         case ToolbarTool.select:
           input.setMode(engine.CanvasMode.select);
-          break;
         case ToolbarTool.pan:
           input.setMode(engine.CanvasMode.navigate);
-          break;
+        case ToolbarTool.line:
+          input.setMode(engine.CanvasMode.draw);
+          input.setTool(engine.DrawLineController());
+        case ToolbarTool.pline:
+          input.setMode(engine.CanvasMode.draw);
+          input.setTool(engine.DrawPlineController());
+        case ToolbarTool.rectangle:
+          input.setMode(engine.CanvasMode.draw);
+          input.setTool(engine.DrawRectangleController());
+        case ToolbarTool.circle:
+          input.setMode(engine.CanvasMode.draw);
+          input.setTool(engine.DrawCircleController());
       }
     });
   }
 
-  void _startNudge(double dxScreen, double dyScreen) {
-    _nudgeSpeed = 1.0;
-    _nudgeTimer?.cancel();
-    input.selectController.nudge(dxScreen, dyScreen);
-    _repaint();
+  // ---------------------------------------------------------------
+  // WindowRect — world → screen para o painter
+  // ---------------------------------------------------------------
 
-    _nudgeTimer = Timer.periodic(const Duration(milliseconds: 80), (timer) {
-      input.selectController.nudge(dxScreen * _nudgeSpeed, dyScreen * _nudgeSpeed);
-      _repaint();
-      _nudgeSpeed = (_nudgeSpeed * 1.2).clamp(1.0, 30.0);
-    });
+  Rect? _computeWindowRect() {
+    final s = input.selectController.windowStart;
+    final e = input.selectController.windowEnd;
+    if (s == null || e == null) return null;
+    final ss = input.viewport.worldToScreen(s);
+    final se = input.viewport.worldToScreen(e);
+    return Rect.fromPoints(Offset(ss.x, ss.y), Offset(se.x, se.y));
   }
 
-  void _stopNudge() {
-    _nudgeTimer?.cancel();
-    _nudgeTimer = null;
-  }
-
-  SystemMouseCursor get _mouseCursor => switch (_activeTool) {
-        ToolbarTool.pan => SystemMouseCursors.move,
-        ToolbarTool.select => SystemMouseCursors.basic,
-        _ => SystemMouseCursors.precise, // todas as ferramentas de desenho
-      };
+  // ---------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
+    final sel = input.selectController;
+
     return Focus(
       autofocus: true,
       onKeyEvent: (node, event) {
-        if (handleKeyEvent(
+        final handled = handleKeyEvent(
           event,
           input,
           _repaint,
-          () => _setTool(ToolbarTool.select),
-          () => _setTool(ToolbarTool.pan),
-          () => _setTool(ToolbarTool.rectangle),
-          () => _setTool(ToolbarTool.circle),
-        )) {
-          return KeyEventResult.handled;
-        }
-
-        if (event is KeyDownEvent) {
-          switch (event.logicalKey) {
-            case LogicalKeyboardKey.arrowUp:
-              _startNudge(0, -1);
-              return KeyEventResult.handled;
-            case LogicalKeyboardKey.arrowDown:
-              _startNudge(0, 1);
-              return KeyEventResult.handled;
-            case LogicalKeyboardKey.arrowLeft:
-              _startNudge(-1, 0);
-              return KeyEventResult.handled;
-            case LogicalKeyboardKey.arrowRight:
-              _startNudge(1, 0);
-              return KeyEventResult.handled;
-            default:
-              break;
-          }
-        } else if (event is KeyUpEvent) {
-          switch (event.logicalKey) {
-            case LogicalKeyboardKey.arrowUp:
-            case LogicalKeyboardKey.arrowDown:
-            case LogicalKeyboardKey.arrowLeft:
-            case LogicalKeyboardKey.arrowRight:
-              _stopNudge();
-              return KeyEventResult.handled;
-            default:
-              break;
-          }
-        }
-
-        return KeyEventResult.ignored;
+          () => _onToolSelected(ToolbarTool.select),
+          () => _onToolSelected(ToolbarTool.pan),
+          () => _onToolSelected(ToolbarTool.rectangle),
+          () => _onToolSelected(ToolbarTool.circle),
+        );
+        // Sync toolbar se o shortcut trocou o modo externamente
+        if (handled) _syncToolbarFromMode();
+        return handled ? KeyEventResult.handled : KeyEventResult.ignored;
       },
-      child: Row(
+      child: Stack(
         children: [
-          // Painel de Layers
-          LayerPanel(
-            document: document,
-            onChanged: _repaint,
+          // --- Canvas ---
+          MouseRegion(
+            cursor: _cursorForMode(),
+            onHover: (event) {
+              input.onHover(engine.Vector3(
+                event.localPosition.dx,
+                event.localPosition.dy,
+                0,
+              ));
+              _repaint();
+            },
+            child: Listener(
+              onPointerDown: (event) {
+                input.onPointerDown(
+                  engine.Vector3(
+                      event.localPosition.dx, event.localPosition.dy, 0),
+                  ctrl: HardwareKeyboard.instance.isControlPressed,
+                  shift: HardwareKeyboard.instance.isShiftPressed,
+                );
+                _repaint();
+              },
+              onPointerMove: (event) {
+                input.onPointerMove(
+                  engine.Vector3(
+                      event.localPosition.dx, event.localPosition.dy, 0),
+                  engine.Vector3(event.delta.dx, event.delta.dy, 0),
+                );
+                _repaint();
+              },
+              onPointerUp: (event) {
+                input.onPointerUp(engine.Vector3(
+                  event.localPosition.dx,
+                  event.localPosition.dy,
+                  0,
+                ));
+                _repaint();
+              },
+              onPointerSignal: (event) {
+                if (event is PointerScrollEvent) {
+                  input.onZoom(
+                    event.scrollDelta.dy > 0 ? 0.9 : 1.1,
+                    engine.Vector3(
+                        event.localPosition.dx, event.localPosition.dy, 0),
+                  );
+                  _repaint();
+                }
+              },
+              child: Container(
+                color: const Color(0xFFF5F5F5),
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: CanvasPainter(
+                    document: input.document,
+                    viewport: input.viewport,
+                    cursor: input.cursor,
+                    tool: input.tool,
+                    mode: input.mode,
+                    selectedShape: input.selectedShape,
+                    selectedShapes: input.selectedShapes,
+                    hoveredGripShape: sel.hoveredGripShape,
+                    hoveredGripIndex: sel.hoveredGripIndex,
+                    draggedGripShape: sel.draggedGripShape,
+                    isDraggingGrip: sel.draggedGripIndex != null,
+                    isMovingEntity: sel.isMovingEntity,
+                    windowRect: _computeWindowRect(),
+                    lassoPoints: sel.isSelectingLasso
+                        ? sel.lassoPoints
+                        : null,
+                  ),
+                ),
+              ),
+            ),
           ),
 
-          // Canvas
-          Expanded(
-            child: Stack(
-              children: [
-                MouseRegion(
-                  cursor: _mouseCursor,
-                  onHover: (event) {
-                    input.onHover(engine.Vector3(
-                      event.localPosition.dx,
-                      event.localPosition.dy,
-                      0,
-                    ));
-                    _repaint();
-                  },
-                  child: Listener(
-                    onPointerDown: (event) {
-                      if (event.buttons == 4) {
-                        _isMiddlePanning = true;
-                        _lastMiddlePosition = event.localPosition;
-                        return;
-                      }
-                      if (event.buttons == 2) return;
-                      if (event.buttons == 1) {
-                        input.onPointerDown(engine.Vector3(
-                          event.localPosition.dx,
-                          event.localPosition.dy,
-                          0,
-                        ));
-                        _repaint();
-                      }
-                    },
-                    onPointerMove: (event) {
-                      if (_isMiddlePanning) {
-                        final delta =
-                            event.localPosition - _lastMiddlePosition;
-                        viewport.pan(
-                            engine.Vector3(delta.dx, delta.dy, 0));
-                        _lastMiddlePosition = event.localPosition;
-                        _repaint();
-                        return;
-                      }
-                      input.onPointerMove(
-                        engine.Vector3(
-                            event.localPosition.dx, event.localPosition.dy, 0),
-                        engine.Vector3(event.delta.dx, event.delta.dy, 0),
-                      );
-                      _repaint();
-                    },
-                    onPointerUp: (event) {
-                      if (_isMiddlePanning) {
-                        _isMiddlePanning = false;
-                        return;
-                      }
-                      if (event.buttons == 2) return;
-                      input.onPointerUp(engine.Vector3(
-                        event.localPosition.dx,
-                        event.localPosition.dy,
-                        0,
-                      ));
-                      _repaint();
-                    },
-                    onPointerCancel: (event) {
-                      if (_isMiddlePanning) _isMiddlePanning = false;
-                    },
-                    onPointerSignal: (event) {
-                      try {
-                        final delta =
-                            (event as dynamic).scrollDelta as Offset;
-                        input.onZoom(
-                          delta.dy > 0 ? 0.9 : 1.1,
-                          engine.Vector3(event.localPosition.dx,
-                              event.localPosition.dy, 0),
-                        );
-                        _repaint();
-                      } catch (_) {}
-                    },
-                    child: Container(
-                      color: const Color(0xFFF5F5F5),
-                      child: CustomPaint(
-                        size: Size.infinite,
-                        painter: CanvasPainter(
-                          document: document,
-                          viewport: viewport,
-                          cursor: input.cursor,
-                          tool: input.tool,
-                          selectedShape: input.selectedShape,
-                          mode: input.mode,
-                          hoveredGripIndex:
-                              input.selectController.hoveredGripIndex,
-                          isDraggingGrip: input
-                                  .selectController.draggedGripIndex !=
-                              null,
-                          isMovingEntity:
-                              input.selectController.isMovingEntity,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // Toolbar
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: CanvasToolbar(
-                    activeTool: _activeTool,
-                    onToolSelected: _setTool,
-                    canUndo: _undoManager.canUndo,
-                    canRedo: _undoManager.canRedo,
-                    onUndo: () {
-                      if (input.mode == engine.CanvasMode.draw &&
-                          input.tool.isActive) {
-                        input.undoDrawing();
-                      } else {
-                        _undoManager.undo();
-                      }
-                      _repaint();
-                    },
-                    onRedo: () {
-                      _undoManager.redo();
-                      _repaint();
-                    },
-                  ),
-                ),
-                // Indicador de modo
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: switch (_activeTool) {
-                        ToolbarTool.select => Colors.blue.shade100,
-                        ToolbarTool.pan => Colors.orange.shade100,
-                        _ => Colors.green.shade100,
-                      },
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      _activeTool.modeDisplay,
-                      style: const TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
+          // --- Toolbar (esquerda) ---
+          Positioned(
+            top: 12,
+            left: 12,
+            child: CanvasToolbar(
+              activeTool: _activeTool,
+              onToolSelected: _onToolSelected,
+              canUndo: input.undoManager.canUndo,
+              canRedo: input.undoManager.canRedo,
+              onUndo: () {
+                input.undoManager.undo();
+                _repaint();
+              },
+              onRedo: () {
+                input.undoManager.redo();
+                _repaint();
+              },
             ),
           ),
         ],
       ),
     );
   }
+
+  // ---------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------
+
+  /// Mantém a toolbar sincronizada quando shortcuts trocam o modo.
+  void _syncToolbarFromMode() {
+    final next = switch (input.mode) {
+      engine.CanvasMode.select => ToolbarTool.select,
+      engine.CanvasMode.navigate => ToolbarTool.pan,
+      engine.CanvasMode.draw => _activeTool, // mantém a ferramenta de desenho
+    };
+    if (next != _activeTool) setState(() => _activeTool = next);
+  }
+
+  SystemMouseCursor _cursorForMode() => switch (input.mode) {
+        engine.CanvasMode.select => SystemMouseCursors.basic,
+        engine.CanvasMode.navigate => SystemMouseCursors.grab,
+        engine.CanvasMode.draw => SystemMouseCursors.precise,
+      };
 }

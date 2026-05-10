@@ -23,7 +23,7 @@ class CursorState {
   void update(Vector3 world, Vector3 snapped, SnapType type) {
     this.world = world;
     this.snapped = snapped;
-    this.snapType = type;
+    snapType = type;
   }
 
   void clear() {

@@ -40,7 +40,7 @@ class CanvasToolbar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.grey.shade900.withOpacity(0.85),
+        color: Colors.grey.shade900.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

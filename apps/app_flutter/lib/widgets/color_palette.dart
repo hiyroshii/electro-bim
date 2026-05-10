@@ -1,5 +1,7 @@
-// REV: 1.0.0
+// REV: 1.0.1
 // CHANGELOG:
+// [1.0.1] - 05 05 2026
+// - FIX: substituição de Color.value depreciado por Color == e toARGB32()
 // [1.0.0] - 04 05 2026
 // - ADD: ColorPalette — grid de cores predefinidas para escolha de cor do layer
 // - ADD: suporte a cores padrão (16 cores básicas + cinzas)
@@ -52,7 +54,7 @@ class ColorPalette extends StatelessWidget {
       spacing: 4,
       runSpacing: 4,
       children: colors.map((color) {
-        final isSelected = color.value == selectedColor.value;
+        final isSelected = color == selectedColor; // ✅ corrigido
         return GestureDetector(
           onTap: () => onColorSelected(color),
           child: Container(
@@ -104,7 +106,8 @@ Future<Color?> showColorPickerDialog(BuildContext context, Color currentColor) {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '#${selected.value.toRadixString(16).substring(2).toUpperCase()}',
+                      // ✅ corrigido: usar toARGB32() e formatar com padding
+                      '#${selected.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
                       style: const TextStyle(fontFamily: 'monospace'),
                     ),
                   ],

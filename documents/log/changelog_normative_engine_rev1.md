@@ -1,6 +1,8 @@
 # Changelog — normative_engine
-<!-- REV: 3 -->
+<!-- REV: 4 -->
 <!-- CHANGELOG:
+[Rev 4] - 10 05 2026
+- ADD: entrada do ciclo 4.2 — COMB_007 (6.2.9.5) + COMB_008 (6.2.10.1) + deduplicação do barrel.
 [Rev 3] - 09 05 2026
 - ADD: entrada do ciclo 4.1 — proc_secao_neutro, spec_dispositivo_multipolar, EscopoProjeto, calc_potencia_tue.
 [Rev 2] - 08 05 2026
@@ -8,6 +10,37 @@
 [Rev 1] - 01 05 2026
 - ADD: criação do changelog do normative_engine.
 -->
+
+---
+
+## [1.3.0] — 10 05 2026
+
+### Ciclo 4.2 — spec_combinacoes: COMB_007 + COMB_008
+
+#### normative_engine
+
+- ADD `faixa_tensao.dart`: enum `FaixaTensao { faixaI, faixaII }`.
+  faixaI = SELV/PELV/FELV (≤ 50 V CA / ≤ 120 V CC); faixaII = convencional (127 V, 220 V, 380 V).
+  Rastreabilidade: NBR 5410:2004 — 6.2.9.5.
+- CHG `entrada_normativa.dart`: +3 campos com defaults não-breaking:
+  `faixaTensao: FaixaTensao = faixaII`, `outrasCircuitosNoConduto: List<FaixaTensao> = const []`,
+  `compartilhaCaboMultipolar: bool = false`.
+- ADD `Violacao.faixasTensaoMistasNoConduto()` — código COMB_007.
+  Referência: NBR 5410:2004 — 6.2.9.5.
+- ADD `Violacao.multipolarComMultiplosCircuitos()` — código COMB_008.
+  Referência: NBR 5410:2004 — 6.2.10.1.
+- CHG `spec_combinacoes.dart`: +2 checks em `verificar()`:
+  `_verificarFaixaTensaoConduto()` (COMB_007) e `_verificarMultipolarUnicoCircuito()` (COMB_008).
+- REF `lib/normative_engine.dart` (barrel): reescrito como arquivo de re-exports puros.
+  Definição de `NormativeEngine` permanece exclusivamente em `lib/src/contracts/normative_engine.dart`.
+  `ParamsAgrupamento` exportado seletivamente via `show`.
+- ADD: 11 novos testes em `spec_combinacoes_test.dart` (COMB_007 × 6 + COMB_008 × 5).
+
+#### electrical_engine
+
+- CHG `entrada_dimensionamento.dart`: +3 campos com defaults não-breaking
+  (`faixaTensao`, `outrasCircuitosNoConduto`, `compartilhaCaboMultipolar`);
+  repassados em `toEntradaNormativa()`.
 
 ---
 

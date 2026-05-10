@@ -7,7 +7,14 @@ Versões semânticas conforme [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased] — Fase 3
 
-### Changed
+### Added
+- `TipoComodo` enum — tipo de cômodo residencial (sala, quarto, cozinha, banheiro, areaServico, corredor, garagem, varanda)
+- `tabela_carga_iluminacao` (T-13) — carga mínima por ponto IL por cômodo (100 VA uniforme)
+- `tabela_potencia_tug` (T-14) — carga mínima por TUG por cômodo (100 VA geral / 600 VA áreas molhadas e externas)
+- `ProcCargaResidencial` (P-6) — carga mínima normativa (VA) de circuito residencial via T-13/T-14
+- `EntradaCargaResidencial` typedef — `({TipoComodo comodo, TagCircuito tag, int quantidade})`
+
+### Changed (Fase 3.1)
 - `enums/` eliminado — todos os tipos movidos para `domain/`:
   - `domain/condutor/`: `Isolacao`, `Arquitetura`, `Material`, `MetodoInstalacao`, `ArranjoCondutores`
   - `domain/instalacao/`: `EscopoProjeto`, `TagCircuito`, `OrigemAlimentacao`, `Tensao`, `NumeroFases`, `FaixaTensao`

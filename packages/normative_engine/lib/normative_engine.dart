@@ -1,5 +1,8 @@
-// REV: 2.0.0
+// REV: 3.0.0
 // CHANGELOG:
+// [3.0.0] - 2026-05
+// - ADD: TipoComodo (domain/locais) — tipo de cômodo residencial (Fase 3.2).
+// - ADD: ProcCargaResidencial + EntradaCargaResidencial (Fase 3.2).
 // [2.0.0] - 2026-05
 // - ADD: exports de IClassification, IVerification, PerfilInstalacao, CodigoInfluencia (Fase 2).
 // - REM: ContextoInstalacao removido do barrel (substituído por PerfilInstalacao).
@@ -20,6 +23,7 @@ export 'src/contracts/i_verification.dart';
 // Domínio
 export 'src/domain/instalacao/perfil_instalacao.dart';
 export 'src/domain/influencias/codigo_influencia.dart';
+export 'src/domain/locais/tipo_comodo.dart';
 
 // Enums — condutor
 export 'src/domain/condutor/isolacao.dart';
@@ -47,3 +51,7 @@ export 'src/models/parametros_queda.dart';
 
 // ParamsAgrupamento — definido em proc_ampacidade, exposto seletivamente
 export 'src/procedure/condutor/proc_ampacidade.dart' show ParamsAgrupamento;
+
+// ProcCargaResidencial — P-6
+export 'src/procedure/carga/proc_carga_residencial.dart'
+    show ProcCargaResidencial, EntradaCargaResidencial;

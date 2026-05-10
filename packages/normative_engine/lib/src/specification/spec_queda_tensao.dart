@@ -28,19 +28,19 @@ export '../enums/origem_alimentacao.dart';
 ///
 /// Rastreabilidade: NBR 5410:2004 — 6.2.7.1 e 6.2.7.2.
 final class SpecQuedaTensao implements ISpecification<EntradaNormativa> {
+
+  const SpecQuedaTensao({
+    required this.quedaCalculadaPercent,
+    required this.origemAlimentacao,
+  });
   /// Queda de tensão calculada pelo [dimensionamento_engine] (%).
   final double quedaCalculadaPercent;
 
   /// Origem da alimentação — determina o limite para alimentadores.
   final OrigemAlimentacao origemAlimentacao;
 
-  const SpecQuedaTensao({
-    required this.quedaCalculadaPercent,
-    required this.origemAlimentacao,
-  });
-
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final limite = _resolverLimite(entrada.tagCircuito);
 
     if (quedaCalculadaPercent > limite) {
@@ -56,7 +56,7 @@ final class SpecQuedaTensao implements ISpecification<EntradaNormativa> {
     return [];
   }
 
-  double _resolverLimite(TagCircuito tag) {
+  double _resolverLimite(final TagCircuito tag) {
     if (tag.isTerminal) return TagCircuito.limiteQuedaTerminal;
 
     return switch (origemAlimentacao) {

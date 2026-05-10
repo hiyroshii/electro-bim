@@ -39,7 +39,7 @@ abstract interface class NormativeEngine {
   /// Nunca lança exceção.
   ///
   /// O [ServicoDimensionamento] deve abortar se a lista não estiver vazia.
-  List<Violacao> verificarConformidade(EntradaNormativa entrada);
+  List<Violacao> verificarConformidade(final EntradaNormativa entrada);
 
   /// Resolve todos os dados normativos necessários para o cálculo.
   ///
@@ -49,8 +49,8 @@ abstract interface class NormativeEngine {
   ///
   /// Rastreabilidade: ARCHITECTURE.md — Seção 5.2.
   DadosNormativos resolverDadosNormativos(
-    EntradaNormativa entrada,
-    ParamsAgrupamento paramsAgrupamento,
+    final EntradaNormativa entrada,
+    final ParamsAgrupamento paramsAgrupamento,
   );
 
   /// Audita o resultado do dimensionamento após o cálculo.
@@ -59,7 +59,7 @@ abstract interface class NormativeEngine {
   /// e verifica seção mínima, neutro e queda de tensão.
   /// Retorna lista vazia se o resultado for plenamente conforme.
   /// Nunca lança exceção.
-  List<Violacao> auditar(EntradaNormativa entrada, ResultadoNormativo resultado);
+  List<Violacao> auditar(final EntradaNormativa entrada, final ResultadoNormativo resultado);
 
   /// Calcula a seção mínima do condutor neutro após a seleção do condutor de fase.
   ///
@@ -68,5 +68,5 @@ abstract interface class NormativeEngine {
   /// Nunca lança exceção.
   ///
   /// Rastreabilidade: NBR 5410:2004 — 6.2.6.2.
-  double calcularSecaoNeutro(double secaoFase, EntradaNormativa entrada);
+  double calcularSecaoNeutro(final double secaoFase, final EntradaNormativa entrada);
 }

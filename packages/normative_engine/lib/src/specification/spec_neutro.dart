@@ -13,19 +13,19 @@ import '../tables/tabela_47_48_secao_minima_neutro.dart';
 ///
 /// Rastreabilidade: NBR 5410:2004 — 6.2.6.2.
 final class SpecNeutro implements ISpecification<EntradaNormativa> {
+
+  const SpecNeutro({
+    required this.secaoNeutro,
+    required this.secaoFase,
+  });
   /// Seção do condutor neutro proposta (mm²).
   final double secaoNeutro;
 
   /// Seção dos condutores de fase (mm²).
   final double secaoFase;
 
-  const SpecNeutro({
-    required this.secaoNeutro,
-    required this.secaoFase,
-  });
-
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final violacoes = <Violacao>[];
 
     // Monofásico: neutro obrigatoriamente igual à fase.
@@ -58,7 +58,7 @@ final class SpecNeutro implements ISpecification<EntradaNormativa> {
               'permitido pela Tabela 48 para fase de $secaoFase mm² '
               '(mínimo: $secaoMinimaPermitida mm²).',
           referencia: 'NBR 5410:2004 — Tabela 48, 6.2.6.2.6',
-        ));
+        ),);
       }
       return violacoes;
     }

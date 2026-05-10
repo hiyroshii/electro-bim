@@ -15,20 +15,20 @@ void main() {
 
   group('BD4 —', () {
     test('Alumínio em BD4 — ALU_001', () {
-      final spec = const SpecAluminio(contexto: ContextoInstalacao.bd4);
+      const spec = SpecAluminio(contexto: ContextoInstalacao.bd4);
       final e = entradaPadrao(material: Material.aluminio);
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'ALU_001'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'ALU_001'), isTrue);
     });
 
     test('Cobre em BD4 — sem violação', () {
-      final spec = const SpecAluminio(contexto: ContextoInstalacao.bd4);
-      final e = entradaPadrao(material: Material.cobre);
+      const spec = SpecAluminio(contexto: ContextoInstalacao.bd4);
+      final e = entradaPadrao();
       expect(spec.verificar(e), isEmpty);
     });
 
     test('BD4 para na primeira violação — não verifica seção', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.bd4,
         secaoCalculada: 2.5,
       );
@@ -43,7 +43,7 @@ void main() {
 
   group('Industrial —', () {
     test('Alumínio 16mm² em industrial — válido', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.industrial,
         secaoCalculada: 16.0,
       );
@@ -52,17 +52,17 @@ void main() {
     });
 
     test('Alumínio 10mm² em industrial — ALU_002', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.industrial,
         secaoCalculada: 10.0,
       );
       final e = entradaPadrao(material: Material.aluminio);
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'ALU_002'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'ALU_002'), isTrue);
     });
 
     test('Alumínio 50mm² em industrial — válido', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.industrial,
         secaoCalculada: 50.0,
       );
@@ -75,7 +75,7 @@ void main() {
 
   group('Comercial BD1 —', () {
     test('Alumínio 50mm² em comercial BD1 — válido', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.comercialBd1,
         secaoCalculada: 50.0,
       );
@@ -84,21 +84,21 @@ void main() {
     });
 
     test('Alumínio 35mm² em comercial BD1 — ALU_002', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.comercialBd1,
         secaoCalculada: 35.0,
       );
       final e = entradaPadrao(material: Material.aluminio);
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'ALU_002'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'ALU_002'), isTrue);
     });
 
     test('Cobre em comercial BD1 — sem violação independente de seção', () {
-      final spec = SpecAluminio(
+      const spec = SpecAluminio(
         contexto: ContextoInstalacao.comercialBd1,
         secaoCalculada: 1.5,
       );
-      final e = entradaPadrao(material: Material.cobre);
+      final e = entradaPadrao();
       expect(spec.verificar(e), isEmpty);
     });
   });

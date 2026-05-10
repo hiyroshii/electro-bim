@@ -17,16 +17,16 @@ export '../enums/contexto_instalacao.dart';
 ///
 /// Rastreabilidade: NBR 5410:2004 — 6.2.3.8.
 final class SpecAluminio implements ISpecification<EntradaNormativa> {
-  final ContextoInstalacao contexto;
-  final double? secaoCalculada;
 
   const SpecAluminio({
     required this.contexto,
     this.secaoCalculada,
   });
+  final ContextoInstalacao contexto;
+  final double? secaoCalculada;
 
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final violacoes = <Violacao>[];
 
     if (entrada.material != Material.aluminio) return violacoes;
@@ -50,7 +50,7 @@ final class SpecAluminio implements ISpecification<EntradaNormativa> {
       violacoes.add(Violacao.aluminioSecaoInsuficiente(
         secaoMinima: secaoMinima,
         contexto: contexto.name,
-      ));
+      ),);
     }
 
     return violacoes;

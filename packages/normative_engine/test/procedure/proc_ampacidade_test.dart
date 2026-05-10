@@ -17,13 +17,13 @@ void main() {
 
   group('FCT —', () {
     test('PVC a 30°C — FCT = 1.0 (referência)', () {
-      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 30);
+      final e = entradaPadrao();
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.fatores.fct, equals(1.0));
     });
 
     test('PVC a 40°C — FCT = 0.87', () {
-      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 40);
+      final e = entradaPadrao(temperatura: 40);
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.fatores.fct, closeTo(0.87, 0.001));
     });
@@ -33,7 +33,6 @@ void main() {
         isolacao: Isolacao.xlpe,
         arquitetura: Arquitetura.unipolar,
         metodo: MetodoInstalacao.c,
-        temperatura: 30,
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.fatores.fct, equals(1.0));
@@ -70,8 +69,6 @@ void main() {
 
     test('Método D usa FCT solo — PVC 20°C = 1.0', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
-        arquitetura: Arquitetura.multipolar,
         metodo: MetodoInstalacao.d,
         temperatura: 20,
       );
@@ -81,10 +78,7 @@ void main() {
 
     test('Método D usa FCT solo — PVC 30°C = 0.89', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
-        arquitetura: Arquitetura.multipolar,
         metodo: MetodoInstalacao.d,
-        temperatura: 30,
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.fatores.fct, closeTo(0.89, 0.001));
@@ -113,7 +107,7 @@ void main() {
     });
 
     test('FCT × FCA combinado correto', () {
-      final e = entradaPadrao(isolacao: Isolacao.pvc, temperatura: 40);
+      final e = entradaPadrao(temperatura: 40);
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 3)));
       expect(r.fatores.combinado, closeTo(0.87 * 0.70, 0.001));
     });
@@ -124,10 +118,7 @@ void main() {
   group('Seleção de tabela —', () {
     test('PVC B1 cobre — tabela não vazia', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
-        material: Material.cobre,
+        
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.tabelaIz, isNotEmpty);
@@ -135,14 +126,10 @@ void main() {
 
     test('PVC B1 cobre 2 condutores — 1.5mm² = 17.5A', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
-        material: Material.cobre,
-        numeroFases: NumeroFases.monofasico,
+        
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
-      final linha = r.tabelaIz.firstWhere((l) => l.secao == 1.5);
+      final linha = r.tabelaIz.firstWhere((final l) => l.secao == 1.5);
       expect(linha.izBase, equals(17.5));
     });
 
@@ -151,22 +138,19 @@ void main() {
         isolacao: Isolacao.xlpe,
         arquitetura: Arquitetura.unipolar,
         metodo: MetodoInstalacao.c,
-        material: Material.cobre,
         numeroFases: NumeroFases.trifasico,
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
-      final linha = r.tabelaIz.firstWhere((l) => l.secao == 2.5);
+      final linha = r.tabelaIz.firstWhere((final l) => l.secao == 2.5);
       expect(linha.izBase, equals(30));
     });
 
     test('Tabela retornada está ordenada por seção crescente', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
         metodo: MetodoInstalacao.c,
-        arquitetura: Arquitetura.multipolar,
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
-      final secoes = r.tabelaIz.map((l) => l.secao).toList();
+      final secoes = r.tabelaIz.map((final l) => l.secao).toList();
       for (var i = 1; i < secoes.length; i++) {
         expect(secoes[i], greaterThan(secoes[i - 1]));
       }
@@ -174,7 +158,6 @@ void main() {
 
     test('PVC F trifólio — usa tabela EFG', () {
       final e = entradaPadrao(
-        isolacao: Isolacao.pvc,
         arquitetura: Arquitetura.unipolar,
         metodo: MetodoInstalacao.f,
         arranjo: ArranjoCondutores.trifolio,
@@ -182,14 +165,13 @@ void main() {
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.tabelaIz, isNotEmpty);
-      final linha = r.tabelaIz.firstWhere((l) => l.secao == 1.5);
+      final linha = r.tabelaIz.firstWhere((final l) => l.secao == 1.5);
       expect(linha.izBase, equals(17));
     });
 
     test('Alumínio inicia em 16mm²', () {
       final e = entradaPadrao(
         material: Material.aluminio,
-        metodo: MetodoInstalacao.b1,
       );
       final r = proc.resolver((e, const ParamsAgrupamento(numCircuitos: 1)));
       expect(r.tabelaIz.first.secao, equals(16.0));

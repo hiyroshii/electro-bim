@@ -4,10 +4,7 @@
 // - ADD: resolução de FCT, FCA e tabela base Iz (6.2.5.3, 6.2.5.5).
 
 import '../contracts/i_procedure.dart';
-import '../enums/isolacao.dart';
-import '../enums/metodo_instalacao.dart';
 import '../enums/material.dart';
-import '../enums/numero_fases.dart';
 import '../models/entrada_normativa.dart';
 import '../models/fatores_correcao.dart';
 import '../models/linha_ampacidade.dart';
@@ -22,6 +19,14 @@ import '../tables/tabela_39_iz_xlpe_epr_efg.dart';
 /// Parâmetros de agrupamento para resolução do FCA.
 /// Rastreabilidade: NBR 5410:2004 — 6.2.5.5.
 final class ParamsAgrupamento {
+
+  const ParamsAgrupamento({
+    required this.numCircuitos,
+    this.resistividadeSolo = 2.5,
+    this.espacamentoCabos = 0.0,
+    this.numCamadas = 1,
+    this.cabosMultipolares = true,
+  });
   /// Número de circuitos agrupados.
   final int numCircuitos;
 
@@ -38,14 +43,6 @@ final class ParamsAgrupamento {
 
   /// Indica se os cabos enterrados são multipolares (Tab. 45).
   final bool cabosMultipolares;
-
-  const ParamsAgrupamento({
-    required this.numCircuitos,
-    this.resistividadeSolo = 2.5,
-    this.espacamentoCabos = 0.0,
-    this.numCamadas = 1,
-    this.cabosMultipolares = true,
-  });
 }
 
 /// Resultado intermediário do [ProcAmpacidade].
@@ -68,7 +65,7 @@ final class ProcAmpacidade
 
   @override
   ResultadoAmpacidade resolver(
-      (EntradaNormativa, ParamsAgrupamento) entrada) {
+      final (EntradaNormativa, ParamsAgrupamento) entrada,) {
     final (e, params) = entrada;
 
     final fct = _resolverFct(e);
@@ -83,7 +80,7 @@ final class ProcAmpacidade
 
   // ── FCT ───────────────────────────────────────────────────────────────────
 
-  double _resolverFct(EntradaNormativa e) {
+  double _resolverFct(final EntradaNormativa e) {
     final mapa = e.metodo.isSolo ? fctSolo : fctAr;
     final fator = mapa[e.isolacao]?[e.temperatura];
 
@@ -94,7 +91,7 @@ final class ProcAmpacidade
 
   // ── FCA ───────────────────────────────────────────────────────────────────
 
-  double _resolverFca(EntradaNormativa e, ParamsAgrupamento p) {
+  double _resolverFca(final EntradaNormativa e, final ParamsAgrupamento p) {
     if (p.numCircuitos <= 1) return 1.0;
 
     // Método D — subterrâneo
@@ -107,7 +104,7 @@ final class ProcAmpacidade
     return _fcaCamadaUnica(e, p);
   }
 
-  double _fcaSolo(EntradaNormativa e, ParamsAgrupamento p) {
+  double _fcaSolo(final EntradaNormativa e, final ParamsAgrupamento p) {
     // Fator de resistividade (Tab. 41) — aplica se ≠ 2,5 K.m/W
     final fatorResist = p.resistividadeSolo != 2.5
         ? (fcaResistividadeSolo[p.resistividadeSolo] ?? 1.0)
@@ -122,14 +119,14 @@ final class ProcAmpacidade
     return fatorResist * fatorAgrup;
   }
 
-  double _fcaMultiplasCamadas(ParamsAgrupamento p) {
+  double _fcaMultiplasCamadas(final ParamsAgrupamento p) {
     // Normaliza para os intervalos da Tab. 43
     final camadas = _intervalo43Camadas(p.numCamadas);
     final circuitos = _intervalo43Circuitos(p.numCircuitos);
     return fcaMultiplasCamadas[(camadas, circuitos)] ?? 1.0;
   }
 
-  double _fcaCamadaUnica(EntradaNormativa e, ParamsAgrupamento p) {
+  double _fcaCamadaUnica(final EntradaNormativa e, final ParamsAgrupamento p) {
     final n = p.numCircuitos;
 
     // Métodos E e F — bandeja perfurada ou leito
@@ -151,7 +148,7 @@ final class ProcAmpacidade
 
   // ── Tabela Iz ─────────────────────────────────────────────────────────────
 
-  List<LinhaAmpacidade> _resolverTabela(EntradaNormativa e) {
+  List<LinhaAmpacidade> _resolverTabela(final EntradaNormativa e) {
     final condutoresReais = e.numeroFases.condutoresCarregadosComNeutro(
       harmonicasAcima15: e.harmonicasAcima15pct,
     );
@@ -166,12 +163,12 @@ final class ProcAmpacidade
     if (mapa == null) return [];
 
     return mapa.entries
-        .map((entry) => LinhaAmpacidade(secao: entry.key, izBase: entry.value))
+        .map((final entry) => LinhaAmpacidade(secao: entry.key, izBase: entry.value))
         .toList()
-      ..sort((a, b) => a.secao.compareTo(b.secao));
+      ..sort((final a, final b) => a.secao.compareTo(b.secao));
   }
 
-  Map<double, double>? _selecionarMapa(EntradaNormativa e, int condutoresLookup) {
+  Map<double, double>? _selecionarMapa(final EntradaNormativa e, final int condutoresLookup) {
     final isPvc = e.isolacao.isPvc;
     final isCobre = e.material == Material.cobre;
     final isEfg = e.metodo.usaTabelaEfg;
@@ -201,10 +198,10 @@ final class ProcAmpacidade
 
   // ── Helpers de intervalo para Tab. 42 e 43 ───────────────────────────────
 
-  int _limiteInferior(Map<int, double> mapa, int n) =>
-      mapa.keys.where((k) => k <= n).fold(1, (prev, k) => k > prev ? k : prev);
+  int _limiteInferior(final Map<int, double> mapa, final int n) =>
+      mapa.keys.where((final k) => k <= n).fold(1, (final prev, final k) => k > prev ? k : prev);
 
-  int _intervalo43Camadas(int n) {
+  int _intervalo43Camadas(final int n) {
     if (n <= 2) return 2;
     if (n <= 3) return 3;
     if (n <= 5) return 4;
@@ -212,7 +209,7 @@ final class ProcAmpacidade
     return 9;
   }
 
-  int _intervalo43Circuitos(int n) {
+  int _intervalo43Circuitos(final int n) {
     if (n <= 2) return 2;
     if (n <= 3) return 3;
     if (n <= 5) return 4;

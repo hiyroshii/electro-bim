@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - FIX: prefer_final_parameters em resolver() e lambdas; remove unused_import.
 // [1.1.0] - 2026-05
 // - ADD: resolve tabelaXi por material e popula DadosNormativos.tabelaXi.
 // [1.0.1] - 2026-04
@@ -9,7 +11,6 @@
 
 import '../models/entrada_normativa.dart';
 import '../models/dados_normativos.dart';
-import '../models/parametros_queda.dart';
 import '../specification/spec_queda_tensao.dart';
 import '../procedure/proc_ampacidade.dart';
 import '../procedure/proc_queda_tensao.dart';
@@ -23,16 +24,16 @@ import '../tables/tabela_xi_reatancia.dart';
 ///
 /// Rastreabilidade: ARCHITECTURE.md — Seção 6.3.
 final class ProcedureService {
-  final OrigemAlimentacao origemAlimentacao;
-
   const ProcedureService({required this.origemAlimentacao});
+
+  final OrigemAlimentacao origemAlimentacao;
 
   /// Resolve todos os dados normativos para o contexto da entrada.
   ///
   /// [paramsAgrupamento] é por chamada — varia por circuito.
   DadosNormativos resolver(
-    EntradaNormativa entrada,
-    ParamsAgrupamento paramsAgrupamento,
+    final EntradaNormativa entrada,
+    final ParamsAgrupamento paramsAgrupamento,
   ) {
     final resultadoAmpacidade = const ProcAmpacidade().resolver(
       (entrada, paramsAgrupamento),
@@ -47,8 +48,8 @@ final class ProcedureService {
 
     final xiPorSecao = Map<double, double>.fromEntries(
       tabelaXi.entries
-          .where((e) => e.key.$2 == entrada.material)
-          .map((e) => MapEntry(e.key.$1, e.value)),
+          .where((final e) => e.key.$2 == entrada.material)
+          .map((final e) => MapEntry(e.key.$1, e.value)),
     );
 
     return DadosNormativos(

@@ -17,7 +17,6 @@ import '../enums/tensao.dart';
 import '../models/violacao.dart';
 import '../models/entrada_normativa.dart';
 import '../tables/tabela_40_fct_temperatura.dart';
-import '../enums/faixa_tensao.dart';
 
 
 /// Verifica combinações válidas de Isolacao × Arquitetura × MetodoInstalacao
@@ -80,7 +79,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
   };
 
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final violacoes = <Violacao>[];
 
     // 1. Tensao × NumeroFases
@@ -89,7 +88,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
       violacoes.add(Violacao.combinacaoTensaoFases(
         tensao: '${entrada.tensao.valor}V',
         fases: entrada.numeroFases.name,
-      ));
+      ),);
     }
 
     // 2. Isolacao × Arquitetura
@@ -97,7 +96,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
       violacoes.add(Violacao.combinacaoIsolacaoArquitetura(
         isolacao: entrada.isolacao.name.toUpperCase(),
         arquitetura: entrada.arquitetura.name,
-      ));
+      ),);
     }
 
     // 3. Arquitetura × MetodoInstalacao
@@ -105,7 +104,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
       violacoes.add(Violacao.combinacaoArquiteturaMetodo(
         arquitetura: entrada.arquitetura.name,
         metodo: entrada.metodo.name.toUpperCase(),
-      ));
+      ),);
     }
 
     // 4. ArranjoCondutores × MetodoInstalacao
@@ -123,38 +122,38 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
     return violacoes;
   }
 
-  void _verificarTemperatura(EntradaNormativa e, List<Violacao> violacoes) {
+  void _verificarTemperatura(final EntradaNormativa e, final List<Violacao> violacoes) {
     final mapa = e.metodo.isSolo ? fctSolo : fctAr;
     final fator = mapa[e.isolacao]?[e.temperatura];
     if (fator == null) {
       violacoes.add(Violacao.temperaturaInadmissivel(
         temperatura: e.temperatura,
         isolacao: e.isolacao.name.toUpperCase(),
-      ));
+      ),);
     }
   }
 
   // Rastreabilidade: NBR 5410:2004 — 6.2.9.5.
-  void _verificarFaixaTensaoConduto(EntradaNormativa e, List<Violacao> violacoes) {
+  void _verificarFaixaTensaoConduto(final EntradaNormativa e, final List<Violacao> violacoes) {
     for (final outra in e.outrasCircuitosNoConduto) {
       if (outra != e.faixaTensao) {
         violacoes.add(Violacao.faixasTensaoMistasNoConduto(
           faixaCircuito: e.faixaTensao.name,
           faixaOutro: outra.name,
-        ));
+        ),);
         return;
       }
     }
   }
 
   // Rastreabilidade: NBR 5410:2004 — 6.2.10.1.
-  void _verificarMultipolarUnicoCircuito(EntradaNormativa e, List<Violacao> violacoes) {
+  void _verificarMultipolarUnicoCircuito(final EntradaNormativa e, final List<Violacao> violacoes) {
     if (e.arquitetura == Arquitetura.multipolar && e.compartilhaCaboMultipolar) {
       violacoes.add(Violacao.multipolarComMultiplosCircuitos());
     }
   }
 
-  void _verificarArranjo(EntradaNormativa e, List<Violacao> violacoes) {
+  void _verificarArranjo(final EntradaNormativa e, final List<Violacao> violacoes) {
     switch (e.metodo) {
       case MetodoInstalacao.f:
         if (e.arranjo == null) {
@@ -163,7 +162,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
           violacoes.add(Violacao.arranjoIncompativelComMetodo(
             arranjo: e.arranjo!.name,
             metodo: 'F',
-          ));
+          ),);
         }
 
       case MetodoInstalacao.g:
@@ -173,7 +172,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
           violacoes.add(Violacao.arranjoIncompativelComMetodo(
             arranjo: e.arranjo!.name,
             metodo: 'G',
-          ));
+          ),);
         }
 
       default:
@@ -181,7 +180,7 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
         if (e.arranjo != null) {
           violacoes.add(Violacao.arranjoDeveSerNulo(
             metodo: e.metodo.name.toUpperCase(),
-          ));
+          ),);
         }
     }
   }

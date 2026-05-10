@@ -12,14 +12,14 @@ import '../tables/tabela_47_48_secao_minima_neutro.dart';
 ///
 /// Rastreabilidade: NBR 5410:2004 — Tabela 47, Seção 6.2.6.1.1.
 final class SpecSecaoMinima implements ISpecification<EntradaNormativa> {
+
+  const SpecSecaoMinima({required this.secaoCalculada});
   /// Seção calculada pelo algoritmo de dimensionamento (mm²).
   /// Recebida do [dimensionamento_engine] após seleção inicial.
   final double secaoCalculada;
 
-  const SpecSecaoMinima({required this.secaoCalculada});
-
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final violacoes = <Violacao>[];
 
     final secaoMinima =
@@ -32,7 +32,7 @@ final class SpecSecaoMinima implements ISpecification<EntradaNormativa> {
         secaoCalculada: secaoCalculada,
         secaoMinima: secaoMinima,
         tag: entrada.tagCircuito.name.toUpperCase(),
-      ));
+      ),);
     }
 
     return violacoes;

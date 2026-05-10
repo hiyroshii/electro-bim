@@ -24,7 +24,7 @@ final class ProcQuedaTensao
 
   @override
   ParametrosQueda resolver(
-      (EntradaNormativa, OrigemAlimentacao) entrada) {
+      final (EntradaNormativa, OrigemAlimentacao) entrada,) {
     final (e, origem) = entrada;
 
     final limite = _resolverLimite(e.tagCircuito, origem);
@@ -40,7 +40,7 @@ final class ProcQuedaTensao
 
   // ── Limite de queda de tensão ─────────────────────────────────────────────
 
-  double _resolverLimite(TagCircuito tag, OrigemAlimentacao origem) {
+  double _resolverLimite(final TagCircuito tag, final OrigemAlimentacao origem) {
     if (tag.isTerminal) return TagCircuito.limiteQuedaTerminal;
 
     return switch (origem) {
@@ -51,7 +51,7 @@ final class ProcQuedaTensao
 
   // ── Número de condutores carregados ──────────────────────────────────────
 
-  int _resolverCondutores(EntradaNormativa e) =>
+  int _resolverCondutores(final EntradaNormativa e) =>
       e.numeroFases.condutoresCarregadosComNeutro(
         harmonicasAcima15: e.harmonicasAcima15pct,
       );
@@ -61,7 +61,7 @@ final class ProcQuedaTensao
   /// Retorna 0,86 quando há 4 condutores carregados (trifásico + harm > 15%).
   /// Retorna 1,0 nos demais casos.
   /// Rastreabilidade: NBR 5410:2004 — 6.2.5.6.1.
-  double _resolverFatorHarmonico(EntradaNormativa e) {
+  double _resolverFatorHarmonico(final EntradaNormativa e) {
     final quatroCondutores =
         e.numeroFases == NumeroFases.trifasico && e.harmonicasAcima15pct;
 

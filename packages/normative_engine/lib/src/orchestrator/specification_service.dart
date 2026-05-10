@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: SpecSobrecarga (S-3) em auditar() — SOBRE_001, SOBRE_002.
 // [1.1.0] - 2026-05
 // - ADD: SpecDispositivoMultipolar em verificarConformidade().
 // [1.0.0] - 2026-04
@@ -8,12 +10,13 @@
 import '../models/violacao.dart';
 import '../models/entrada_normativa.dart';
 import '../models/resultado_normativo.dart';
-import '../specification/spec_combinacoes.dart';
 import '../specification/spec_aluminio.dart';
+import '../specification/spec_combinacoes.dart';
 import '../specification/spec_dispositivo_multipolar.dart';
-import '../specification/spec_secao_minima.dart';
 import '../specification/spec_neutro.dart';
 import '../specification/spec_queda_tensao.dart';
+import '../specification/spec_secao_minima.dart';
+import '../specification/spec_sobrecarga.dart';
 
 /// Sub-orquestrador de conformidade normativa.
 ///
@@ -24,52 +27,41 @@ import '../specification/spec_queda_tensao.dart';
 /// Acumula todas as violações — nunca para na primeira.
 /// Rastreabilidade: ARCHITECTURE.md — Seção 6.2.
 final class SpecificationService {
-  final OrigemAlimentacao origemAlimentacao;
-  final ContextoInstalacao contextoInstalacao;
-
   const SpecificationService({
     required this.origemAlimentacao,
     required this.contextoInstalacao,
   });
 
+  final OrigemAlimentacao origemAlimentacao;
+  final ContextoInstalacao contextoInstalacao;
+
   /// Verifica conformidade da entrada antes do cálculo.
-  /// Specs: combinacoes + aluminio.
-  List<Violacao> verificarConformidade(EntradaNormativa entrada) {
-    final violacoes = <Violacao>[];
-
-    violacoes.addAll(const SpecCombinacoes().verificar(entrada));
-
-    violacoes.addAll(SpecAluminio(
-      contexto: contextoInstalacao,
-    ).verificar(entrada));
-
-    violacoes.addAll(const SpecDispositivoMultipolar().verificar(entrada));
-
-    return violacoes;
-  }
+  /// Specs: combinacoes + aluminio + dispositivo_multipolar.
+  List<Violacao> verificarConformidade(final EntradaNormativa entrada) => [
+        ...const SpecCombinacoes().verificar(entrada),
+        ...SpecAluminio(contexto: contextoInstalacao).verificar(entrada),
+        ...const SpecDispositivoMultipolar().verificar(entrada),
+      ];
 
   /// Audita o resultado após o cálculo.
-  /// Specs: secao_minima + neutro + queda_tensao.
+  /// Specs: sobrecarga + secao_minima + neutro + queda_tensao.
   List<Violacao> auditar(
-    EntradaNormativa entrada,
-    ResultadoNormativo resultado,
-  ) {
-    final violacoes = <Violacao>[];
-
-    violacoes.addAll(SpecSecaoMinima(
-      secaoCalculada: resultado.secaoFase,
-    ).verificar(entrada));
-
-    violacoes.addAll(SpecNeutro(
-      secaoNeutro: resultado.secaoNeutro,
-      secaoFase: resultado.secaoFase,
-    ).verificar(entrada));
-
-    violacoes.addAll(SpecQuedaTensao(
-      quedaCalculadaPercent: resultado.quedaPercent,
-      origemAlimentacao: origemAlimentacao,
-    ).verificar(entrada));
-
-    return violacoes;
-  }
+    final EntradaNormativa entrada,
+    final ResultadoNormativo resultado,
+  ) => [
+        ...SpecSobrecarga(
+          ib: resultado.ib,
+          inDisjuntor: resultado.inDisjuntor,
+          izFinal: resultado.izFinal,
+        ).verificar(entrada),
+        ...SpecSecaoMinima(secaoCalculada: resultado.secaoFase).verificar(entrada),
+        ...SpecNeutro(
+          secaoNeutro: resultado.secaoNeutro,
+          secaoFase: resultado.secaoFase,
+        ).verificar(entrada),
+        ...SpecQuedaTensao(
+          quedaCalculadaPercent: resultado.quedaPercent,
+          origemAlimentacao: origemAlimentacao,
+        ).verificar(entrada),
+      ];
 }

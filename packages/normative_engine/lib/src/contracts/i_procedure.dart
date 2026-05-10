@@ -17,5 +17,5 @@
 /// - [ProcQuedaTensao]  → [ParametrosQueda]
 abstract interface class IProcedure<I, O> {
   /// Resolve os dados normativos para [entrada].
-  O resolver(I entrada);
+  O resolver(final I entrada);
 }

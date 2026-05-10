@@ -17,7 +17,7 @@ void main() {
 
   group('Limites de queda —', () {
     test('TUG — limite 4%', () {
-      final e = entradaPadrao(tagCircuito: TagCircuito.tug);
+      final e = entradaPadrao();
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));
       expect(r.limitePercent, equals(4.0));
     });
@@ -51,7 +51,7 @@ void main() {
 
   group('Condutores carregados —', () {
     test('Monofásico — 2 condutores', () {
-      final e = entradaPadrao(numeroFases: NumeroFases.monofasico);
+      final e = entradaPadrao();
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));
       expect(r.condutoresCarregados, equals(2));
     });
@@ -59,7 +59,6 @@ void main() {
     test('Trifásico sem harmônicas — 3 condutores', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        harmonicasAcima15pct: false,
       );
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));
       expect(r.condutoresCarregados, equals(3));
@@ -76,7 +75,6 @@ void main() {
 
     test('Bifásico — 3 condutores (com neutro)', () {
       final e = entradaPadrao(
-        tensao: Tensao.v220,
         numeroFases: NumeroFases.bifasico,
       );
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));
@@ -88,7 +86,7 @@ void main() {
 
   group('Fator harmônico —', () {
     test('Sem harmônicas — fator 1.0', () {
-      final e = entradaPadrao(harmonicasAcima15pct: false);
+      final e = entradaPadrao();
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));
       expect(r.fatorHarmonico, equals(1.0));
       expect(r.temCorrecaoHarmonica, isFalse);
@@ -106,7 +104,6 @@ void main() {
 
     test('Monofásico com harmônicas — fator 1.0 (não aplica)', () {
       final e = entradaPadrao(
-        numeroFases: NumeroFases.monofasico,
         harmonicasAcima15pct: true,
       );
       final r = proc.resolver((e, OrigemAlimentacao.pontoEntrega));

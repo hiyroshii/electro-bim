@@ -19,14 +19,14 @@ final class SpecDispositivoMultipolar implements ISpecification<EntradaNormativa
   const SpecDispositivoMultipolar();
 
   @override
-  List<Violacao> verificar(EntradaNormativa entrada) {
+  List<Violacao> verificar(final EntradaNormativa entrada) {
     final violacoes = <Violacao>[];
 
     if (entrada.numeroFases != NumeroFases.monofasico &&
         !entrada.dispositivoMultipolar) {
       violacoes.add(Violacao.dispositivoDeveSerMultipolar(
         numeroFases: entrada.numeroFases.name.toUpperCase(),
-      ));
+      ),);
     }
 
     return violacoes;

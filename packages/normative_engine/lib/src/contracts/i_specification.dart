@@ -25,5 +25,5 @@ abstract interface class ISpecification<T> {
   ///
   /// Retorna lista vazia se conforme.
   /// Retorna todas as violações encontradas — nunca lança exceção.
-  List<Violacao> verificar(T entrada);
+  List<Violacao> verificar(final T entrada);
 }

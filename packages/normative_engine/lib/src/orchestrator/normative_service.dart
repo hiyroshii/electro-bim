@@ -34,12 +34,10 @@ import 'procedure_service.dart';
 ///
 /// Rastreabilidade: ARCHITECTURE.md — Seção 6.1.
 final class NormativeService implements NormativeEngine {
-  final SpecificationService _specification;
-  final ProcedureService _procedure;
 
   NormativeService({
-    required OrigemAlimentacao origemAlimentacao,
-    required ContextoInstalacao contextoInstalacao,
+    required final OrigemAlimentacao origemAlimentacao,
+    required final ContextoInstalacao contextoInstalacao,
   })  : _specification = SpecificationService(
           origemAlimentacao: origemAlimentacao,
           contextoInstalacao: contextoInstalacao,
@@ -47,27 +45,29 @@ final class NormativeService implements NormativeEngine {
         _procedure = ProcedureService(
           origemAlimentacao: origemAlimentacao,
         );
+  final SpecificationService _specification;
+  final ProcedureService _procedure;
 
   @override
-  List<Violacao> verificarConformidade(EntradaNormativa entrada) =>
+  List<Violacao> verificarConformidade(final EntradaNormativa entrada) =>
       _specification.verificarConformidade(entrada);
 
   @override
   DadosNormativos resolverDadosNormativos(
-    EntradaNormativa entrada,
-    ParamsAgrupamento paramsAgrupamento,
+    final EntradaNormativa entrada,
+    final ParamsAgrupamento paramsAgrupamento,
   ) =>
       _procedure.resolver(entrada, paramsAgrupamento);
 
   @override
   List<Violacao> auditar(
-    EntradaNormativa entrada,
-    ResultadoNormativo resultado,
+    final EntradaNormativa entrada,
+    final ResultadoNormativo resultado,
   ) =>
       _specification.auditar(entrada, resultado);
 
   @override
-  double calcularSecaoNeutro(double secaoFase, EntradaNormativa entrada) =>
+  double calcularSecaoNeutro(final double secaoFase, final EntradaNormativa entrada) =>
       const ProcSecaoNeutro().resolver(
         (secaoFase, entrada.numeroFases, entrada.harmonicasAcima15pct),
       );

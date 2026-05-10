@@ -15,16 +15,16 @@ void main() {
 
   group('Monofásico —', () {
     test('Neutro igual à fase — válido', () {
-      final spec = SpecNeutro(secaoNeutro: 2.5, secaoFase: 2.5);
-      final e = entradaPadrao(numeroFases: NumeroFases.monofasico);
+      const spec = SpecNeutro(secaoNeutro: 2.5, secaoFase: 2.5);
+      final e = entradaPadrao();
       expect(spec.verificar(e), isEmpty);
     });
 
     test('Neutro menor que fase — NEUTRO_002', () {
-      final spec = SpecNeutro(secaoNeutro: 1.5, secaoFase: 2.5);
-      final e = entradaPadrao(numeroFases: NumeroFases.monofasico);
+      const spec = SpecNeutro(secaoNeutro: 1.5, secaoFase: 2.5);
+      final e = entradaPadrao();
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'NEUTRO_002'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'NEUTRO_002'), isTrue);
     });
   });
 
@@ -32,7 +32,7 @@ void main() {
 
   group('Trifásico harm > 15% —', () {
     test('Neutro igual à fase — válido', () {
-      final spec = SpecNeutro(secaoNeutro: 35.0, secaoFase: 35.0);
+      const spec = SpecNeutro(secaoNeutro: 35.0, secaoFase: 35.0);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
         harmonicasAcima15pct: true,
@@ -41,13 +41,13 @@ void main() {
     });
 
     test('Neutro menor que fase — NEUTRO_003', () {
-      final spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 35.0);
+      const spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 35.0);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
         harmonicasAcima15pct: true,
       );
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'NEUTRO_003'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'NEUTRO_003'), isTrue);
     });
   });
 
@@ -55,41 +55,46 @@ void main() {
 
   group('Trifásico harm ≤ 15% — Tabela 48 —', () {
     test('Fase 35mm², neutro 25mm² — válido (Tab. 48)', () {
-      final spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 35.0);
+      const spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 35.0);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        harmonicasAcima15pct: false,
       );
       expect(spec.verificar(e), isEmpty);
     });
 
-    test('Fase 95mm², neutro 35mm² — válido (Tab. 48)', () {
-      final spec = SpecNeutro(secaoNeutro: 35.0, secaoFase: 95.0);
+    test('Fase 95mm², neutro 50mm² — válido (Tab. 48, mínimo = 50mm²)', () {
+      const spec = SpecNeutro(secaoNeutro: 50.0, secaoFase: 95.0);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        harmonicasAcima15pct: false,
       );
       expect(spec.verificar(e), isEmpty);
+    });
+
+    test('Fase 95mm², neutro 35mm² — NEUTRO_001 (abaixo do mínimo Tab. 48)', () {
+      const spec = SpecNeutro(secaoNeutro: 35.0, secaoFase: 95.0);
+      final e = entradaPadrao(
+        numeroFases: NumeroFases.trifasico,
+      );
+      final violacoes = spec.verificar(e);
+      expect(violacoes.any((final v) => v.codigo == 'NEUTRO_001'), isTrue);
     });
 
     test('Fase 95mm², neutro 25mm² — NEUTRO_001', () {
-      final spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 95.0);
+      const spec = SpecNeutro(secaoNeutro: 25.0, secaoFase: 95.0);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        harmonicasAcima15pct: false,
       );
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'NEUTRO_001'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'NEUTRO_001'), isTrue);
     });
 
     test('Fase ≤ 25mm², neutro deve ser igual à fase — NEUTRO_002', () {
-      final spec = SpecNeutro(secaoNeutro: 1.5, secaoFase: 2.5);
+      const spec = SpecNeutro(secaoNeutro: 1.5, secaoFase: 2.5);
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        harmonicasAcima15pct: false,
       );
       final violacoes = spec.verificar(e);
-      expect(violacoes.any((v) => v.codigo == 'NEUTRO_002'), isTrue);
+      expect(violacoes.any((final v) => v.codigo == 'NEUTRO_002'), isTrue);
     });
   });
 }

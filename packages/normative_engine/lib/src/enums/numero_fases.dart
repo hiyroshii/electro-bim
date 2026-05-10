@@ -42,7 +42,7 @@ enum NumeroFases {
   /// Para trifásico com neutro e harmônicas ≤ 15%: 3.
   /// Para trifásico com neutro e harmônicas > 15%: 4 (ver 6.2.5.6.1).
   /// Rastreabilidade: NBR 5410:2004 — Tabela 46, 6.2.5.6.1.
-  int condutoresCarregadosComNeutro({required bool harmonicasAcima15}) =>
+  int condutoresCarregadosComNeutro({required final bool harmonicasAcima15}) =>
       switch (this) {
         NumeroFases.monofasico => 2,
         NumeroFases.bifasico => 3,

@@ -17,7 +17,7 @@ final class ProcSecaoNeutro implements IProcedure<(double, NumeroFases, bool), d
   ///
   /// [entrada] = (secaoFase mm², numeroFases, harmonicasAcima15pct)
   @override
-  double resolver((double, NumeroFases, bool) entrada) {
+  double resolver(final (double, NumeroFases, bool) entrada) {
     final (secaoFase, numeroFases, harmonicasAcima15pct) = entrada;
 
     // Monofásico: neutro obrigatoriamente igual à fase.

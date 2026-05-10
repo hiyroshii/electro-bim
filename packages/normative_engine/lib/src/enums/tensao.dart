@@ -21,9 +21,10 @@ enum Tensao {
   /// 380 V — trifásico em redes 220/380 V.
   v380(380);
 
+  const Tensao(this.valor);
+
   /// Valor numérico da tensão em Volts.
   final int valor;
-  const Tensao(this.valor);
 
   /// Combinações válidas de tensão e número de fases.
   /// Rastreabilidade: NBR 5410:2004 — 6.1.3.1.1 e prática normativa BR.

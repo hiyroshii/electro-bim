@@ -1,27 +1,80 @@
 include: package:lints/recommended.yaml
 
+# ── Analyzer ──────────────────────────────────────────────────────────────────
 analyzer:
-  errors:
-    # Bloqueia imports diretos de src/ de fora do package
-    implementation_imports: error
-    # Evita imports relativos cruzando lib/
-    avoid_relative_lib_imports: error
+  language:
+    # Sem downcasts implícitos — o engine nunca deve depender de type erasure.
+    strict-casts: true
+    # Sem inferência de dynamic — cada variável tem tipo explícito ou inferível.
+    strict-inference: true
+    # Sem tipos raw (List sem <T>, Map sem <K,V>).
+    strict-raw-types: true
 
+  errors:
+    # Imports diretos de src/ fora do package são erro de compilação.
+    implementation_imports: error
+    # Imports relativos cruzando lib/ são proibidos.
+    avoid_relative_lib_imports: error
+    # Tipo de retorno ausente é erro — não warning.
+    always_declare_return_types: error
+    # Chamadas em dynamic são erro — engine deve ser totalmente tipado.
+    avoid_dynamic_calls: error
+
+# ── Linter ────────────────────────────────────────────────────────────────────
 linter:
   rules:
-    # Estilo
+    # ── Estilo e formatação ────────────────────────────────────────────────────
+    # Tipo de retorno explícito em todas as funções.
     - always_declare_return_types
-    - annotate_overrides
+    # Parâmetros nomeados obrigatórios vêm antes dos opcionais.
+    - always_put_required_named_parameters_first
+    # Aspas simples em strings literais.
     - prefer_single_quotes
+    # Trailing comma obrigatória em listas/parâmetros multi-linha.
     - require_trailing_commas
+    # Construtores declarados antes dos campos.
     - sort_constructors_first
 
-    # Segurança
+    # ── Imutabilidade ──────────────────────────────────────────────────────────
+    # Usar const nos construtores onde possível — specs e procedures são stateless.
+    - prefer_const_constructors
+    # Preferir const em declarações de topo e campos estáticos.
+    - prefer_const_declarations
+    # Usar const em literais de coleção passados a construtores imutáveis.
+    - prefer_const_literals_to_create_immutables
+    # Variáveis locais que não mudam devem ser final.
+    - prefer_final_locals
+    # Parâmetros que não são reatribuídos dentro do corpo devem ser final.
+    - prefer_final_parameters
+
+    # ── Segurança e robustez ───────────────────────────────────────────────────
+    # Proibir chamadas em dynamic — o engine é totalmente tipado.
     - avoid_dynamic_calls
-    - avoid_print
+    # Nunca capturar exceções sem cláusula on — impede swallow silencioso.
+    - avoid_catches_without_on_clauses
+    # Nunca reatribuir parâmetros — parâmetros são entrada, não estado.
+    - parameter_assignments
+    # Cancelar subscriptions de stream para evitar leak.
     - cancel_subscriptions
 
-    # Dart moderno
-    - use_super_parameters
-    - prefer_final_locals
+    # ── Qualidade de código ────────────────────────────────────────────────────
+    # Evitar bool literal em expressão condicional (prefer `&&` direto).
+    - avoid_bool_literals_in_conditional_expressions
+    # Não passar argumento igual ao default — reduz ruído nas chamadas.
+    - avoid_redundant_argument_values
+    # Encadear invocações no mesmo objeto com cascade (..).
+    - cascade_invocations
+    # Strings adjacentes em listas são quase sempre typo.
+    - no_adjacent_strings_in_list
+    # Preferir operador `??` em lugar de ternário com null check.
+    - prefer_if_null_operators
+    # Raw strings desnecessárias (r'...') devem ser strings normais.
+    - unnecessary_raw_strings
+    # `late` desnecessário onde o valor pode ser atribuído na declaração.
     - unnecessary_late
+
+    # ── Dart moderno ───────────────────────────────────────────────────────────
+    # Usar `super.param` em vez de atribuição explícita no construtor.
+    - use_super_parameters
+    # Usar StringBuffer em vez de concatenação em loop.
+    - use_string_buffers

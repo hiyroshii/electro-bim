@@ -17,6 +17,8 @@
 /// podem ser desconsiderados na contagem de agrupamento (6.2.5.5.2).
 ///
 /// Para grupos não-semelhantes: F = 1 / √n (6.2.5.5.5.b).
+library;
+
 
 // ══════════════════════════════════════════════════════════════════════════
 // TABELA 42 — Agrupamento em feixe ou camada única

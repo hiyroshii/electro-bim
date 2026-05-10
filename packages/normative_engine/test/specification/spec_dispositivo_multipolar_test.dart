@@ -10,10 +10,10 @@ import '../test_helpers.dart';
 // ignore: implementation_imports
 import 'package:normative_engine/src/specification/spec_dispositivo_multipolar.dart';
 
-bool _disp001Presente(EntradaNormativa e) =>
+bool _disp001Presente(final EntradaNormativa e) =>
     const SpecDispositivoMultipolar()
         .verificar(e)
-        .any((v) => v.codigo == 'DISP_001');
+        .any((final v) => v.codigo == 'DISP_001');
 
 void main() {
   const spec = SpecDispositivoMultipolar();
@@ -23,15 +23,13 @@ void main() {
   group('Monofásico —', () {
     test('Monofásico + dispositivoMultipolar=true → sem violação', () {
       final e = entradaPadrao(
-        numeroFases: NumeroFases.monofasico,
-        dispositivoMultipolar: true,
+        
       );
       expect(spec.verificar(e), isEmpty);
     });
 
     test('Monofásico + dispositivoMultipolar=false → sem violação', () {
       final e = entradaPadrao(
-        numeroFases: NumeroFases.monofasico,
         dispositivoMultipolar: false,
       );
       expect(spec.verificar(e), isEmpty);
@@ -44,8 +42,6 @@ void main() {
     test('Bifásico + multipolar=true → sem violação', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.bifasico,
-        tensao: Tensao.v220,
-        dispositivoMultipolar: true,
       );
       expect(_disp001Presente(e), isFalse);
     });
@@ -53,7 +49,6 @@ void main() {
     test('Bifásico + multipolar=false → DISP_001', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.bifasico,
-        tensao: Tensao.v220,
         dispositivoMultipolar: false,
       );
       expect(_disp001Presente(e), isTrue);
@@ -66,10 +61,6 @@ void main() {
     test('Trifásico + multipolar=true → sem violação', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        tensao: Tensao.v220,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
-        dispositivoMultipolar: true,
       );
       expect(_disp001Presente(e), isFalse);
     });
@@ -77,9 +68,6 @@ void main() {
     test('Trifásico + multipolar=false → DISP_001', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        tensao: Tensao.v220,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
         dispositivoMultipolar: false,
       );
       expect(_disp001Presente(e), isTrue);
@@ -88,9 +76,6 @@ void main() {
     test('DISP_001 tem código correto', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        tensao: Tensao.v220,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
         dispositivoMultipolar: false,
       );
       final violacoes = spec.verificar(e);
@@ -101,9 +86,6 @@ void main() {
     test('DISP_001 referência normativa — 9.5.4', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        tensao: Tensao.v220,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
         dispositivoMultipolar: false,
       );
       final violacoes = spec.verificar(e);
@@ -117,9 +99,6 @@ void main() {
     test('Trifásico com default (true) → sem DISP_001', () {
       final e = entradaPadrao(
         numeroFases: NumeroFases.trifasico,
-        tensao: Tensao.v220,
-        arquitetura: Arquitetura.multipolar,
-        metodo: MetodoInstalacao.b1,
       );
       expect(_disp001Presente(e), isFalse);
     });

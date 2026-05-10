@@ -12,7 +12,7 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_combinacoes.dart';
+import 'package:normative_engine/src/specification/condutor/spec_combinacoes.dart';
 
 void main() {
   const spec = SpecCombinacoes();

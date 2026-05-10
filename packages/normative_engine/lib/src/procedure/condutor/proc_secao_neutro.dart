@@ -3,9 +3,9 @@
 // [1.0.0] - 2026-05
 // - ADD: cálculo da seção mínima do condutor neutro conforme 6.2.6.2.
 
-import '../contracts/i_procedure.dart';
-import '../enums/numero_fases.dart';
-import '../tables/tabela_47_48_secao_minima_neutro.dart';
+import '../../contracts/i_procedure.dart';
+import '../../enums/numero_fases.dart';
+import '../../tables/tabela_47_48_secao_minima_neutro.dart';
 
 /// Calcula a seção mínima do condutor neutro para um condutor de fase dado.
 ///
@@ -13,9 +13,6 @@ import '../tables/tabela_47_48_secao_minima_neutro.dart';
 final class ProcSecaoNeutro implements IProcedure<(double, NumeroFases, bool), double> {
   const ProcSecaoNeutro();
 
-  /// Retorna a seção mínima do neutro (mm²).
-  ///
-  /// [entrada] = (secaoFase mm², numeroFases, harmonicasAcima15pct)
   @override
   double resolver(final (double, NumeroFases, bool) entrada) {
     final (secaoFase, numeroFases, harmonicasAcima15pct) = entrada;

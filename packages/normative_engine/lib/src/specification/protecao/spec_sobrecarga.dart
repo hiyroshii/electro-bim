@@ -3,16 +3,14 @@
 // [1.0.0] - 2026-05
 // - ADD: verificação de sobrecarga IB ≤ In ≤ Iz (SOBRE_001, SOBRE_002).
 
-import '../contracts/i_specification.dart';
-import '../models/entrada_normativa.dart';
-import '../models/violacao.dart';
+import '../../contracts/i_specification.dart';
+import '../../models/entrada_normativa.dart';
+import '../../models/violacao.dart';
 
 /// **NBR 5410:2004 — 5.3.4.1**
 ///
 /// Manual: S-3
 /// Sobrecarga: verifica IB ≤ In ≤ Iz.
-///
-/// Dependências: —
 final class SpecSobrecarga implements ISpecification<EntradaNormativa> {
   const SpecSobrecarga({
     required this.ib,
@@ -23,6 +21,9 @@ final class SpecSobrecarga implements ISpecification<EntradaNormativa> {
   final double ib;
   final double inDisjuntor;
   final double izFinal;
+
+  @override
+  bool aplicavelA(final PerfilInstalacao perfil) => true;
 
   @override
   List<Violacao> verificar(final EntradaNormativa entrada) {

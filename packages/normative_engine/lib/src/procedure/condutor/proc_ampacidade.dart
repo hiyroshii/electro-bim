@@ -3,18 +3,18 @@
 // [1.0.0] - 2026-04
 // - ADD: resolução de FCT, FCA e tabela base Iz (6.2.5.3, 6.2.5.5).
 
-import '../contracts/i_procedure.dart';
-import '../enums/material.dart';
-import '../models/entrada_normativa.dart';
-import '../models/fatores_correcao.dart';
-import '../models/linha_ampacidade.dart';
-import '../tables/tabela_40_fct_temperatura.dart';
-import '../tables/tabela_41_fca_resistividade_solo.dart';
-import '../tables/tabela_42_45_fca_agrupamento.dart';
-import '../tables/tabela_36_iz_pvc_a1d.dart';
-import '../tables/tabela_37_iz_xlpe_epr_a1d.dart';
-import '../tables/tabela_38_iz_pvc_efg.dart';
-import '../tables/tabela_39_iz_xlpe_epr_efg.dart';
+import '../../contracts/i_procedure.dart';
+import '../../enums/material.dart';
+import '../../models/entrada_normativa.dart';
+import '../../models/fatores_correcao.dart';
+import '../../models/linha_ampacidade.dart';
+import '../../tables/tabela_40_fct_temperatura.dart';
+import '../../tables/tabela_41_fca_resistividade_solo.dart';
+import '../../tables/tabela_42_45_fca_agrupamento.dart';
+import '../../tables/tabela_36_iz_pvc_a1d.dart';
+import '../../tables/tabela_37_iz_xlpe_epr_a1d.dart';
+import '../../tables/tabela_38_iz_pvc_efg.dart';
+import '../../tables/tabela_39_iz_xlpe_epr_efg.dart';
 
 /// Parâmetros de agrupamento para resolução do FCA.
 /// Rastreabilidade: NBR 5410:2004 — 6.2.5.5.
@@ -27,21 +27,10 @@ final class ParamsAgrupamento {
     this.numCamadas = 1,
     this.cabosMultipolares = true,
   });
-  /// Número de circuitos agrupados.
   final int numCircuitos;
-
-  /// Resistividade térmica do solo (K.m/W). Só relevante para Método D.
-  /// Referência normativa: 2,5 K.m/W. Rastreabilidade: Tab. 41.
   final double resistividadeSolo;
-
-  /// Espaçamento entre cabos enterrados (m). Só relevante para Método D.
-  /// -1.0 representa "1 diâmetro de cabo". Rastreabilidade: Tab. 44/45.
   final double espacamentoCabos;
-
-  /// Número de camadas (> 1 = múltiplas camadas). Rastreabilidade: Tab. 43.
   final int numCamadas;
-
-  /// Indica se os cabos enterrados são multipolares (Tab. 45).
   final bool cabosMultipolares;
 }
 
@@ -78,39 +67,24 @@ final class ProcAmpacidade
     );
   }
 
-  // ── FCT ───────────────────────────────────────────────────────────────────
-
   double _resolverFct(final EntradaNormativa e) {
     final mapa = e.metodo.isSolo ? fctSolo : fctAr;
     final fator = mapa[e.isolacao]?[e.temperatura];
-
-    // null = temperatura não admissível — spec_combinacoes já capturou.
-    // Retorna 1.0 como fallback seguro; violação já será reportada.
     return fator ?? 1.0;
   }
 
-  // ── FCA ───────────────────────────────────────────────────────────────────
-
   double _resolverFca(final EntradaNormativa e, final ParamsAgrupamento p) {
     if (p.numCircuitos <= 1) return 1.0;
-
-    // Método D — subterrâneo
     if (e.metodo.isSolo) return _fcaSolo(e, p);
-
-    // Múltiplas camadas
     if (p.numCamadas > 1) return _fcaMultiplasCamadas(p);
-
-    // Camada única — varia por tipo de instalação
     return _fcaCamadaUnica(e, p);
   }
 
   double _fcaSolo(final EntradaNormativa e, final ParamsAgrupamento p) {
-    // Fator de resistividade (Tab. 41) — aplica se ≠ 2,5 K.m/W
     final fatorResist = p.resistividadeSolo != 2.5
         ? (fcaResistividadeSolo[p.resistividadeSolo] ?? 1.0)
         : 1.0;
 
-    // FCA de agrupamento (Tab. 44 direto, Tab. 45 em eletroduto)
     final chave = (p.numCircuitos, p.espacamentoCabos, p.cabosMultipolares);
     final fatorAgrup = fcaEletrodutosEnterrados[chave] ??
         fcaEnterradoDireto[(p.numCircuitos, p.espacamentoCabos)] ??
@@ -120,7 +94,6 @@ final class ProcAmpacidade
   }
 
   double _fcaMultiplasCamadas(final ParamsAgrupamento p) {
-    // Normaliza para os intervalos da Tab. 43
     final camadas = _intervalo43Camadas(p.numCamadas);
     final circuitos = _intervalo43Circuitos(p.numCircuitos);
     return fcaMultiplasCamadas[(camadas, circuitos)] ?? 1.0;
@@ -128,37 +101,21 @@ final class ProcAmpacidade
 
   double _fcaCamadaUnica(final EntradaNormativa e, final ParamsAgrupamento p) {
     final n = p.numCircuitos;
-
-    // Métodos E e F — bandeja perfurada ou leito
     if (e.metodo.isArLivre) {
-      // Diferencia bandeja perfurada de leito via arquitetura não é possível
-      // apenas com EntradaNormativa — usa fcaBandejaPerfurada como padrão
-      // para E/F. O consumidor pode sobrescrever via ParamsAgrupamento se
-      // tiver a informação de tipo de suporte.
       return fcaBandejaPerfurada[n] ??
           fcaBandejaPerfurada[_limiteInferior(fcaBandejaPerfurada, n)] ??
           1.0;
     }
-
-    // Demais métodos — feixe padrão (Tab. 42, linha 1)
     return fcaFeixe[n] ??
         fcaFeixe[_limiteInferior(fcaFeixe, n)] ??
         1.0;
   }
 
-  // ── Tabela Iz ─────────────────────────────────────────────────────────────
-
   List<LinhaAmpacidade> _resolverTabela(final EntradaNormativa e) {
     final condutoresReais = e.numeroFases.condutoresCarregadosComNeutro(
       harmonicasAcima15: e.harmonicasAcima15pct,
     );
-
-    // Tabelas 36–39 só têm colunas para 2 e 3 condutores carregados.
-    // Quando há 4 condutores (harmônicas > 15%), usa-se a coluna de 3
-    // e aplica-se o fator 0,86 (já presente em FatoresCorrecao.fatorHarmonico).
-    // Rastreabilidade: NBR 5410:2004 — 6.2.5.6.1.
     final condutoresLookup = condutoresReais.clamp(2, 3);
-
     final Map<double, double>? mapa = _selecionarMapa(e, condutoresLookup);
     if (mapa == null) return [];
 
@@ -195,8 +152,6 @@ final class ProcAmpacidade
       }
     }
   }
-
-  // ── Helpers de intervalo para Tab. 42 e 43 ───────────────────────────────
 
   int _limiteInferior(final Map<int, double> mapa, final int n) =>
       mapa.keys.where((final k) => k <= n).fold(1, (final prev, final k) => k > prev ? k : prev);

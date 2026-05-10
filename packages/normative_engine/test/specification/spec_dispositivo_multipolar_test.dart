@@ -8,7 +8,7 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_dispositivo_multipolar.dart';
+import 'package:normative_engine/src/specification/protecao/spec_dispositivo_multipolar.dart';
 
 bool _disp001Presente(final EntradaNormativa e) =>
     const SpecDispositivoMultipolar()

@@ -3,10 +3,10 @@
 // [1.0.0] - 2026-04
 // - ADD: verificação de seção mínima normativa (Tabela 47).
 
-import '../contracts/i_specification.dart';
-import '../models/violacao.dart';
-import '../models/entrada_normativa.dart';
-import '../tables/tabela_47_48_secao_minima_neutro.dart';
+import '../../contracts/i_specification.dart';
+import '../../models/violacao.dart';
+import '../../models/entrada_normativa.dart';
+import '../../tables/tabela_47_48_secao_minima_neutro.dart';
 
 /// Verifica se a seção calculada respeita o piso normativo da Tabela 47.
 ///
@@ -15,8 +15,10 @@ final class SpecSecaoMinima implements ISpecification<EntradaNormativa> {
 
   const SpecSecaoMinima({required this.secaoCalculada});
   /// Seção calculada pelo algoritmo de dimensionamento (mm²).
-  /// Recebida do [dimensionamento_engine] após seleção inicial.
   final double secaoCalculada;
+
+  @override
+  bool aplicavelA(final PerfilInstalacao perfil) => true;
 
   @override
   List<Violacao> verificar(final EntradaNormativa entrada) {

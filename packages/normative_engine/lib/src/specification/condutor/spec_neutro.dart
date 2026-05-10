@@ -3,11 +3,11 @@
 // [1.0.0] - 2026-04
 // - ADD: verificação de regras do condutor neutro (6.2.6.2).
 
-import '../contracts/i_specification.dart';
-import '../enums/numero_fases.dart';
-import '../models/violacao.dart';
-import '../models/entrada_normativa.dart';
-import '../tables/tabela_47_48_secao_minima_neutro.dart';
+import '../../contracts/i_specification.dart';
+import '../../enums/numero_fases.dart';
+import '../../models/violacao.dart';
+import '../../models/entrada_normativa.dart';
+import '../../tables/tabela_47_48_secao_minima_neutro.dart';
 
 /// Verifica conformidade do condutor neutro.
 ///
@@ -23,6 +23,9 @@ final class SpecNeutro implements ISpecification<EntradaNormativa> {
 
   /// Seção dos condutores de fase (mm²).
   final double secaoFase;
+
+  @override
+  bool aplicavelA(final PerfilInstalacao perfil) => true;
 
   @override
   List<Violacao> verificar(final EntradaNormativa entrada) {

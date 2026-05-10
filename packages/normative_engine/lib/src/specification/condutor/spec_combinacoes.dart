@@ -8,15 +8,15 @@
 // [1.0.0] - 2026-04
 // - ADD: verificação de combinações válidas iso × arq × método × arranjo × tensao.
 
-import '../contracts/i_specification.dart';
-import '../enums/isolacao.dart';
-import '../enums/arquitetura.dart';
-import '../enums/metodo_instalacao.dart';
-import '../enums/arranjo_condutores.dart';
-import '../enums/tensao.dart';
-import '../models/violacao.dart';
-import '../models/entrada_normativa.dart';
-import '../tables/tabela_40_fct_temperatura.dart';
+import '../../contracts/i_specification.dart';
+import '../../enums/isolacao.dart';
+import '../../enums/arquitetura.dart';
+import '../../enums/metodo_instalacao.dart';
+import '../../enums/arranjo_condutores.dart';
+import '../../enums/tensao.dart';
+import '../../models/violacao.dart';
+import '../../models/entrada_normativa.dart';
+import '../../tables/tabela_40_fct_temperatura.dart';
 
 
 /// Verifica combinações válidas de Isolacao × Arquitetura × MetodoInstalacao
@@ -77,6 +77,9 @@ final class SpecCombinacoes implements ISpecification<EntradaNormativa> {
     ArranjoCondutores.espacadoHorizontal,
     ArranjoCondutores.espacadoVertical,
   };
+
+  @override
+  bool aplicavelA(final PerfilInstalacao perfil) => true;
 
   @override
   List<Violacao> verificar(final EntradaNormativa entrada) {

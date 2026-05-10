@@ -1,15 +1,12 @@
-// REV: 1.2.0
+// REV: 2.0.0
 // CHANGELOG:
+// [2.0.0] - 2026-05
+// - ADD: exports de IClassification, IVerification, PerfilInstalacao, CodigoInfluencia (Fase 2).
+// - REM: ContextoInstalacao removido do barrel (substituído por PerfilInstalacao).
+// - CHG: ParamsAgrupamento agora vem de procedure/condutor/proc_ampacidade.dart.
 // [1.2.0] - 2026-05
-// - REF: reescrito como barrel puro de re-exports — definição de NormativeEngine
-//   permanece exclusivamente em src/contracts/normative_engine.dart.
+// - REF: reescrito como barrel puro de re-exports.
 // - ADD: export de FaixaTensao.
-// [1.1.0] - 2026-05
-// - ADD: calcularSecaoNeutro() — cálculo real do neutro conforme 6.2.6.2.
-// [1.0.1] - 2026-04
-// - CHG: resolverDadosNormativos recebe ParamsAgrupamento por chamada.
-// [1.0.0] - 2026-04
-// - ADD: contrato abstrato NormativeEngine.
 
 // Barrel público do normative_engine. Somente re-exports — sem lógica.
 
@@ -17,6 +14,12 @@
 export 'src/contracts/normative_engine.dart';
 export 'src/contracts/i_specification.dart';
 export 'src/contracts/i_procedure.dart';
+export 'src/contracts/i_classification.dart';
+export 'src/contracts/i_verification.dart';
+
+// Domínio
+export 'src/domain/instalacao/perfil_instalacao.dart';
+export 'src/domain/influencias/codigo_influencia.dart';
 
 // Enums
 export 'src/enums/isolacao.dart';
@@ -28,7 +31,6 @@ export 'src/enums/material.dart';
 export 'src/enums/tag_circuito.dart';
 export 'src/enums/tensao.dart';
 export 'src/enums/numero_fases.dart';
-export 'src/enums/contexto_instalacao.dart';
 export 'src/enums/origem_alimentacao.dart';
 export 'src/enums/escopo_projeto.dart';
 
@@ -42,4 +44,4 @@ export 'src/models/linha_ampacidade.dart';
 export 'src/models/parametros_queda.dart';
 
 // ParamsAgrupamento — definido em proc_ampacidade, exposto seletivamente
-export 'src/procedure/proc_ampacidade.dart' show ParamsAgrupamento;
+export 'src/procedure/condutor/proc_ampacidade.dart' show ParamsAgrupamento;

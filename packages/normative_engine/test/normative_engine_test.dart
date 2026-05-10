@@ -1,8 +1,9 @@
-// REV: 1.0.0
+// REV: 2.0.0
 // CHANGELOG:
+// [2.0.0] - 2026-05
+// - CHG: ContextoInstalacao → PerfilInstalacao (Fase 2); ADD: smoke test de PerfilInstalacao.
 // [1.0.0] - 2026-05
-// - REF: substitui scaffold gerado (flutter_test + Calculator) por smoke tests
-//   do barrel público do normative_engine.
+// - REF: substitui scaffold gerado (flutter_test + Calculator) por smoke tests.
 
 import 'package:test/test.dart';
 import 'package:normative_engine/normative_engine.dart';
@@ -15,7 +16,7 @@ void main() {
     test('NormativeService implementa NormativeEngine', () {
       final NormativeEngine service = NormativeService(
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
+        perfil: PerfilInstalacao.residencial,
       );
       expect(service, isA<NormativeEngine>());
     });
@@ -29,6 +30,15 @@ void main() {
       expect(NumeroFases.values, isNotEmpty);
       expect(OrigemAlimentacao.values, isNotEmpty);
       expect(EscopoProjeto.values, isNotEmpty);
+    });
+
+    test('PerfilInstalacao exportado e instanciável', () {
+      const perfil = PerfilInstalacao(
+        escopo: EscopoProjeto.residencial,
+        influencias: {CodigoInfluencia.bd4},
+      );
+      expect(perfil.possuiInfluencia(CodigoInfluencia.bd4), isTrue);
+      expect(perfil.possuiInfluencia(CodigoInfluencia.bd1), isFalse);
     });
 
     test('ResultadoNormativo pode ser instanciado com todos os campos', () {

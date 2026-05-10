@@ -8,7 +8,7 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/procedure/proc_ampacidade.dart';
+import 'package:normative_engine/src/procedure/condutor/proc_ampacidade.dart';
 
 void main() {
   const proc = ProcAmpacidade();

@@ -1,5 +1,8 @@
-// REV: 1.1.0
+// REV: 2.0.0
 // CHANGELOG:
+// [2.0.0] - 2026-05
+// - CHG: ContextoInstalacao substituído por PerfilInstalacao (Fase 2).
+// - CHG: imports atualizados para nova estrutura de subpastas.
 // [1.1.0] - 2026-05
 // - ADD: calcularSecaoNeutro() — delega para ProcSecaoNeutro.
 // [1.0.1] - 2026-04
@@ -12,10 +15,10 @@ import '../models/violacao.dart';
 import '../models/dados_normativos.dart';
 import '../models/entrada_normativa.dart';
 import '../models/resultado_normativo.dart';
-import '../specification/spec_aluminio.dart';
-import '../specification/spec_queda_tensao.dart';
-import '../procedure/proc_ampacidade.dart';
-import '../procedure/proc_secao_neutro.dart';
+import '../domain/instalacao/perfil_instalacao.dart';
+import '../specification/instalacao/spec_queda_tensao.dart';
+import '../procedure/condutor/proc_ampacidade.dart';
+import '../procedure/condutor/proc_secao_neutro.dart';
 import 'specification_service.dart';
 import 'procedure_service.dart';
 
@@ -27,20 +30,15 @@ import 'procedure_service.dart';
 /// Não contém lógica normativa — delega para [SpecificationService]
 /// e [ProcedureService].
 ///
-/// Fluxo:
-///   1. [verificarConformidade] → specs pré-cálculo.
-///   2. [resolverDadosNormativos] → tabelas e fatores para o cálculo.
-///   3. [auditar] → specs pós-cálculo sobre o relatório.
-///
-/// Rastreabilidade: ARCHITECTURE.md — Seção 6.1.
+/// Rastreabilidade: ARCHITECTURE.md — Seção 4.
 final class NormativeService implements NormativeEngine {
 
   NormativeService({
     required final OrigemAlimentacao origemAlimentacao,
-    required final ContextoInstalacao contextoInstalacao,
+    required final PerfilInstalacao perfil,
   })  : _specification = SpecificationService(
           origemAlimentacao: origemAlimentacao,
-          contextoInstalacao: contextoInstalacao,
+          perfil: perfil,
         ),
         _procedure = ProcedureService(
           origemAlimentacao: origemAlimentacao,

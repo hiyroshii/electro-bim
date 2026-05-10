@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:normative_engine/normative_engine.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/procedure/proc_secao_neutro.dart';
+import 'package:normative_engine/src/procedure/condutor/proc_secao_neutro.dart';
 
 void main() {
   const proc = ProcSecaoNeutro();

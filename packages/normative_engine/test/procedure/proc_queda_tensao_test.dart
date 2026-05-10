@@ -8,7 +8,7 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/procedure/proc_queda_tensao.dart';
+import 'package:normative_engine/src/procedure/tensao/proc_queda_tensao.dart';
 
 void main() {
   const proc = ProcQuedaTensao();

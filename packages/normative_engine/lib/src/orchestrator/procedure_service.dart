@@ -1,5 +1,7 @@
-// REV: 1.2.0
+// REV: 2.0.0
 // CHANGELOG:
+// [2.0.0] - 2026-05
+// - CHG: imports atualizados para nova estrutura de subpastas (Fase 2).
 // [1.2.0] - 2026-05
 // - FIX: prefer_final_parameters em resolver() e lambdas; remove unused_import.
 // [1.1.0] - 2026-05
@@ -11,9 +13,9 @@
 
 import '../models/entrada_normativa.dart';
 import '../models/dados_normativos.dart';
-import '../specification/spec_queda_tensao.dart';
-import '../procedure/proc_ampacidade.dart';
-import '../procedure/proc_queda_tensao.dart';
+import '../specification/instalacao/spec_queda_tensao.dart';
+import '../procedure/condutor/proc_ampacidade.dart';
+import '../procedure/tensao/proc_queda_tensao.dart';
 import '../tables/tabela_47_48_secao_minima_neutro.dart';
 import '../tables/tabela_xi_reatancia.dart';
 
@@ -22,15 +24,12 @@ import '../tables/tabela_xi_reatancia.dart';
 /// Consulta [ProcAmpacidade] e [ProcQuedaTensao] e monta [DadosNormativos].
 /// Não contém lógica normativa — só coordena e agrega.
 ///
-/// Rastreabilidade: ARCHITECTURE.md — Seção 6.3.
+/// Rastreabilidade: ARCHITECTURE.md — Seção 4.
 final class ProcedureService {
   const ProcedureService({required this.origemAlimentacao});
 
   final OrigemAlimentacao origemAlimentacao;
 
-  /// Resolve todos os dados normativos para o contexto da entrada.
-  ///
-  /// [paramsAgrupamento] é por chamada — varia por circuito.
   DadosNormativos resolver(
     final EntradaNormativa entrada,
     final ParamsAgrupamento paramsAgrupamento,

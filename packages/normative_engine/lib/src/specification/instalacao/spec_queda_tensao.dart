@@ -10,13 +10,13 @@
 // [1.0.0] - 2026-04
 // - ADD: verificação de limites de queda de tensão (6.2.7).
 
-import '../contracts/i_specification.dart';
-import '../enums/tag_circuito.dart';
-import '../enums/origem_alimentacao.dart';
-import '../models/violacao.dart';
-import '../models/entrada_normativa.dart';
+import '../../contracts/i_specification.dart';
+import '../../enums/tag_circuito.dart';
+import '../../enums/origem_alimentacao.dart';
+import '../../models/violacao.dart';
+import '../../models/entrada_normativa.dart';
 
-export '../enums/origem_alimentacao.dart';
+export '../../enums/origem_alimentacao.dart';
 
 /// Verifica se a queda de tensão calculada respeita o limite normativo.
 ///
@@ -24,7 +24,6 @@ export '../enums/origem_alimentacao.dart';
 /// - Circuitos terminais (TUG, TUE, IL): 4% — fixo, independente da origem.
 /// - Alimentadores (MED, QDG, QD) via concessionária: 1% (total 5%).
 /// - Alimentadores (MED, QDG, QD) via trafo/gerador próprio: 3% (total 7%).
-///   Aplicável em instalações comerciais, industriais e prediais com fonte própria.
 ///
 /// Rastreabilidade: NBR 5410:2004 — 6.2.7.1 e 6.2.7.2.
 final class SpecQuedaTensao implements ISpecification<EntradaNormativa> {
@@ -33,11 +32,11 @@ final class SpecQuedaTensao implements ISpecification<EntradaNormativa> {
     required this.quedaCalculadaPercent,
     required this.origemAlimentacao,
   });
-  /// Queda de tensão calculada pelo [dimensionamento_engine] (%).
   final double quedaCalculadaPercent;
-
-  /// Origem da alimentação — determina o limite para alimentadores.
   final OrigemAlimentacao origemAlimentacao;
+
+  @override
+  bool aplicavelA(final PerfilInstalacao perfil) => true;
 
   @override
   List<Violacao> verificar(final EntradaNormativa entrada) {

@@ -8,7 +8,7 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_neutro.dart';
+import 'package:normative_engine/src/specification/condutor/spec_neutro.dart';
 
 void main() {
   // ── Monofásico ────────────────────────────────────────────────────────────

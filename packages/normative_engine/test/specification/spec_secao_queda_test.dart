@@ -8,9 +8,9 @@ import 'package:normative_engine/normative_engine.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_secao_minima.dart';
+import 'package:normative_engine/src/specification/condutor/spec_secao_minima.dart';
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_queda_tensao.dart';
+import 'package:normative_engine/src/specification/instalacao/spec_queda_tensao.dart';
 
 void main() {
   // ── SpecSecaoMinima ───────────────────────────────────────────────────────

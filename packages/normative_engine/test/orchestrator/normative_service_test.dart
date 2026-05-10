@@ -1,5 +1,7 @@
-// REV: 1.3.0
+// REV: 2.0.0
 // CHANGELOG:
+// [2.0.0] - 2026-05
+// - CHG: ContextoInstalacao → PerfilInstalacao (Fase 2).
 // [1.3.0] - 2026-05
 // - ADD: ib, inDisjuntor, izFinal em ResultadoNormativo — exigidos por S-3.
 // [1.2.0] - 2026-05
@@ -19,11 +21,11 @@ import 'package:normative_engine/src/orchestrator/normative_service.dart';
 
 NormativeService _criarService({
   final OrigemAlimentacao origem = OrigemAlimentacao.pontoEntrega,
-  final ContextoInstalacao contexto = ContextoInstalacao.industrial,
+  final PerfilInstalacao perfil = PerfilInstalacao.residencial,
 }) =>
     NormativeService(
       origemAlimentacao: origem,
-      contextoInstalacao: contexto,
+      perfil: perfil,
     );
 
 const _paramsUnico = ParamsAgrupamento(numCircuitos: 1);
@@ -66,7 +68,12 @@ void main() {
     });
 
     test('Alumínio em BD4 — retorna violação', () {
-      final service = _criarService(contexto: ContextoInstalacao.bd4);
+      final service = _criarService(
+        perfil: const PerfilInstalacao(
+          escopo: EscopoProjeto.residencial,
+          influencias: {CodigoInfluencia.bd4},
+        ),
+      );
       final e = entradaPadrao(material: Material.aluminio);
       final violacoes = service.verificarConformidade(e);
       expect(violacoes.any((final v) => v.codigo == 'ALU_001'), isTrue);

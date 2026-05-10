@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import '../test_helpers.dart';
 
 // ignore: implementation_imports
-import 'package:normative_engine/src/specification/spec_sobrecarga.dart';
+import 'package:normative_engine/src/specification/protecao/spec_sobrecarga.dart';
 
 SpecSobrecarga _spec({
   required final double ib,

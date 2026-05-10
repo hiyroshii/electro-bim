@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: testes de COMB_007 (faixas de tensão no conduto) e COMB_008 (multipolar exclusivo).
 // [1.1.0] - 2026-05
 // - ADD: testes de temperatura admissível por isolação (TEMP_001).
 // [1.0.0] - 2026-04
@@ -349,6 +351,104 @@ void main() {
       );
       final violacoes = spec.verificar(e);
       expect(_temCodigo(violacoes, 'TEMP_001'), isTrue);
+    });
+  });
+
+  // ── COMB_007 — faixas de tensão no mesmo conduto ─────────────────────────
+
+  group('COMB_007 — faixas de tensão no conduto —', () {
+    test('Sem outrasCircuitosNoConduto (default) → sem violação', () {
+      final e = entradaPadrao();
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('outrasCircuitos: [faixaII], circuito faixaII → sem violação', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaII],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('outrasCircuitos: [faixaI], circuito faixaII → COMB_007', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isTrue);
+    });
+
+    test('outrasCircuitos: [faixaII], circuito faixaI → COMB_007', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaI,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaII],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isTrue);
+    });
+
+    test('Dois circuitos mesma faixaI → sem violação', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaI,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_007'), isFalse);
+    });
+
+    test('COMB_007 — referência normativa correta', () {
+      final e = entradaPadrao(
+        faixaTensao: FaixaTensao.faixaII,
+        outrasCircuitosNoConduto: [FaixaTensao.faixaI],
+      );
+      final v = spec.verificar(e).firstWhere((v) => v.codigo == 'COMB_007');
+      expect(v.referencia, contains('6.2.9.5'));
+    });
+  });
+
+  // ── COMB_008 — multipolar exclusivo por circuito ──────────────────────────
+
+  group('COMB_008 — multipolar exclusivo —', () {
+    test('Multipolar + compartilhaCabo: false (default) → sem violação', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: false,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('Multipolar + compartilhaCabo: true → COMB_008', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isTrue);
+    });
+
+    test('Unipolar + compartilhaCabo: true → sem violação', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.unipolar,
+        metodo: MetodoInstalacao.c,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('Isolado + compartilhaCabo: true → sem violação', () {
+      final e = entradaPadrao(
+        isolacao: Isolacao.pvc,
+        arquitetura: Arquitetura.isolado,
+        metodo: MetodoInstalacao.b1,
+        compartilhaCaboMultipolar: true,
+      );
+      expect(_temCodigo(spec.verificar(e), 'COMB_008'), isFalse);
+    });
+
+    test('COMB_008 — referência normativa correta', () {
+      final e = entradaPadrao(
+        arquitetura: Arquitetura.multipolar,
+        compartilhaCaboMultipolar: true,
+      );
+      final v = spec.verificar(e).firstWhere((v) => v.codigo == 'COMB_008');
+      expect(v.referencia, contains('6.2.10.1'));
     });
   });
 }

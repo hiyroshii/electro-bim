@@ -1,5 +1,7 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: parâmetros faixaTensao, outrasCircuitosNoConduto, compartilhaCaboMultipolar.
 // [1.1.0] - 2026-05
 // - ADD: parâmetro dispositivoMultipolar em entradaPadrao().
 // [1.0.0] - 2026-04
@@ -21,6 +23,9 @@ EntradaNormativa entradaPadrao({
   int temperatura = 30,
   bool harmonicasAcima15pct = false,
   bool dispositivoMultipolar = true,
+  FaixaTensao faixaTensao = FaixaTensao.faixaII,
+  List<FaixaTensao> outrasCircuitosNoConduto = const [],
+  bool compartilhaCaboMultipolar = false,
 }) =>
     EntradaNormativa(
       tagCircuito: tagCircuito,
@@ -34,4 +39,7 @@ EntradaNormativa entradaPadrao({
       temperatura: temperatura,
       harmonicasAcima15pct: harmonicasAcima15pct,
       dispositivoMultipolar: dispositivoMultipolar,
+      faixaTensao: faixaTensao,
+      outrasCircuitosNoConduto: outrasCircuitosNoConduto,
+      compartilhaCaboMultipolar: compartilhaCaboMultipolar,
     );

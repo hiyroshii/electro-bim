@@ -1,5 +1,8 @@
-// REV: 1.1.0
+// REV: 1.2.0
 // CHANGELOG:
+// [1.2.0] - 2026-05
+// - ADD: Violacao.faixasTensaoMistasNoConduto (COMB_007) — 6.2.9.5.
+// - ADD: Violacao.multipolarComMultiplosCircuitos (COMB_008) — 6.2.10.1.
 // [1.1.0] - 2026-05
 // - ADD: Violacao.dispositivoDeveSerMultipolar (DISP_001) — 9.5.4.
 // [1.0.1] - 2026-05
@@ -108,6 +111,26 @@ final class Violacao {
         descricao: 'Circuito $numeroFases exige dispositivo de proteção '
             'multipolar (corte simultâneo de todos os polos ativos).',
         referencia: 'NBR 5410:2004 — 9.5.4',
+      );
+
+  factory Violacao.faixasTensaoMistasNoConduto({
+    required String faixaCircuito,
+    required String faixaOutro,
+  }) =>
+      Violacao(
+        codigo: 'COMB_007',
+        descricao: 'Circuito de Faixa $faixaCircuito compartilha conduto com '
+            'circuito de Faixa $faixaOutro. Faixas de tensão distintas não '
+            'podem estar no mesmo conduto sem isolação para a maior tensão '
+            'presente.',
+        referencia: 'NBR 5410:2004 — 6.2.9.5',
+      );
+
+  factory Violacao.multipolarComMultiplosCircuitos() => const Violacao(
+        codigo: 'COMB_008',
+        descricao: 'Cabo multipolar contém condutores de mais de um circuito. '
+            'Cabos multipolares são exclusivos de um único circuito.',
+        referencia: 'NBR 5410:2004 — 6.2.10.1',
       );
 
   factory Violacao.secaoAbaixoMinimo({

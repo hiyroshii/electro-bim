@@ -10,7 +10,9 @@
       "Bash(git commit -m ' *)",
       "Bash(Remove-Item -Recurse -Force \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/enums\")",
       "Bash(git -C \".claude/worktrees/agent-af334ef93330b4afb\" diff HEAD~1 --stat)",
-      "Bash(git -C \".claude/worktrees/agent-af334ef93330b4afb\" status --short)"
+      "Bash(git -C \".claude/worktrees/agent-af334ef93330b4afb\" status --short)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\xxren\\\\Documents\\\\DEV\\\\Projeto ElectroBIM\\\\packages\" -Directory)",
+      "Bash(Select-Object Name)"
     ],
     "additionalDirectories": [
       "C:\\Users\\xxren\\.claude\\projects\\c--Users-xxren-Documents-DEV-Projeto-ElectroBIM"

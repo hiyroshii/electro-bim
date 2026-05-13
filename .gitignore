@@ -19,3 +19,4 @@ Thumbs.db
 .flutter-plugins
 .flutter-plugins-dependencies
 build/
+.claude/settings.local.json

@@ -1,5 +1,8 @@
-// REV: 3.0.0
+// REV: 3.1.0
 // CHANGELOG:
+// [3.1.0] - 2026-05
+// - ADD: SpecMinimoIL + EntradaMinimoIL (S-12, Fase 3.3).
+// - ADD: SpecMinimoTUG + EntradaMinimoTUG (S-13, Fase 3.3).
 // [3.0.0] - 2026-05
 // - ADD: TipoComodo (domain/locais) — tipo de cômodo residencial (Fase 3.2).
 // - ADD: ProcCargaResidencial + EntradaCargaResidencial (Fase 3.2).
@@ -55,3 +58,9 @@ export 'src/procedure/condutor/proc_ampacidade.dart' show ParamsAgrupamento;
 // ProcCargaResidencial — P-6
 export 'src/procedure/carga/proc_carga_residencial.dart'
     show ProcCargaResidencial, EntradaCargaResidencial;
+
+// Specs de piso mínimo — S-12 e S-13
+export 'src/specification/carga/spec_minimo_il.dart'
+    show SpecMinimoIL, EntradaMinimoIL;
+export 'src/specification/carga/spec_minimo_tug.dart'
+    show SpecMinimoTUG, EntradaMinimoTUG;

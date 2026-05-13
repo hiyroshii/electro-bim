@@ -1,5 +1,8 @@
-// REV: 1.3.0
+// REV: 1.4.0
 // CHANGELOG:
+// [1.4.0] - 2026-05
+// - ADD: Violacao.pontosIlInsuficientes (IL_001) — 9.5.4.1.1.
+// - ADD: Violacao.tomadasInsuficientes (TUG_001) — 9.5.4.1.2.
 // [1.3.0] - 2026-05
 // - ADD: Violacao.disjuntorSubdimensionado (SOBRE_001) — 5.3.4.1.
 // - ADD: Violacao.disjuntorSuperdimensionado (SOBRE_002) — 5.3.4.1.
@@ -183,6 +186,32 @@ final class Violacao {
             'excede o limite de ${limite.toStringAsFixed(1)}% '
             'para circuito $tag.',
         referencia: 'NBR 5410:2004 — 6.2.7',
+      );
+
+  factory Violacao.pontosIlInsuficientes({
+    required final String comodo,
+    required final int instalados,
+    required final int minimo,
+    required final double areaM2,
+  }) =>
+      Violacao(
+        codigo: 'IL_001',
+        descricao: 'Cômodo $comodo (${areaM2.toStringAsFixed(1)} m²): '
+            '$instalados ponto(s) IL instalado(s), mínimo exigido: $minimo.',
+        referencia: 'NBR 5410:2004 — 9.5.4.1.1',
+      );
+
+  factory Violacao.tomadasInsuficientes({
+    required final String comodo,
+    required final int instaladas,
+    required final int minimo,
+    required final double areaM2,
+  }) =>
+      Violacao(
+        codigo: 'TUG_001',
+        descricao: 'Cômodo $comodo (${areaM2.toStringAsFixed(1)} m²): '
+            '$instaladas TUG(s) instalada(s), mínimo exigido: $minimo.',
+        referencia: 'NBR 5410:2004 — 9.5.4.1.2',
       );
 
   final String codigo;

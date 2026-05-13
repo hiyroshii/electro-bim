@@ -7,7 +7,15 @@ Versões semânticas conforme [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased] — Fase 3
 
-### Added
+### Added (Fase 3.3)
+- `SpecMinimoIL` (S-12) — piso mínimo de pontos de iluminação por cômodo residencial; fórmula `max(1, ceil(areaM2 / 4))`; viola `IL_001` (NBR 5410:2004 — 9.5.4.1.1)
+- `SpecMinimoTUG` (S-13) — piso mínimo de TUGs por cômodo residencial por tipo; viola `TUG_001` (NBR 5410:2004 — 9.5.4.1.2)
+- `EntradaMinimoIL` typedef — `({TipoComodo comodo, double areaM2, int numPontos})`
+- `EntradaMinimoTUG` typedef — `({TipoComodo comodo, double areaM2, int numTomadas})`
+- `Violacao.pontosIlInsuficientes` factory — código `IL_001`
+- `Violacao.tomadasInsuficientes` factory — código `TUG_001`
+
+### Added (Fase 3.2)
 - `TipoComodo` enum — tipo de cômodo residencial (sala, quarto, cozinha, banheiro, areaServico, corredor, garagem, varanda)
 - `tabela_carga_iluminacao` (T-13) — carga mínima por ponto IL por cômodo (100 VA uniforme)
 - `tabela_potencia_tug` (T-14) — carga mínima por TUG por cômodo (100 VA geral / 600 VA áreas molhadas e externas)

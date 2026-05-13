@@ -1,5 +1,7 @@
-// REV: 3.1.0
+// REV: 3.2.0
 // CHANGELOG:
+// [3.2.0] - 2026-05
+// - ADD: NormativeService exportado no barrel (orquestrador padrão).
 // [3.1.0] - 2026-05
 // - ADD: SpecMinimoIL + EntradaMinimoIL (S-12, Fase 3.3).
 // - ADD: SpecMinimoTUG + EntradaMinimoTUG (S-13, Fase 3.3).
@@ -51,6 +53,9 @@ export 'src/models/violacao.dart';
 export 'src/models/fatores_correcao.dart';
 export 'src/models/linha_ampacidade.dart';
 export 'src/models/parametros_queda.dart';
+
+// Orquestrador — implementação padrão de NormativeEngine
+export 'src/orchestrator/normative_service.dart';
 
 // ParamsAgrupamento — definido em proc_ampacidade, exposto seletivamente
 export 'src/procedure/condutor/proc_ampacidade.dart' show ParamsAgrupamento;

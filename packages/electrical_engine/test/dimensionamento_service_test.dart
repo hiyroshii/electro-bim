@@ -31,7 +31,7 @@ final _catalogo = [
 DimensionamentoService _servico() => DimensionamentoService(
       normative: NormativeService(
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
+        perfil: const PerfilInstalacao(escopo: EscopoProjeto.industrial),
       ),
       catalogoDisjuntores: _catalogo,
     );
@@ -56,7 +56,6 @@ EntradaDimensionamento _entradaCircuito({
       temperatura: 30,
       distancia: distancia,
       origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-      contextoInstalacao: ContextoInstalacao.industrial,
       paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
     );
 
@@ -132,8 +131,7 @@ void main() {
           temperatura: 30,
           distancia: 20.0,
           origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-          contextoInstalacao: ContextoInstalacao.industrial,
-          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+              paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
         ),
       );
 
@@ -197,8 +195,7 @@ void main() {
             temperatura: 30,
             distancia: 15.0,
             origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-            contextoInstalacao: ContextoInstalacao.industrial,
-            paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+                  paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
           ),
         ),
         throwsA(isA<EntradaInvalidaException>()),
@@ -217,7 +214,7 @@ void main() {
       if (relatorio.status == StatusDimensionamento.aprovado) {
         final normative = NormativeService(
           origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-          contextoInstalacao: ContextoInstalacao.industrial,
+          perfil: const PerfilInstalacao(escopo: EscopoProjeto.industrial),
         );
         final violacoes = normative.auditar(
           entrada.toEntradaNormativa(),

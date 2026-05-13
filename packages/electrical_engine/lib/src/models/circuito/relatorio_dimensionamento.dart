@@ -67,6 +67,9 @@ final class RelatorioDimensionamento {
 
   /// Converte para [ResultadoNormativo] para auditoria pelo [NormativeEngine].
   ResultadoNormativo toResultadoNormativo() => ResultadoNormativo(
+        ib: ib,
+        inDisjuntor: inDisjuntor,
+        izFinal: selecao.izFinal,
         secaoFase: selecao.secaoFinal,
         secaoNeutro: secaoNeutro,
         quedaPercent: selecao.quedaFinal,

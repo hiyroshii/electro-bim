@@ -26,19 +26,17 @@ final _catalogo = [
 
 NormativeService _normative({
   OrigemAlimentacao origem = OrigemAlimentacao.pontoEntrega,
-  ContextoInstalacao contexto = ContextoInstalacao.industrial,
 }) =>
     NormativeService(
       origemAlimentacao: origem,
-      contextoInstalacao: contexto,
+      perfil: const PerfilInstalacao(escopo: EscopoProjeto.industrial),
     );
 
 DimensionamentoCircuitoService _servico({
   OrigemAlimentacao origem = OrigemAlimentacao.pontoEntrega,
-  ContextoInstalacao contexto = ContextoInstalacao.industrial,
 }) =>
     DimensionamentoCircuitoService(
-      normative: _normative(origem: origem, contexto: contexto),
+      normative: _normative(origem: origem),
       catalogoDisjuntores: _catalogo,
     );
 
@@ -63,7 +61,6 @@ EntradaDimensionamento _entradaTug({
       temperatura: temperatura,
       distancia: distancia,
       origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-      contextoInstalacao: ContextoInstalacao.industrial,
       paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
     );
 
@@ -138,8 +135,7 @@ void main() {
         temperatura: 30,
         distancia: 10.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
       );
       final r = _servico().processar(entrada);
       expect(r.status, equals(StatusDimensionamento.aprovado));
@@ -165,8 +161,7 @@ void main() {
         temperatura: 30,
         distancia: 15.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
       );
       expect(
         () => _servico().processar(entrada),
@@ -189,8 +184,7 @@ void main() {
         temperatura: 30,
         distancia: 15.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
       );
       expect(
         () => _servico().processar(entrada),
@@ -213,8 +207,7 @@ void main() {
         temperatura: 30,
         distancia: 15.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
       );
       try {
         _servico().processar(entrada);
@@ -283,8 +276,7 @@ void main() {
         temperatura: 30,
         distancia: 20.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
       );
       final r = _servico().processar(entrada);
       if (r.status == StatusDimensionamento.aprovado) {
@@ -317,8 +309,7 @@ void main() {
         temperatura: 30,
         distancia: 20.0,
         origemAlimentacao: OrigemAlimentacao.pontoEntrega,
-        contextoInstalacao: ContextoInstalacao.industrial,
-        paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
+          paramsAgrupamento: const ParamsAgrupamento(numCircuitos: 1),
         dispositivoMultipolar: false,
       );
       expect(

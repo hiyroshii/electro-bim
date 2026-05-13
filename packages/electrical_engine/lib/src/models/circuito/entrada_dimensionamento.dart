@@ -27,7 +27,6 @@ final class EntradaDimensionamento {
     required this.temperatura,
     required this.distancia,
     required this.origemAlimentacao,
-    required this.contextoInstalacao,
     required this.paramsAgrupamento,
     this.arranjo,
     this.harmonicasAcima15pct = false,
@@ -56,7 +55,6 @@ final class EntradaDimensionamento {
   final List<FaixaTensao> outrasCircuitosNoConduto;
   final bool compartilhaCaboMultipolar;
   final OrigemAlimentacao origemAlimentacao;
-  final ContextoInstalacao contextoInstalacao;
   final ParamsAgrupamento paramsAgrupamento;
 
   /// Converte para [EntradaNormativa] para uso no [NormativeEngine].

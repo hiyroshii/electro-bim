@@ -7,7 +7,10 @@
       "Read(//c/Users/xxren/.claude/projects/**)",
       "Bash(Remove-Item \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_combinacoes.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_aluminio.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_secao_minima.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_neutro.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_queda_tensao.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_sobrecarga.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/specification/spec_dispositivo_multipolar.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/procedure/proc_ampacidade.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/procedure/proc_queda_tensao.dart\" \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/procedure/proc_secao_neutro.dart\")",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(Remove-Item -Recurse -Force \"c:/Users/xxren/Documents/DEV/Projeto ElectroBIM/packages/normative_engine/lib/src/enums\")",
+      "Bash(git -C \".claude/worktrees/agent-af334ef93330b4afb\" diff HEAD~1 --stat)",
+      "Bash(git -C \".claude/worktrees/agent-af334ef93330b4afb\" status --short)"
     ],
     "additionalDirectories": [
       "C:\\Users\\xxren\\.claude\\projects\\c--Users-xxren-Documents-DEV-Projeto-ElectroBIM"

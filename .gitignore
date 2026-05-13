@@ -10,6 +10,10 @@ Thumbs.db
 .vscode/
 *.iml
 
+# Claude Code
+.claude/settings.local.json
+.claude/worktrees/
+
 # Dart/Flutter
 .dart_tool/
 .flutter-plugins

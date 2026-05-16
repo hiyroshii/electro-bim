@@ -1,26 +1,22 @@
 # Contexto do Projeto ElectroBIM
-<!-- REV: 7 -->
+<!-- REV: 8 -->
 <!-- CHANGELOG:
+[Rev 8] - 15 05 2026
+- CHG: normative_engine atualizado para Fase 3.6 (363 testes, estrutura domain/).
+- ADD: packages planejados: grounding_engine, panel_engine, motor_engine, report_engine.
+- CHG: próximos passos atualizados — canvas snap concluído, foco em normative Fase 3 final.
+- CHG: estrutura de packages no monorepo atualizada (domain/ substitui enums/).
+- CHG: referências cruzadas atualizadas (ARCHITECTURE.md raiz criado).
 [Rev 7] - 01 05 2026
 - CHG: dimensionamento_engine renomeado para electrical_engine em todo o documento.
 [Rev 6] - 01 05 2026
-- MAJOR: Ciclo 3.5 concluído — electrical_engine substituído por monorepo com
-  normative_engine + electrical_engine. Arquitetura de packages redefinida.
-- ADD: normative_engine (Dart puro) — encapsula NBR 5410 completo.
-- ADD: electrical_engine (Dart puro) — algoritmos de carga e circuito.
-- CHG: electrical_engine descontinuado — lógica migrada e expandida nos novos packages.
-- CHG: monorepo com packages/ e apps/ como estrutura definitiva.
-- CHG: limites de queda de tensão corrigidos — alimentador 1% (entrega) / 3% (próprio),
-  terminal 4%, total 5% / 7%.
-- ADD: 95 testes no normative_engine, 79 testes no electrical_engine.
-[Rev 5] - 29 04 2026
-- Sprint 3 do canvas_engine concluído — geometria base [1.3.0].
+- MAJOR: Ciclo 3.5 concluído — monorepo com normative_engine + electrical_engine.
 -->
 
-> Data: 01 05 2026
-> Versão do projeto: **0.3.5**
-> Estado: Ciclo 3.5 concluído — normative_engine e electrical_engine implementados.
-> **Próximo: canvas_engine [1.4.0] Sistema de Snap real.**
+> Data: 15 05 2026
+> Versão do projeto: **0.4.x**
+> Estado: normative_engine Fase 3.6 (363 testes) — electrical_engine v1.1.0
+> **Próximo: normative_engine Fase 3 final (S-20, influências externas) ou canvas [1.4.0]**
 
 ---
 
@@ -38,11 +34,15 @@ Conversa em **português**. Tom técnico, direto, sem floreios.
 
 | Componente | Versão | Estado |
 |---|---|---|
-| **Projeto global** | `0.3.5` | Pré-MVP, em desenvolvimento |
-| `normative_engine` | `1.0.x` | Implementado, em revisão |
-| `electrical_engine` | `1.0.x` | Implementado, em revisão |
+| **Projeto global** | `0.4.x` | Pré-MVP, em desenvolvimento |
+| `normative_engine` | Fase 3.6 | 363 testes — residencial ~60% |
+| `electrical_engine` | `1.1.0` | Carga + circuito residencial |
 | `canvas_engine` | `1.3.0` | Sprint 3 concluído |
 | `apps/flutter` | — | Scaffold pendente |
+| `grounding_engine` | — | 🔲 Planejado (Sprint 7-8) |
+| `panel_engine` | — | 🔲 Planejado (Sprint 9-11) |
+| `motor_engine` | — | 🔲 Planejado (industrial) |
+| `report_engine` | — | 🔲 Planejado (Sprint 12-14) |
 
 > Convenção de versão do projeto: `0.CICLO.SUBCICLO`
 > `0.x` = pré-MVP | Minor = ciclo principal | Patch = subciclo ou hotfix
@@ -53,23 +53,23 @@ Conversa em **português**. Tom técnico, direto, sem floreios.
 
 ```
 electrobim/                                      ← raiz do monorepo
+├── ARCHITECTURE.md                              ← arquitetura global do monorepo
 ├── packages/
 │   ├── normative_engine/                        ← Dart puro, sem Flutter
-│   │   ├── pubspec.yaml                         ← name: normative_engine
+│   │   ├── ARCHITECTURE.md                      ← arquitetura interna do package
+│   │   ├── CHANGELOG.md                         ← histórico versionado (fonte autoritativa)
 │   │   ├── lib/
 │   │   │   ├── normative_engine.dart            ← barrel (API pública)
 │   │   │   └── src/
 │   │   │       ├── contracts/
-│   │   │       ├── enums/
+│   │   │       ├── domain/                      ← tipos do domínio (condutor, instalacao, locais…)
 │   │   │       ├── models/
 │   │   │       ├── tables/                      ← const Map (sem JSON)
-│   │   │       ├── specification/               ← Normas de Especificação
-│   │   │       ├── procedure/                   ← Normas de Procedimento
+│   │   │       ├── classification/              ← IClassification
+│   │   │       ├── specification/               ← ISpecification
+│   │   │       ├── procedure/                   ← IProcedure
 │   │   │       └── orchestrator/
-│   │   ├── test/
-│   │   └── doc/
-│   │       ├── ARCHITECTURE.md
-│   │       └── nbr5410/                         ← MDs normativos de referência
+│   │   └── test/
 │   │
 │   ├── electrical_engine/                  ← Dart puro, sem Flutter
 │   │   ├── pubspec.yaml                         ← name: electrical_engine
@@ -86,33 +86,24 @@ electrobim/                                      ← raiz do monorepo
 │   │   │           └── circuito/
 │   │   └── test/
 │   │
-│   └── canvas_engine/                           ← Flutter, motor gráfico
-│       ├── pubspec.yaml
-│       ├── lib/
-│       │   ├── canvas_engine.dart               ← barrel v1.3.0
-│       │   ├── domain/
-│       │   │   ├── value_objects/
-│       │   │   ├── entities/
-│       │   │   └── geometry/
-│       │   ├── engine/
-│       │   ├── viewport/
-│       │   ├── render/
-│       │   ├── controllers/
-│       │   ├── models/
-│       │   └── services/snap/                   ← stub, próximo [1.4.0]
-│       └── test/
-│           └── domain/geometry/
-│               └── geometry_test.dart           ← 30 testes
+│   ├── canvas_engine/                           ← Flutter, motor gráfico
+│   │   └── lib/src/                            ← domain/, engine/, viewport/, render/,
+│   │                                              controllers/, services/snap/
+│   │
+│   ├── grounding_engine/                       ← 🔲 Dart puro (Sprint 7-8)
+│   ├── panel_engine/                           ← 🔲 Dart puro (Sprint 9-11)
+│   ├── motor_engine/                           ← 🔲 Dart puro (industrial)
+│   └── report_engine/                          ← 🔲 Dart/Flutter (Sprint 12-14)
 │
 ├── apps/
 │   └── flutter/                                 ← app Flutter integrador
 │       ├── pubspec.yaml
 │       └── lib/
 │
-└── docs/
-    ├── changelog_global_rev1.md
-    ├── changelog_normative_engine_rev1.md
-    └── changelog_electrical_engine_rev1.md
+└── documents/
+    ├── context/                                 ← contexto de design por package
+    ├── log/                                     ← changelog global + sprints
+    └── nbr5410/                                 ← extratos normativos por seção
 ```
 
 ---
@@ -288,37 +279,35 @@ Evita null como sinalização de falha.
 
 ## 8. Estado atual dos packages
 
-### normative_engine — v1.0.x
+### normative_engine — Fase 3.6
 
 ```
 lib/src/
-  contracts/
-    normative_engine.dart        ← interface NormativeEngine
-    i_specification.dart
-    i_procedure.dart
-  enums/                         ← 10 enums
-    isolacao, arquitetura, metodo_instalacao, arranjo_condutores,
-    material, tag_circuito, tensao, numero_fases,
-    contexto_instalacao, origem_alimentacao
-  models/                        ← 7 value objects
-    entrada_normativa, resultado_normativo, dados_normativos,
-    violacao, fatores_correcao, linha_ampacidade, parametros_queda
-  tables/                        ← 9 arquivos, const Map Dart
-    tabela_35 a tabela_48 (NBR 5410)
-  specification/                 ← 5 specs
-    spec_combinacoes, spec_aluminio, spec_secao_minima,
-    spec_neutro, spec_queda_tensao
-  procedure/                     ← 2 procedures
-    proc_ampacidade, proc_queda_tensao
-  orchestrator/
-    normative_service.dart       ← orquestrador mestre
-    specification_service.dart
-    procedure_service.dart
+  contracts/                     ← NormativeEngine, ISpecification, IProcedure,
+                                    IClassification, IVerification
+  domain/                        ← condutor/, instalacao/, influencias/, locais/
+                                    (PerfilInstalacao, CodigoInfluencia, TipoComodo,
+                                     VolumeBanheiro — sem ContextoInstalacao)
+  models/                        ← 7 value objects + Violacao (16 factories)
+  tables/                        ← 11 arquivos const Map + habitacao/ (T-13, T-14)
+  classification/                ← ClassCompetenciaBa, ClassFugaEmergenciaBd,
+                                    ClassPerfilPadraoPorEscopo
+  specification/
+    condutor/                    ← S-1 combinacoes, S-2 aluminio, S-4 secao_minima, neutro
+    protecao/                    ← S-3 sobrecarga, S-6 multipolar, S-8 dr_obrigatorio
+    instalacao/                  ← S-5 queda_tensao
+    carga/                       ← S-9..S-11 circuitos, S-12 minimo_il, S-13 minimo_tug
+    locais_especificos/          ← S-15 banheiro (V0/V1/V2/V3, BANH_001..004)
+  procedure/
+    condutor/                    ← P-1 ampacidade, P-3 secao_neutro
+    tensao/                      ← P-2 queda_tensao
+    carga/                       ← P-6 carga_residencial
+  orchestrator/                  ← NormativeService, ClassificationService,
+                                    SpecificationService, ProcedureService,
+                                    VerificationService (skeleton)
 
-test/                            ← 95 testes
-doc/
-  ARCHITECTURE.md
-  nbr5410/                       ← 21 MDs normativos (6.1 a 6.2.11)
+test/                            ← 363 testes
+ARCHITECTURE.md                  ← arquitetura interna detalhada
 ```
 
 ### electrical_engine — v1.0.x
@@ -385,24 +374,31 @@ test/domain/geometry/            ← 30 testes
 
 ## 10. Próximos passos
 
-### Curto prazo
+### normative_engine — Fase 3 final
 
-1. **Upload dos packages ao Drive** — normative_engine e electrical_engine
-2. **canvas_engine [1.4.0]** — Sistema de Snap real (baseado em geometria [1.3.0])
-3. **Ciclo 4.1** — `secaoNeutro` real no `RelatorioDimensionamento`
+1. Candidatos imediatos: `SpecSecaoPE` (S-20) + `ProcSecaoPE` (P-4), classificações de
+   influências externas (AA, AD, BB, BC, BE, CA, CB)
+2. S-7 (seccionamento automático) e S-16 (DPS) — aguardam `grounding_engine`
+3. S-21/S-22 (equipotencialização) — aguardam `grounding_engine`
 
-### Médio prazo
+### electrical_engine — bugs conhecidos
 
-4. **canvas_engine [1.5.0]** — Seleção e hit test
-5. **canvas_engine [1.6.0]** — Operações geométricas (trim, extend)
-6. **apps/flutter** — Scaffold e integração canvas ↔ dimensionamento
+- **C1** `selecionador_condutor.dart:48` — `xi ?? 0.0` subestima queda em cabos ≥ 35mm²
+- **C2** — constantes normativas hardcoded devem migrar para `normative_engine`
+
+### packages novos (camadas)
+
+4. **Camada 1:** `alimentador/` e `curto_circuito/` dentro do `electrical_engine`
+5. **Camada 2:** `grounding_engine` (pré-requisito para panel) → `panel_engine`
+6. **Camada 3:** `report_engine`
+
+### canvas_engine
+
+7. **[1.4.0]** — Sistema de Snap real (geometria [1.3.0] como base)
 
 ### Pendências técnicas
 
-- [ ] Upload normative_engine e electrical_engine ao Drive
 - [ ] Registrar IDs das novas pastas no Drive (seção 9)
-- [ ] Implementar `secaoNeutro` real — ciclo 4.1
-- [ ] Adicionar tabela de reatâncias (Xi) ao normative_engine
-- [ ] Executar `geometry_test.dart` localmente — confirmar 30/30
+- [ ] Corrigir C1 — `xi ?? 0.0` em `selecionador_condutor.dart`
 - [ ] Catálogo de disjuntores comerciais como asset em `apps/flutter`
 - [ ] Definir estrutura do `apps/flutter` (state management, navegação)

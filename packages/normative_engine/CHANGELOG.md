@@ -7,6 +7,38 @@ Versões semânticas conforme [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased] — Fase 3
 
+### Fixed (Fase 3.6 — correção pós-análise documental)
+- `VolumeBanheiro.v1.ipXMinimo` corrigido de 5 para 4 (base normativa NBR; IPX5 só exigido se houver jatos)
+- `VolumeBanheiro` — adicionado `v3` (IPX1; tomada comum com DR admitida)
+- `SpecBanheiro` (S-15) — V2 agora exige SELV (igual a V1); BANH_002 se aplica a V1 **e** V2
+- `EntradaBanheiro` — adicionado `bool tomadaComDr` para verificação em V3
+- `Violacao.banheiraV3ExigeDr` factory — código `BANH_004` (tomada em V3 sem DR)
+- `SpecDrObrigatorio` (S-8) — reescrito com lógica por local (§ 5.1.3.2.2):
+  - Banheiro: DR obrigatório em IL, TUG e TUE
+  - Cozinha, área de serviço, garagem: DR obrigatório apenas em TUG e TUE
+  - Área externa / pode alimentar equipamento externo: DR obrigatório em TUG e TUE
+  - Circuitos de distribuição (MED, QDG, QD): DR nunca exigido
+- `EntradaDrObrigatorio` — adicionados `TipoComodo comodo`, `bool ehAreaExterna`, `bool podeAlimentarEquipamentoExterno`
+
+### Added (Fase 3.6)
+- `VolumeBanheiro` enum — zonas de proteção em locais de banho: `v0`, `v1`, `v2`; expõe `ipXMinimo` e `rotulo`
+- `SpecBanheiro` (S-15) — prescrições por volume em locais contendo banheira ou box (NBR 5410:2004 — Seção 701)
+  - BANH_001: tomada em V0 (qualquer tomada proibida)
+  - BANH_002: tomada em V1 ou V2 sem SELV
+  - BANH_003: grau de proteção IPX insuficiente para o volume (V0 → IPX7, V1/V2 → IPX4, V3 → IPX1)
+  - BANH_004: tomada em V3 sem DR
+- `EntradaBanheiro` typedef — `({VolumeBanheiro volume, bool temTomada, bool tomadaSelv, bool tomadaComDr, int grauIpX})`
+- `Violacao.banheiraTomadaProibida` factory — código `BANH_001`
+- `Violacao.banheiraExigeSELV` factory — código `BANH_002`
+- `Violacao.banheiraIpInsuficiente` factory — código `BANH_003`
+- `Violacao.banheiraV3ExigeDr` factory — código `BANH_004`
+
+### Added (Fase 3.5)
+- `SpecDrObrigatorio` (S-8) — DR obrigatório por local (I∆n ≤ 30 mA); viola `DR_001`/`DR_002` (NBR 5410:2004 — 5.1.3.2.2)
+- `EntradaDrObrigatorio` typedef — `({TipoComodo comodo, TagCircuito tag, bool temDr, double? sensibilidadeMaA, bool ehAreaExterna, bool podeAlimentarEquipamentoExterno})`
+- `Violacao.drAusente` factory — código `DR_001`
+- `Violacao.drSensibilidadeInsuficiente` factory — código `DR_002`
+
 ### Added (Fase 3.4)
 - `SpecCircuitoIndependente` (S-9) — TUE com Ib > 10 A deve ter circuito exclusivo; viola `CIRC_001` (NBR 5410:2004 — 9.5.3.1)
 - `SpecCircuitoExclusivo` (S-10) — TUG em cozinha ou área de serviço deve ter circuito exclusivo; viola `CIRC_002` (NBR 5410:2004 — 9.5.3.2)

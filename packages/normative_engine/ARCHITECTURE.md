@@ -137,7 +137,7 @@ resolverPerfil(escopo, competencia?, material?)
 
 ---
 
-## 6. Estrutura de pastas (estado atual — Fase 3.3)
+## 6. Estrutura de pastas (estado atual — Fase 3.6)
 
 ```
 lib/src/
@@ -154,7 +154,7 @@ lib/src/
 │   ├── instalacao/             ← EscopoProjeto, TagCircuito, OrigemAlimentacao,
 │   │                              Tensao, NumeroFases, FaixaTensao, PerfilInstalacao
 │   ├── influencias/            ← CodigoInfluencia
-│   └── locais/                 ← TipoComodo
+│   └── locais/                 ← TipoComodo, VolumeBanheiro
 │
 ├── models/                     ← EntradaNormativa, DadosNormativos,
 │                                  ResultadoNormativo, Violacao
@@ -178,9 +178,14 @@ lib/src/
 ├── specification/
 │   ├── condutor/               ← SpecCombinacoes, SpecAluminio,
 │   │                              SpecSecaoMinima, SpecNeutro
-│   ├── protecao/               ← SpecSobrecarga, SpecDispositivoMultipolar
+│   ├── protecao/               ← SpecSobrecarga, SpecDispositivoMultipolar,
+│   │                              SpecDrObrigatorio (S-8)
 │   ├── instalacao/             ← SpecQuedaTensao
-│   └── carga/                  ← SpecMinimoIL (S-12), SpecMinimoTUG (S-13)
+│   ├── carga/                  ← SpecMinimoIL (S-12), SpecMinimoTUG (S-13),
+│   │                              SpecCircuitoIndependente (S-9),
+│   │                              SpecCircuitoExclusivo (S-10),
+│   │                              SpecCircuitoMisto (S-11)
+│   └── locais_especificos/     ← SpecBanheiro (S-15)
 │
 └── orchestrator/
     ├── normative_service.dart

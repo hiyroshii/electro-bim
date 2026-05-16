@@ -1,5 +1,15 @@
-// REV: 1.5.0
+// REV: 1.8.0
 // CHANGELOG:
+// [1.8.0] - 2026-05
+// - ADD: Violacao.banheiraV3ExigeDr (BANH_004) — tomada em V3 sem DR (Seção 701).
+// - FIX: DR_001/DR_002 — descrições ajustadas para regra por local (5.1.3.2.2).
+// [1.7.0] - 2026-05
+// - ADD: Violacao.banheiraTomadaProibida (BANH_001) — Seção 701.
+// - ADD: Violacao.banheiraExigeSELV (BANH_002) — Seção 701.
+// - ADD: Violacao.banheiraIpInsuficiente (BANH_003) — Seção 701.
+// [1.6.0] - 2026-05
+// - ADD: Violacao.drAusente (DR_001) — 5.1.2.2.4.3.
+// - ADD: Violacao.drSensibilidadeInsuficiente (DR_002) — 5.1.2.2.4.3.
 // [1.5.0] - 2026-05
 // - ADD: Violacao.circuitoTueNaoExclusivo (CIRC_001) — 9.5.3.1.
 // - ADD: Violacao.tugAreaMolhadaNaoExclusiva (CIRC_002) — 9.5.3.2.
@@ -274,6 +284,65 @@ final class Violacao {
         descricao: 'Circuito misto inclui área molhada ($comodos). '
             'Áreas molhadas requerem circuito exclusivo de TUG.',
         referencia: 'NBR 5410:2004 — 9.5.3.3',
+      );
+
+  factory Violacao.drAusente() => const Violacao(
+        codigo: 'DR_001',
+        descricao: 'Circuito terminal em local que exige proteção diferencial '
+            '(§ 5.1.3.2.2) sem dispositivo DR instalado.',
+        referencia: 'NBR 5410:2004 — 5.1.3.2.2',
+      );
+
+  factory Violacao.drSensibilidadeInsuficiente({
+    required final double sensibilidade,
+  }) =>
+      Violacao(
+        codigo: 'DR_002',
+        descricao: 'DR com I∆n=${sensibilidade.toStringAsFixed(0)} mA '
+            'excede o limite de 30 mA exigido para este local.',
+        referencia: 'NBR 5410:2004 — 5.1.3.2.2',
+      );
+
+  factory Violacao.banheiraTomadaProibida({
+    required final String volume,
+  }) =>
+      Violacao(
+        codigo: 'BANH_001',
+        descricao: 'Tomada de corrente em $volume do banheiro é proibida. '
+            'Nenhum ponto de tomada é admitido neste volume.',
+        referencia: 'NBR 5410:2004 — Seção 701',
+      );
+
+  factory Violacao.banheiraExigeSELV({
+    required final String volume,
+  }) =>
+      Violacao(
+        codigo: 'BANH_002',
+        descricao: 'Tomada em $volume do banheiro deve ser alimentada '
+            'por circuito SELV (tensão extra-baixa de segurança).',
+        referencia: 'NBR 5410:2004 — Seção 701',
+      );
+
+  factory Violacao.banheiraIpInsuficiente({
+    required final String volume,
+    required final int ipXMinimo,
+    required final int ipXFornecido,
+  }) =>
+      Violacao(
+        codigo: 'BANH_003',
+        descricao: 'Grau de proteção insuficiente em $volume: '
+            'fornecido IPX$ipXFornecido, mínimo exigido IPX$ipXMinimo.',
+        referencia: 'NBR 5410:2004 — Seção 701',
+      );
+
+  factory Violacao.banheiraV3ExigeDr({
+    required final String volume,
+  }) =>
+      Violacao(
+        codigo: 'BANH_004',
+        descricao: 'Tomada em $volume do banheiro deve ser protegida por '
+            'dispositivo DR com I∆n ≤ 30 mA.',
+        referencia: 'NBR 5410:2004 — Seção 701',
       );
 
   final String codigo;

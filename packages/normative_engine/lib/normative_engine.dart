@@ -1,5 +1,9 @@
-// REV: 3.3.0
+// REV: 3.5.0
 // CHANGELOG:
+// [3.5.0] - 2026-05
+// - ADD: VolumeBanheiro (domain/locais) — zonas de proteção em banheiros (Fase 3.6).
+// - ADD: SpecBanheiro + EntradaBanheiro (S-15, Fase 3.6).
+// - ADD: SpecDrObrigatorio + EntradaDrObrigatorio (S-8, Fase 3.5).
 // [3.3.0] - 2026-05
 // - ADD: SpecCircuitoIndependente + EntradaCircuitoIndependente (S-9, Fase 3.4).
 // - ADD: SpecCircuitoExclusivo + EntradaCircuitoExclusivo (S-10, Fase 3.4).
@@ -33,6 +37,7 @@ export 'src/contracts/i_verification.dart';
 export 'src/domain/instalacao/perfil_instalacao.dart';
 export 'src/domain/influencias/codigo_influencia.dart';
 export 'src/domain/locais/tipo_comodo.dart';
+export 'src/domain/locais/volume_banheiro.dart';
 
 // Enums — condutor
 export 'src/domain/condutor/isolacao.dart';
@@ -81,3 +86,11 @@ export 'src/specification/carga/spec_circuito_exclusivo.dart'
     show SpecCircuitoExclusivo, EntradaCircuitoExclusivo;
 export 'src/specification/carga/spec_circuito_misto.dart'
     show SpecCircuitoMisto, EntradaCircuitoMisto;
+
+// Spec DR obrigatório — S-8
+export 'src/specification/protecao/spec_dr_obrigatorio.dart'
+    show SpecDrObrigatorio, EntradaDrObrigatorio;
+
+// Spec locais de banho — S-15
+export 'src/specification/locais_especificos/spec_banheiro.dart'
+    show SpecBanheiro, EntradaBanheiro;

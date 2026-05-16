@@ -137,7 +137,7 @@ resolverPerfil(escopo, competencia?, material?)
 
 ---
 
-## 6. Estrutura de pastas (estado atual — Fase 3.1)
+## 6. Estrutura de pastas (estado atual — Fase 3.3)
 
 ```
 lib/src/
@@ -153,11 +153,18 @@ lib/src/
 │   │                              MetodoInstalacao, ArranjoCondutores
 │   ├── instalacao/             ← EscopoProjeto, TagCircuito, OrigemAlimentacao,
 │   │                              Tensao, NumeroFases, FaixaTensao, PerfilInstalacao
-│   └── influencias/            ← CodigoInfluencia
+│   ├── influencias/            ← CodigoInfluencia
+│   └── locais/                 ← TipoComodo
 │
 ├── models/                     ← EntradaNormativa, DadosNormativos,
 │                                  ResultadoNormativo, Violacao
-├── tables/                     ← tabelas NBR indexadas por (chave) → valor
+│
+├── tables/
+│   ├── tabela_35…39_iz_*.dart  ← ampacidade por isolação e método (Tab. 36-39)
+│   ├── tabela_40…45_f*.dart    ← fatores FCT (Tab. 40) e FCA (Tab. 41, 42-45)
+│   ├── tabela_47_48_*.dart     ← seção mínima do neutro (Tab. 47-48)
+│   ├── tabela_xi_reatancia.dart← Xi Ω/km por seção
+│   └── habitacao/              ← tabela_carga_iluminacao, tabela_potencia_tug (T-13, T-14)
 │
 ├── classification/
 │   ├── influencias_externas/   ← ClassCompetenciaBa, ClassFugaEmergenciaBd
@@ -165,13 +172,15 @@ lib/src/
 │
 ├── procedure/
 │   ├── condutor/               ← ProcAmpacidade, ProcSecaoNeutro
-│   └── tensao/                 ← ProcQuedaTensao
+│   ├── tensao/                 ← ProcQuedaTensao
+│   └── carga/                  ← ProcCargaResidencial (P-6)
 │
 ├── specification/
 │   ├── condutor/               ← SpecCombinacoes, SpecAluminio,
 │   │                              SpecSecaoMinima, SpecNeutro
 │   ├── protecao/               ← SpecSobrecarga, SpecDispositivoMultipolar
-│   └── instalacao/             ← SpecQuedaTensao
+│   ├── instalacao/             ← SpecQuedaTensao
+│   └── carga/                  ← SpecMinimoIL (S-12), SpecMinimoTUG (S-13)
 │
 └── orchestrator/
     ├── normative_service.dart

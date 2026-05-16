@@ -1,39 +1,58 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# normative_engine
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+Package Dart puro que encapsula as regras da **ABNT NBR 5410:2004** aplicáveis
+ao dimensionamento de instalações elétricas de baixa tensão.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+**Não calcula** — fornece regras, dados normativos e verificações para que o
+`electrical_engine` calcule. Zero dependências externas.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+---
 
-## Features
+## Dependências
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Nenhuma. Dart puro, sem Flutter, sem JSON em runtime.
 
-## Getting started
+---
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+## Como usar
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+O ponto de entrada é a interface `NormativeEngine`, implementada por `NormativeService`:
 
 ```dart
-const like = 'sample';
+import 'package:normative_engine/normative_engine.dart';
+
+final normative = NormativeService(
+  origemAlimentacao: OrigemAlimentacao.pontoEntrega,
+  perfil: const PerfilInstalacao(escopo: EscopoProjeto.residencial),
+);
+
+// 1. Pré-validação (antes do cálculo)
+final violacoes = normative.verificarConformidade(entrada);
+if (violacoes.isNotEmpty) throw EntradaInvalidaException(violacoes);
+
+// 2. Dados normativos para o cálculo
+final dados = normative.resolverDadosNormativos(entrada, params);
+// dados.tabelaIz, dados.fatores, dados.queda, dados.secaoMinimaNormativa
+
+// 3. Auditoria pós-cálculo
+final auditoria = normative.auditar(entrada, resultado);
 ```
 
-## Additional information
+Specs standalone (nível de cômodo, sem circuito):
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+// Piso mínimo de pontos de iluminação — S-12
+const spec = SpecMinimoIL();
+final v = spec.verificar((comodo: TipoComodo.sala, areaM2: 20.0, numPontos: 4));
+
+// Piso mínimo de TUGs — S-13
+const spec = SpecMinimoTUG();
+final v = spec.verificar((comodo: TipoComodo.cozinha, areaM2: 8.0, numTomadas: 2));
+```
+
+---
+
+## Arquitetura
+
+Ver [ARCHITECTURE.md](ARCHITECTURE.md) para estrutura detalhada, contratos,
+fluxo de uso e rastreabilidade NBR.

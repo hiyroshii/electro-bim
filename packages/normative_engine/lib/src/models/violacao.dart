@@ -1,5 +1,12 @@
-// REV: 1.4.0
+// REV: 1.5.0
 // CHANGELOG:
+// [1.5.0] - 2026-05
+// - ADD: Violacao.circuitoTueNaoExclusivo (CIRC_001) — 9.5.3.1.
+// - ADD: Violacao.tugAreaMolhadaNaoExclusiva (CIRC_002) — 9.5.3.2.
+// - ADD: Violacao.circuitoMistoIbExcedido (CIRC_003) — 9.5.3.3.
+// - ADD: Violacao.circuitoMistoUnicaIl (CIRC_004) — 9.5.3.3.
+// - ADD: Violacao.circuitoMistoUnicaTug (CIRC_005) — 9.5.3.3.
+// - ADD: Violacao.circuitoMistoAreaMolhada (CIRC_006) — 9.5.3.3.
 // [1.4.0] - 2026-05
 // - ADD: Violacao.pontosIlInsuficientes (IL_001) — 9.5.4.1.1.
 // - ADD: Violacao.tomadasInsuficientes (TUG_001) — 9.5.4.1.2.
@@ -212,6 +219,61 @@ final class Violacao {
         descricao: 'Cômodo $comodo (${areaM2.toStringAsFixed(1)} m²): '
             '$instaladas TUG(s) instalada(s), mínimo exigido: $minimo.',
         referencia: 'NBR 5410:2004 — 9.5.4.1.2',
+      );
+
+  factory Violacao.circuitoTueNaoExclusivo({
+    required final double ibCircuito,
+  }) =>
+      Violacao(
+        codigo: 'CIRC_001',
+        descricao: 'TUE com Ib=${ibCircuito.toStringAsFixed(1)} A excede 10 A '
+            'e deve ter circuito exclusivo.',
+        referencia: 'NBR 5410:2004 — 9.5.3.1',
+      );
+
+  factory Violacao.tugAreaMolhadaNaoExclusiva({
+    required final String comodo,
+  }) =>
+      Violacao(
+        codigo: 'CIRC_002',
+        descricao: 'Tomadas de $comodo devem ter circuito exclusivo '
+            '(não compartilhado com outros ambientes ou IL).',
+        referencia: 'NBR 5410:2004 — 9.5.3.2',
+      );
+
+  factory Violacao.circuitoMistoIbExcedido({
+    required final double ibCircuito,
+  }) =>
+      Violacao(
+        codigo: 'CIRC_003',
+        descricao: 'Circuito misto (IL + TUG) com '
+            'Ib=${ibCircuito.toStringAsFixed(1)} A excede o limite de 16 A.',
+        referencia: 'NBR 5410:2004 — 9.5.3.3',
+      );
+
+  factory Violacao.circuitoMistoUnicaIl() => const Violacao(
+        codigo: 'CIRC_004',
+        descricao: 'Circuito misto é o único circuito de iluminação da '
+            'instalação. A iluminação não pode estar concentrada em um '
+            'único circuito misto.',
+        referencia: 'NBR 5410:2004 — 9.5.3.3',
+      );
+
+  factory Violacao.circuitoMistoUnicaTug() => const Violacao(
+        codigo: 'CIRC_005',
+        descricao: 'Circuito misto é o único circuito de TUG da instalação. '
+            'As tomadas não podem estar concentradas em um único circuito misto.',
+        referencia: 'NBR 5410:2004 — 9.5.3.3',
+      );
+
+  factory Violacao.circuitoMistoAreaMolhada({
+    required final String comodos,
+  }) =>
+      Violacao(
+        codigo: 'CIRC_006',
+        descricao: 'Circuito misto inclui área molhada ($comodos). '
+            'Áreas molhadas requerem circuito exclusivo de TUG.',
+        referencia: 'NBR 5410:2004 — 9.5.3.3',
       );
 
   final String codigo;

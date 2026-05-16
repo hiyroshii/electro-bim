@@ -1,5 +1,9 @@
-// REV: 3.2.0
+// REV: 3.3.0
 // CHANGELOG:
+// [3.3.0] - 2026-05
+// - ADD: SpecCircuitoIndependente + EntradaCircuitoIndependente (S-9, Fase 3.4).
+// - ADD: SpecCircuitoExclusivo + EntradaCircuitoExclusivo (S-10, Fase 3.4).
+// - ADD: SpecCircuitoMisto + EntradaCircuitoMisto (S-11, Fase 3.4).
 // [3.2.0] - 2026-05
 // - ADD: NormativeService exportado no barrel (orquestrador padrão).
 // [3.1.0] - 2026-05
@@ -69,3 +73,11 @@ export 'src/specification/carga/spec_minimo_il.dart'
     show SpecMinimoIL, EntradaMinimoIL;
 export 'src/specification/carga/spec_minimo_tug.dart'
     show SpecMinimoTUG, EntradaMinimoTUG;
+
+// Specs de circuito — S-9, S-10, S-11
+export 'src/specification/carga/spec_circuito_independente.dart'
+    show SpecCircuitoIndependente, EntradaCircuitoIndependente;
+export 'src/specification/carga/spec_circuito_exclusivo.dart'
+    show SpecCircuitoExclusivo, EntradaCircuitoExclusivo;
+export 'src/specification/carga/spec_circuito_misto.dart'
+    show SpecCircuitoMisto, EntradaCircuitoMisto;

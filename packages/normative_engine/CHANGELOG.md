@@ -7,6 +7,13 @@ Versões semânticas conforme [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased] — Fase 3
 
+### Added (Fase 3.4)
+- `SpecCircuitoIndependente` (S-9) — TUE com Ib > 10 A deve ter circuito exclusivo; viola `CIRC_001` (NBR 5410:2004 — 9.5.3.1)
+- `SpecCircuitoExclusivo` (S-10) — TUG em cozinha ou área de serviço deve ter circuito exclusivo; viola `CIRC_002` (NBR 5410:2004 — 9.5.3.2)
+- `SpecCircuitoMisto` (S-11) — circuito misto (IL + TUG) deve atender Ib ≤ 16 A, não ser único circuito IL ou TUG, e não incluir áreas molhadas; viola `CIRC_003`–`CIRC_006` (NBR 5410:2004 — 9.5.3.3)
+- `EntradaCircuitoIndependente`, `EntradaCircuitoExclusivo`, `EntradaCircuitoMisto` typedefs
+- `Violacao.circuitoTueNaoExclusivo` (CIRC_001), `Violacao.tugAreaMolhadaNaoExclusiva` (CIRC_002), `Violacao.circuitoMistoIbExcedido` (CIRC_003), `Violacao.circuitoMistoUnicaIl` (CIRC_004), `Violacao.circuitoMistoUnicaTug` (CIRC_005), `Violacao.circuitoMistoAreaMolhada` (CIRC_006)
+
 ### Added (Fase 3.3)
 - `SpecMinimoIL` (S-12) — piso mínimo de pontos de iluminação por cômodo residencial; fórmula `max(1, ceil(areaM2 / 4))`; viola `IL_001` (NBR 5410:2004 — 9.5.4.1.1)
 - `SpecMinimoTUG` (S-13) — piso mínimo de TUGs por cômodo residencial por tipo; viola `TUG_001` (NBR 5410:2004 — 9.5.4.1.2)
